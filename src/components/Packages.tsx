@@ -65,24 +65,37 @@ const itemVariants = {
 
 export const Packages = () => {
   return (
-    <section id="packages" className="py-24 bg-gradient-spiritual">
-      <div className="container mx-auto px-4">
-        {/* Section Header */}
+    <section id="packages" className="min-h-screen pt-24 pb-16 bg-gradient-to-b from-sky-deep via-sky-dark to-background relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-20 left-10 w-72 h-72 rounded-full bg-saffron blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 rounded-full bg-sky-light blur-3xl" />
+      </div>
+      
+      <div className="container mx-auto px-4 relative z-10">
+        {/* Hero Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
-          <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
-            Our Signature Packages
-          </span>
-          <h2 className="text-3xl md:text-5xl font-serif font-bold text-foreground mb-4">
-            Curated <span className="text-gradient-sky">Spiritual Journeys</span>
-          </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Experience the divine beauty of the Himalayas with our premium helicopter yatra packages
+          <motion.span 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="inline-block px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-medium mb-6"
+          >
+            ✨ Premium Helicopter Yatra Packages
+          </motion.span>
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif font-bold text-white mb-6 leading-tight">
+            Begin Your Sacred
+            <br />
+            <span className="text-gradient-sunset">Spiritual Journey</span>
+          </h1>
+          <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto mb-8">
+            Experience divine Chardham & Do Dham yatras with luxury helicopter services. 
+            Trusted by thousands of pilgrims across India.
           </p>
         </motion.div>
 
@@ -173,6 +186,31 @@ export const Packages = () => {
               </div>
             </motion.div>
           ))}
+        </motion.div>
+        
+        {/* Trust Indicators */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+          className="flex flex-wrap justify-center gap-8 mt-12 pt-8 border-t border-white/10"
+        >
+          <div className="text-center">
+            <p className="text-3xl font-bold text-white">500+</p>
+            <p className="text-white/60 text-sm">Happy Pilgrims</p>
+          </div>
+          <div className="text-center">
+            <p className="text-3xl font-bold text-white">5.0</p>
+            <p className="text-white/60 text-sm">Google Rating</p>
+          </div>
+          <div className="text-center">
+            <p className="text-3xl font-bold text-white">100%</p>
+            <p className="text-white/60 text-sm">Safe Journeys</p>
+          </div>
+          <div className="text-center">
+            <p className="text-3xl font-bold text-white">24/7</p>
+            <p className="text-white/60 text-sm">Support</p>
+          </div>
         </motion.div>
       </div>
     </section>
