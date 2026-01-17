@@ -1,54 +1,8 @@
 import { motion } from "framer-motion";
 import { Clock, Users, MapPin, Star, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import chardhamImage from "@/assets/chardham.jpg";
-import kedarnathImage from "@/assets/kedarnath.jpg";
-import badrinathImage from "@/assets/badrinath.jpg";
-
-const packages = [
-  {
-    id: 1,
-    title: "Chardham Yatra",
-    subtitle: "Complete Sacred Journey",
-    image: chardhamImage,
-    duration: "6 Days",
-    groupSize: "2-6 persons",
-    locations: "4 Sacred Dhams",
-    price: "₹2,35,000",
-    description: "Cover all 4 dhams - Yamunotri, Gangotri, Kedarnath & Badrinath in a luxurious helicopter journey.",
-    highlights: ["VIP Darshan", "Luxury Accommodation", "Expert Guides"],
-    rating: 5.0,
-    featured: true,
-  },
-  {
-    id: 2,
-    title: "Do Dham Express",
-    subtitle: "Same Day Pilgrimage",
-    image: kedarnathImage,
-    duration: "1 Day",
-    groupSize: "2-4 persons",
-    locations: "Kedarnath & Badrinath",
-    price: "₹1,30,000",
-    description: "Experience both Kedarnath and Badrinath in a single day with our express helicopter service.",
-    highlights: ["Same Day Return", "Priority Darshan", "Breakfast Included"],
-    rating: 4.9,
-    featured: false,
-  },
-  {
-    id: 3,
-    title: "Do Dham Premium",
-    subtitle: "3-Day Spiritual Retreat",
-    image: badrinathImage,
-    duration: "3 Days",
-    groupSize: "2-6 persons",
-    locations: "Kedarnath & Badrinath",
-    price: "₹1,50,000",
-    description: "A peaceful 3-day journey covering Kedarnath and Badrinath with extended darshan time.",
-    highlights: ["Extended Stay", "Special Puja", "Local Sightseeing"],
-    rating: 4.9,
-    featured: false,
-  },
-];
+import { useNavigate } from "react-router-dom";
+import { packages } from "@/data/packages";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -64,6 +18,8 @@ const itemVariants = {
 };
 
 export const Packages = () => {
+  const navigate = useNavigate();
+
   return (
     <section id="packages" className="py-24 bg-gradient-spiritual">
       <div className="container mx-auto px-4">
@@ -98,9 +54,9 @@ export const Packages = () => {
             <motion.div
               key={pkg.id}
               variants={itemVariants}
-              className={`group relative bg-card rounded-2xl overflow-hidden shadow-soft hover:shadow-strong transition-all duration-500 ${
-                pkg.featured ? "md:col-span-2 lg:col-span-1 ring-2 ring-saffron" : ""
-              }`}
+              className={`group relative bg-card rounded-2xl overflow-hidden shadow-soft hover:shadow-strong transition-all duration-500 cursor-pointer ${pkg.featured ? "md:col-span-2 lg:col-span-1 ring-2 ring-saffron" : ""
+                }`}
+              onClick={() => navigate(`/package/${pkg.id}`)}
             >
               {/* Featured Badge */}
               {pkg.featured && (
@@ -117,7 +73,7 @@ export const Packages = () => {
                   className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-mountain-dark/60 to-transparent" />
-                
+
                 {/* Rating */}
                 <div className="absolute bottom-4 left-4 flex items-center gap-1 px-2 py-1 rounded-full bg-card/90 backdrop-blur-sm">
                   <Star className="w-4 h-4 text-saffron fill-saffron" />
@@ -165,7 +121,10 @@ export const Packages = () => {
                     <span className="text-sm text-muted-foreground">Starting from</span>
                     <p className="text-2xl font-serif font-bold text-foreground">{pkg.price}</p>
                   </div>
-                  <Button variant="premium" size="lg" className="group/btn">
+                  <Button variant="premium" size="lg" className="group/btn" onClick={(e) => {
+                    e.stopPropagation(); // Prevent double navigation if the button is clicked
+                    navigate(`/package/${pkg.id}`);
+                  }}>
                     Book Now
                     <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                   </Button>
