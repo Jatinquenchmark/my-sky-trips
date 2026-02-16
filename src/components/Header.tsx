@@ -4,6 +4,7 @@ import { Menu, X, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { EnquiryDialog } from "@/components/EnquiryDialog";
+import logo from './assets/logo.png'; // Path sahi se check kar lena
 
 const navLinks = [
   { name: "Home", href: "#home" },
@@ -73,10 +74,11 @@ export const Header = () => {
           className="flex items-center"
         >
           <img
-            src="/src/assets/logo-DFfutrEX.png"
+            src={logo}
             alt="My Sky Trips"
-            className={`w-16 h-16 lg:w-24 lg:h-24 object-contain transition-all duration-300 ${isScrolled || !isHome ? "brightness-0" : ""
-              }`}
+            className={`w-16 h-16 lg:w-24 lg:h-24 object-contain transition-all duration-300 ${
+              isScrolled || !isHome ? "brightness-0" : ""
+            }`}
           />
         </Link>
 
