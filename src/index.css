@@ -20,16 +20,16 @@
     --primary: 210 80% 35%;
     --primary-foreground: 0 0% 100%;
 
-    /* Warm Saffron Gold - Secondary/Accent */
-    --secondary: 35 90% 55%;
-    --secondary-foreground: 30 50% 15%;
+    /* Sky Blue - Secondary/Accent */
+    --secondary: 200 90% 55%;
+    --secondary-foreground: 220 50% 10%;
 
     --muted: 210 30% 95%;
     --muted-foreground: 220 15% 45%;
 
-    /* Saffron Accent */
-    --accent: 35 95% 50%;
-    --accent-foreground: 30 60% 12%;
+    /* Sky Accent */
+    --accent: 200 95% 50%;
+    --accent-foreground: 220 60% 10%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
@@ -43,9 +43,9 @@
     /* Custom Colors */
     --sky-deep: 210 80% 25%;
     --sky-light: 200 85% 60%;
-    --saffron: 35 95% 50%;
-    --saffron-light: 40 95% 65%;
-    --gold: 45 90% 50%;
+    --saffron: 210 90% 45%;
+    --saffron-light: 200 95% 65%;
+    --gold: 220 90% 50%;
     --mountain-dark: 220 25% 18%;
     --mountain-gray: 220 15% 35%;
     --cream: 40 40% 96%;
@@ -53,15 +53,15 @@
 
     /* Gradients */
     --gradient-sky: linear-gradient(135deg, hsl(210 80% 35%) 0%, hsl(200 85% 50%) 100%);
-    --gradient-sunset: linear-gradient(135deg, hsl(35 95% 50%) 0%, hsl(15 90% 55%) 100%);
-    --gradient-spiritual: linear-gradient(180deg, hsl(210 50% 98%) 0%, hsl(40 40% 96%) 100%);
+    --gradient-sunset: linear-gradient(135deg, hsl(210 95% 50%) 0%, hsl(190 90% 55%) 100%);
+    --gradient-spiritual: linear-gradient(180deg, hsl(210 50% 98%) 0%, hsl(200 40% 96%) 100%);
     --gradient-hero-overlay: linear-gradient(180deg, hsla(220 25% 12% / 0.4) 0%, hsla(220 25% 12% / 0.7) 100%);
 
     /* Shadows */
     --shadow-soft: 0 4px 20px -4px hsla(220 25% 12% / 0.1);
     --shadow-medium: 0 8px 30px -6px hsla(220 25% 12% / 0.15);
     --shadow-strong: 0 20px 50px -12px hsla(220 25% 12% / 0.25);
-    --shadow-gold: 0 8px 30px -6px hsla(35 95% 50% / 0.3);
+    --shadow-gold: 0 8px 30px -6px hsla(210 95% 50% / 0.3);
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -86,14 +86,14 @@
     --primary: 200 85% 55%;
     --primary-foreground: 220 25% 8%;
 
-    --secondary: 35 90% 55%;
-    --secondary-foreground: 30 50% 10%;
+    --secondary: 200 90% 55%;
+    --secondary-foreground: 220 50% 10%;
 
     --muted: 220 20% 18%;
     --muted-foreground: 215 20% 65%;
 
-    --accent: 35 95% 50%;
-    --accent-foreground: 30 60% 8%;
+    --accent: 200 95% 50%;
+    --accent-foreground: 220 60% 8%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
@@ -126,7 +126,12 @@
     @apply bg-background text-foreground font-sans antialiased;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-serif;
   }
 }
@@ -187,9 +192,12 @@
   }
 
   @keyframes float {
-    0%, 100% {
+
+    0%,
+    100% {
       transform: translateY(0px);
     }
+
     50% {
       transform: translateY(-10px);
     }
@@ -200,11 +208,14 @@
   }
 
   @keyframes pulse-glow {
-    0%, 100% {
-      box-shadow: 0 0 20px hsla(35 95% 50% / 0.3);
+
+    0%,
+    100% {
+      box-shadow: 0 0 20px hsla(200 95% 50% / 0.3);
     }
+
     50% {
-      box-shadow: 0 0 40px hsla(35 95% 50% / 0.5);
+      box-shadow: 0 0 40px hsla(200 95% 50% / 0.5);
     }
   }
 }

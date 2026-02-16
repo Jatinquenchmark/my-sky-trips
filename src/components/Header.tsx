@@ -42,15 +42,18 @@ export const Header = () => {
   }, [isHome, location.hash]);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    setIsMobileMenuOpen(false);
+
     if (isHome) {
       e.preventDefault();
       const element = document.querySelector(href);
       if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
+        // Use a small timeout to allow the mobile menu animation to finish if needed
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: "smooth" });
+        }, 50);
       }
     }
-    // If not home, let the Link handle navigation to `/#section`
-    setIsMobileMenuOpen(false);
   };
 
   return (
@@ -59,29 +62,22 @@ export const Header = () => {
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled || !isHome
-        ? "bg-card/95 backdrop-blur-lg shadow-medium py-3"
-        : "bg-transparent py-5"
+        ? "bg-card/95 backdrop-blur-lg shadow-medium py-2"
+        : "bg-transparent py-3"
         }`}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
         {/* Logo */}
         <Link
           to="/"
-          className="flex items-center gap-2"
+          className="flex items-center"
         >
-          <div className="relative">
-            <div className={`w-10 h-10 rounded-full bg-gradient-sky flex items-center justify-center ${(!isScrolled && isHome) && 'shadow-lg'}`}>
-              <span className="text-primary-foreground font-serif font-bold text-lg">M</span>
-            </div>
-          </div>
-          <div className="flex flex-col">
-            <span className={`font-serif font-bold text-xl leading-tight ${(isScrolled || !isHome) ? 'text-foreground' : 'text-primary-foreground'}`}>
-              My Sky Trips
-            </span>
-            <span className={`text-xs font-sans tracking-wider ${(isScrolled || !isHome) ? 'text-muted-foreground' : 'text-primary-foreground/80'}`}>
-              EXPLORE INDIA
-            </span>
-          </div>
+          <img
+            src="/src/assets/logo-DFfutrEX.png"
+            alt="My Sky Trips"
+            className={`w-16 h-16 lg:w-24 lg:h-24 object-contain transition-all duration-300 ${isScrolled || !isHome ? "brightness-0" : ""
+              }`}
+          />
         </Link>
 
         {/* Desktop Navigation */}

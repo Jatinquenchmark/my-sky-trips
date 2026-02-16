@@ -36,18 +36,16 @@ export const Footer = () => {
               viewport={{ once: true }}
               className="mb-6"
             >
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-10 h-10 rounded-full bg-gradient-sky flex items-center justify-center">
-                  <span className="text-primary-foreground font-serif font-bold text-lg">M</span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-serif font-bold text-xl leading-tight">My Sky Trips</span>
-                  <span className="text-xs tracking-wider text-primary-foreground/60">EXPLORE INDIA</span>
-                </div>
+              <div className="flex items-center mb-6">
+                <img
+                  src="/src/assets/logo-DFfutrEX.png"
+                  alt="My Sky Trips"
+                  className="w-32 h-32 object-contain brightness-0 invert"
+                />
               </div>
               <p className="text-primary-foreground/70 leading-relaxed max-w-sm">
-                At My Sky Trips, we plan your perfect gateway to explore incredible India. 
-                From adventures to luxury escapes, we make every journey seamless and unforgettable.
+                My Sky Trips is your premier partner for helicopter journeys and curated travel experiences.
+                From sacred pilgrimages to luxury escapes, we make every journey seamless and extraordinary.
               </p>
             </motion.div>
           </div>

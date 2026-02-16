@@ -1,34 +1,44 @@
 import { motion } from "framer-motion";
-import { Sparkles, Heart, Globe, Shield } from "lucide-react";
+import { Sparkles, Heart, Globe, Shield, Target, Eye, Quote } from "lucide-react";
 
 const features = [
   {
     icon: Sparkles,
-    title: "Adventuring, Simplified",
-    description: "Our expert travel consultants handle all the planning, bookings, and logistics so you can focus on what truly matters—enjoying the journey.",
-  },
-  {
-    icon: Heart,
-    title: "Guided Comfort",
-    description: "Travel with ease knowing our local guides are there to support you every step of the way. From hidden gems to cultural insights, they ensure a seamless experience.",
-  },
-  {
-    icon: Globe,
-    title: "Responsible Travel",
-    description: "Over 70% of your trip cost directly supports the local economy—ensuring that the people, culture, and environment benefit the most from your visit.",
+    title: "End-to-End Curation",
+    description: "We don't just book helicopters—we craft complete travel moments. Every itinerary is thoughtfully designed for comfort and safety.",
   },
   {
     icon: Shield,
     title: "Safety First",
-    description: "We partner with certified operators and maintain the highest safety standards. Your security and comfort are our top priorities on every journey.",
+    description: "We collaborate with trusted aviation operators and certified pilots, keeping safety at the core of every journey.",
   },
+  {
+    icon: Globe,
+    title: "Accessible Luxury",
+    description: "Making aerial travel more accessible and seamless, bridging the gap between luxury aviation and personalized planning.",
+  },
+  {
+    icon: Heart,
+    title: "Exceptional Service",
+    description: "From transparent booking assistance to real-time travel support, we ensure your journey is extraordinary.",
+  },
+];
+
+const offerings = [
+  "Char Dham Helicopter Yatra",
+  "Private Helicopter Charters",
+  "Wedding & Event Logistics",
+  "Himalayan Joyrides",
+  "Luxury & Adventure Packages",
+  "Honeymoon Getaways",
+  "Corporate Travel Solutions",
 ];
 
 export const About = () => {
   return (
-    <section id="about" className="py-24 bg-card">
+    <section id="about" className="py-24 bg-card overflow-hidden">
       <div className="container mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-16 items-center mb-24">
           {/* Left Content */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -37,50 +47,33 @@ export const About = () => {
             transition={{ duration: 0.6 }}
           >
             <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
-              Why Choose Us
+              About Us — My Sky Trips
             </span>
             <h2 className="text-3xl md:text-5xl font-serif font-bold text-foreground mb-6 leading-tight">
-              Your Journey,{" "}
-              <span className="text-gradient-sky">Our Passion</span>
+              Redefining Travel Through{" "}
+              <span className="text-gradient-sky">Aerial Excellence</span>
             </h2>
+            <p className="text-muted-foreground text-lg mb-6 leading-relaxed">
+              My Sky Trips is a Dehradun-based experiential travel brand specializing in helicopter journeys and curated travel experiences across Uttarakhand and beyond.
+            </p>
             <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
-              At My Sky Trips, we believe travel should be transformative, not stressful. 
-              Whether it's a thrilling adventure or a peaceful pilgrimage, your only tasks 
-              are to dream, pack, and go. We handle everything else.
+              Founded with the vision of making aerial travel more accessible, seamless, and memorable, we bridge the gap between luxury aviation services and personalized travel planning. From sacred pilgrimages like Char Dham to leisure joyrides—we design journeys that go far beyond transportation.
             </p>
 
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-center p-4 rounded-xl bg-muted"
-              >
-                <p className="text-3xl font-serif font-bold text-primary mb-1">500+</p>
-                <p className="text-sm text-muted-foreground">Happy Travelers</p>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className="text-center p-4 rounded-xl bg-muted"
-              >
-                <p className="text-3xl font-serif font-bold text-saffron mb-1">50+</p>
-                <p className="text-sm text-muted-foreground">Destinations</p>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                className="text-center p-4 rounded-xl bg-muted"
-              >
-                <p className="text-3xl font-serif font-bold text-primary mb-1">5.0</p>
-                <p className="text-sm text-muted-foreground">Avg Rating</p>
-              </motion.div>
+            <div className="grid sm:grid-cols-2 gap-4 mb-8">
+              {offerings.map((offering, index) => (
+                <motion.div
+                  key={offering}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className="flex items-center gap-2"
+                >
+                  <div className="w-1.5 h-1.5 rounded-full bg-saffron" />
+                  <span className="text-foreground font-medium">{offering}</span>
+                </motion.div>
+              ))}
             </div>
           </motion.div>
 
@@ -114,6 +107,60 @@ export const About = () => {
             ))}
           </motion.div>
         </div>
+
+        {/* Mission & Vision */}
+        <div className="grid md:grid-cols-2 gap-8 mb-24">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="p-8 rounded-3xl bg-primary/5 border border-primary/10 relative overflow-hidden"
+          >
+            <Target className="absolute -right-4 -bottom-4 w-32 h-32 text-primary/5" />
+            <h3 className="text-2xl font-serif font-bold text-primary mb-4 flex items-center gap-2">
+              <Target className="w-6 h-6" /> Our Mission
+            </h3>
+            <p className="text-muted-foreground leading-relaxed">
+              To redefine travel by combining aviation, luxury, and personalized service — making extraordinary journeys accessible, efficient, and unforgettable.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="p-8 rounded-3xl bg-saffron/5 border border-saffron/10 relative overflow-hidden"
+          >
+            <Eye className="absolute -right-4 -bottom-4 w-32 h-32 text-saffron/5" />
+            <h3 className="text-2xl font-serif font-bold text-saffron mb-4 flex items-center gap-2">
+              <Eye className="w-6 h-6" /> Our Vision
+            </h3>
+            <p className="text-muted-foreground leading-relaxed">
+              To become India's most trusted helicopter travel and experiential tour operator platform, known for operational excellence, premium service, and transformative travel experiences.
+            </p>
+          </motion.div>
+        </div>
+
+        {/* Founder's Note */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          className="max-w-4xl mx-auto p-8 md:p-12 rounded-[2rem] bg-gradient-to-br from-card to-background border border-border shadow-strong relative"
+        >
+          <Quote className="absolute top-8 left-8 w-12 h-12 text-primary/10" />
+          <div className="text-center relative z-10">
+            <h3 className="text-2xl md:text-3xl font-serif font-bold text-foreground mb-6">Founder's Note</h3>
+            <p className="text-lg md:text-xl text-muted-foreground italic mb-8 leading-relaxed">
+              "Founded by Surya Pratap, a travel creator and experiential storyteller, My Sky Trips was born from a simple belief — travel should feel extraordinary, not transactional. After years of exploring destinations, I envisioned a platform that blends aerial access with curated ground experiences — giving people a new perspective on travel, literally and emotionally."
+            </p>
+            <div className="flex flex-col items-center">
+              <div className="w-16 h-1 bg-primary rounded-full mb-4" />
+              <p className="font-serif font-bold text-xl text-foreground">Surya Pratap</p>
+              <p className="text-primary font-medium">Founder, My Sky Trips</p>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );

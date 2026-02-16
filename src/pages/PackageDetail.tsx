@@ -5,16 +5,25 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Clock, Users, MapPin, CheckCircle2, XCircle, ArrowLeft, Calendar, Star } from "lucide-react";
 import { motion } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const PackageDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const pkg = packages.find((p) => p.id === Number(id));
+    const [selectedPrice, setSelectedPrice] = useState(pkg?.price || "");
+    const [selectedTier, setSelectedTier] = useState<string | null>(null);
 
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [id]);
+
+    useEffect(() => {
+        if (pkg) {
+            setSelectedPrice(pkg.price);
+            setSelectedTier(null);
+        }
+    }, [pkg]);
 
     if (!pkg) {
         return (
@@ -110,6 +119,90 @@ const PackageDetail = () => {
                                 </p>
                             </section>
 
+                            {/* Pricing Tiers Section */}
+                            <section className="scroll-mt-24">
+                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                                    <h2 className="text-3xl font-serif font-bold text-foreground">Choose Your Travel Tier</h2>
+                                    <span className="text-sm font-medium text-primary px-4 py-1.5 bg-primary/10 rounded-full border border-primary/20">
+                                        Tailored Experiences
+                                    </span>
+                                </div>
+                                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {pkg.additionalInfo?.find(info => info.title === "Pricing Structure")?.content.filter(line => line.includes("—")).map((line, idx) => {
+                                        const name = line.split("—")[0].trim();
+                                        const rest = line.split("—")[1]?.trim() || "";
+
+                                        // Extract price excluding what's in parentheses
+                                        const rawPricePart = rest.split("(")[0].trim();
+                                        // Remove "per person" suffix if present
+                                        const pricePart = rawPricePart.replace(/ per person$/i, "");
+
+                                        // Extract content inside parentheses
+                                        const featuresMatch = rest.match(/\((.*?)\)/);
+                                        let featuresStr = featuresMatch ? featuresMatch[1] : "";
+
+                                        // Extract discount if present
+                                        const discountMatch = featuresStr.match(/after (₹[0-9,]+) discount/i);
+                                        let originalPrice = "";
+                                        if (discountMatch) {
+                                            const discountValStr = discountMatch[1].replace(/[₹,]/g, "");
+                                            const currentPriceValStr = pricePart.replace(/[₹,]/g, "");
+                                            const discountVal = parseInt(discountValStr);
+                                            const currentPriceVal = parseInt(currentPriceValStr);
+
+                                            if (!isNaN(discountVal) && !isNaN(currentPriceVal)) {
+                                                const originalVal = currentPriceVal + discountVal;
+                                                originalPrice = "₹" + originalVal.toLocaleString("en-IN");
+                                            }
+                                            // Remove discount mention from features string
+                                            featuresStr = featuresStr.replace(/,? ?after ₹[0-9,]+ discount/i, "").trim();
+                                        }
+
+                                        const features = featuresStr;
+                                        const isSelected = selectedTier === name;
+
+                                        return (
+                                            <motion.div
+                                                key={idx}
+                                                whileHover={{ y: -5 }}
+                                                onClick={() => {
+                                                    setSelectedPrice(pricePart);
+                                                    setSelectedTier(name);
+                                                }}
+                                                className={`relative p-8 rounded-[2rem] border cursor-pointer transition-all duration-300 flex flex-col ${isSelected
+                                                    ? "bg-gradient-to-b from-primary/10 to-transparent border-primary shadow-strong-primary ring-2 ring-primary/20"
+                                                    : "bg-card border-border hover:border-primary/20 shadow-soft"
+                                                    }`}
+                                            >
+                                                <div className="text-center mb-8">
+                                                    <span className={`text-[10px] uppercase tracking-[0.2em] font-bold ${isSelected ? "text-primary" : "text-muted-foreground"}`}>
+                                                        {name}
+                                                    </span>
+                                                    <div className="mt-4 flex flex-col items-center justify-center gap-1">
+                                                        {originalPrice && (
+                                                            <span className="text-sm line-through text-red-500 font-medium">
+                                                                {originalPrice}
+                                                            </span>
+                                                        )}
+                                                        <span className="text-3xl font-serif font-bold text-foreground leading-none">{pricePart}</span>
+                                                        <span className="text-[10px] mt-1 text-muted-foreground font-bold uppercase tracking-wider">Per Person</span>
+                                                    </div>
+                                                </div>
+
+                                                <div className="space-y-4">
+                                                    {features.split(",").map((feat, fIdx) => (
+                                                        <div key={fIdx} className="flex items-center gap-3 text-sm text-foreground/80 font-medium">
+                                                            <div className={`w-1.5 h-1.5 rounded-full ${isSelected ? "bg-primary" : "bg-primary/30"}`} />
+                                                            {feat.trim()}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </motion.div>
+                                        );
+                                    })}
+                                </div>
+                            </section>
+
                             {/* Itinerary */}
                             {pkg.itinerary && (
                                 <section>
@@ -167,15 +260,40 @@ const PackageDetail = () => {
                                     </div>
                                 )}
                             </div>
+
+                            {/* Additional Info */}
+                            {pkg.additionalInfo && (
+                                <section className="space-y-8 mt-12 bg-card/50 rounded-2xl border border-border/50 p-8 hover:border-border transition-colors">
+                                    {pkg.additionalInfo.map((info, index) => (
+                                        <div key={index} className="space-y-4">
+                                            <h3 className="text-xl font-serif font-bold text-foreground flex items-center gap-2">
+                                                <div className="w-1.5 h-6 bg-saffron rounded-full" />
+                                                {info.title}
+                                            </h3>
+                                            <ul className="space-y-3 pl-4">
+                                                {info.content.map((line, i) => (
+                                                    <li key={i} className="flex items-start gap-3 group">
+                                                        <span className="mt-2 w-1.5 h-1.5 rounded-full bg-saffron/50 group-hover:bg-saffron transition-colors shrink-0" />
+                                                        <span className="text-muted-foreground leading-relaxed text-sm md:text-base">{line}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                            {index !== pkg.additionalInfo!.length - 1 && (
+                                                <div className="h-px w-full bg-border/50 my-8" />
+                                            )}
+                                        </div>
+                                    ))}
+                                </section>
+                            )}
                         </div>
 
                         {/* Sidebar */}
                         <div className="lg:col-span-1">
                             <div className="sticky top-24 rounded-2xl border border-border bg-card p-8 shadow-lg">
                                 <div className="mb-8 text-center">
-                                    <span className="text-muted-foreground text-sm uppercase tracking-wide">Starting from</span>
+                                    <span className="text-muted-foreground text-sm uppercase tracking-wide">{selectedTier ? `Selected Tier: ${selectedTier}` : "Starting from"}</span>
                                     <div className="text-4xl font-serif font-bold text-primary mt-2">
-                                        {pkg.price}
+                                        {selectedPrice}
                                     </div>
                                     <p className="text-xs text-muted-foreground mt-2">Per person</p>
                                 </div>

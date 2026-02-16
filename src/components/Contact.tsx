@@ -6,18 +6,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 
 export const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    message: "",
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle form submission
-    console.log(formData);
-  };
 
   return (
     <section id="contact" className="py-24 bg-gradient-spiritual">
@@ -37,7 +25,7 @@ export const Contact = () => {
             Start Your <span className="text-gradient-sunset">Journey Today</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Ready to explore India? Drop us a message and our travel experts will craft the perfect itinerary for you.
+            Ready to explore the skies? Drop us a message and our travel experts will craft the perfect itinerary for you.
           </p>
         </motion.div>
 
@@ -53,59 +41,15 @@ export const Contact = () => {
             <h3 className="text-2xl font-serif font-bold text-foreground mb-6">
               Send Us a Message
             </h3>
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">
-                    Your Name
-                  </label>
-                  <Input
-                    placeholder="John Doe"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="bg-background"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">
-                    Phone Number
-                  </label>
-                  <Input
-                    placeholder="+91 98765 43210"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="bg-background"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-foreground mb-2 block">
-                  Email Address
-                </label>
-                <Input
-                  type="email"
-                  placeholder="john@example.com"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="bg-background"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-foreground mb-2 block">
-                  Your Message
-                </label>
-                <Textarea
-                  placeholder="Tell us about your dream trip..."
-                  value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  className="bg-background min-h-[120px]"
-                />
-              </div>
-              <Button variant="saffron" size="lg" className="w-full">
-                <Send className="w-4 h-4 mr-2" />
-                Send Enquiry
-              </Button>
-            </form>
+            <div className="w-full h-[600px] overflow-hidden rounded-xl border border-border bg-background">
+              <iframe
+                src="https://docs.google.com/forms/d/e/1FAIpQLSeoQQ_MRmgTWWM1-EKTo-Z6pWALUK34g5BwNcWnkpkMcDdK1Q/viewform?embedded=true"
+                className="w-full h-full border-0"
+                title="Contact Form"
+              >
+                Loading…
+              </iframe>
+            </div>
           </motion.div>
 
           {/* Contact Info */}
@@ -121,13 +65,13 @@ export const Contact = () => {
                 Contact Information
               </h3>
               <p className="text-muted-foreground mb-8 leading-relaxed">
-                We're here to help you plan your perfect Indian adventure. 
+                We're here to help you plan your perfect Indian adventure.
                 Reach out through any of these channels and our team will respond within 24 hours.
               </p>
 
               <div className="space-y-6">
                 <motion.a
-                  href="mailto:bookings@myskytrips.com"
+                  href="mailto:contact@myskytrips.com"
                   className="flex items-center gap-4 p-4 rounded-xl bg-card hover:shadow-soft transition-shadow group"
                   whileHover={{ x: 5 }}
                 >
@@ -136,7 +80,7 @@ export const Contact = () => {
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Email Us</p>
-                    <p className="font-medium text-foreground">bookings@myskytrips.com</p>
+                    <p className="font-medium text-foreground">contact@myskytrips.com</p>
                   </div>
                 </motion.a>
 
@@ -149,23 +93,28 @@ export const Contact = () => {
                     <Phone className="w-5 h-5 text-saffron group-hover:text-primary-foreground" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Call Us</p>
+                    <p className="text-sm text-muted-foreground">Call / WhatsApp</p>
                     <p className="font-medium text-foreground">+91 6395678642</p>
                   </div>
                 </motion.a>
 
-                <motion.div
-                  className="flex items-center gap-4 p-4 rounded-xl bg-card"
+                <motion.a
+                  href="https://maps.app.goo.gl/sMda3MK58omkibfb6"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 p-4 rounded-xl bg-card hover:shadow-soft transition-shadow group"
                   whileHover={{ x: 5 }}
                 >
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <MapPin className="w-5 h-5 text-primary" />
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-gradient-sky transition-colors">
+                    <MapPin className="w-5 h-5 text-primary group-hover:text-primary-foreground" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Location</p>
-                    <p className="font-medium text-foreground">Dehradun, Uttarakhand, India</p>
+                    <p className="text-sm text-muted-foreground">Office Address</p>
+                    <p className="font-medium text-foreground text-sm">
+                      2nd floor, ATS Arcade, Shop no, SF-09, Sahastradhara Rd, near IT park, Dehradun, Uttarakhand 248013
+                    </p>
                   </div>
-                </motion.div>
+                </motion.a>
               </div>
             </div>
 
