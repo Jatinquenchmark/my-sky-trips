@@ -78,8 +78,8 @@ export const Packages = () => {
                     </div>
                   ) : <div></div>}
 
-                  <div className="px-4 py-2 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 text-white shadow-xl group/price">
-                    <span className="block text-[10px] text-white/70 font-medium leading-none mb-0.5">Starting at</span>
+                  <div className="px-4 py-2 rounded-2xl bg-primary backdrop-blur-md border border-white/20 text-white shadow-xl group/price">
+                    <span className="block text-[10px] text-white/90 font-medium leading-none mb-0.5">Starting at</span>
                     <span className="text-lg font-serif font-bold leading-none">{pkg.price}</span>
                   </div>
                 </div>
