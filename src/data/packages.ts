@@ -32,7 +32,7 @@ export const packages: Package[] = [
     duration: "6 Days",
     groupSize: "2-6 persons",
     locations: "4 Sacred Dhams",
-    price: "₹1,95,000",
+    price: "₹2,20,000",
     description: "Experience the ultimate spiritual milestone with a seamless journey to Yamunotri, Gangotri, Kedarnath, and Badrinath.",
     highlights: ["VIP Darshans", "Premium Planning", "Seamless Logistics"],
     rating: 5.0,
