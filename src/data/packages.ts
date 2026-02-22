@@ -7,6 +7,10 @@ import kainchiGallery1 from "@/assets/nanitalKachi.jpeg";
 import kainchiGallery2 from "@/assets/nanitalkachi2.jpeg";
 import kainchiGallery3 from "@/assets/nanitalkachi3.jpeg";
 import kainchiGallery4 from "@/assets/nanitalkachi4.png";
+import tehriGallery1 from "@/assets/tehri1.png";
+import tehriGallery2 from "@/assets/tehri2.png";
+import tehriGallery3 from "@/assets/tehri3.png";
+import tehriGallery4 from "@/assets/tehri4.png";
 
 export interface Package {
   id: number;
@@ -40,6 +44,7 @@ export const packages: Package[] = [
     locations: "Tehri Lake",
     price: "₹15,000",
     description: "Helicopter + Water Adventure. All in 48 hours! Reach Tehri in just 15 minutes with breathtaking aerial views.",
+    gallery: [tehriGallery1, tehriGallery2, tehriGallery3, tehriGallery4],
     highlights: ["Helicopter Ride", "Water Thrill", "Jet Ski Ride", "Fly Boarding"],
     rating: 4.9,
     featured: true,
