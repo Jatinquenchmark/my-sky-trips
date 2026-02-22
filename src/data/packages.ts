@@ -95,7 +95,7 @@ export const packages: Package[] = [
     duration: "3 Days",
     groupSize: "Customizable",
     locations: "Naukuchiatal, Nainital & Kainchi Dham",
-    price: "₹25,000",
+    price: "₹18,000",
     gallery: [kainchiGallery1, kainchiGallery2, kainchiGallery3, kainchiGallery4],
     description: "A serene lakeside escape. Visit the holy Kainchi Dham and explore the emerald lakes of Kumaon via helicopter.",
     highlights: ["Kainchi Dham Visit", "Heritage Lakeside Stay", "Nainital Trip", "Private Cab"],
@@ -135,7 +135,8 @@ export const packages: Package[] = [
       {
         title: "Pricing Structure",
         content: [
-          "Luxury — ₹25,000 per person (Premium lakeside suites, Lakeside high tea, Dedicated private cab, Priority darshan assistance after ₹5,000 discount)",
+          "Standard — ₹18,000 per person (1N/2D Heritage lakeside stay, Helicopter travel, Private cab for sightseeing. If pax > 4: ₹18,000; If pax < 4: ₹19,000 after ₹3,000 discount)",
+          "Luxury — ₹25,000 per person (2N/3D Premium lakeside suites, Lakeside high tea, Dedicated private cab, Priority darshan assistance after ₹5,000 discount)",
           "Booking: Pay 50% now to book; Balance 30 days before trip.",
           "Extra day: ₹9,000 per person.",
           "Children under 8 years: 50% of adult fares. Infants below 2 years: ₹5,000."
