@@ -287,7 +287,7 @@ const PackageDetail = () => {
                             )}
                         </div>
 
-                        <div className="lg:col-span-1">
+                        <div className="hidden lg:col-span-1 lg:block">
                             <div className="sticky top-24 rounded-[2.5rem] border border-border/50 bg-card p-10 shadow-soft">
                                 <div className="mb-10 text-center">
                                     <span className="text-muted-foreground text-[10px] uppercase tracking-[0.2em] font-bold">
@@ -334,6 +334,27 @@ const PackageDetail = () => {
                     </div>
                 </div>
             </main>
+
+            {/* Mobile Sticky Booking Bar */}
+            <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-background/80 backdrop-blur-xl border-t border-border p-4 shadow-2xl safe-area-bottom">
+                <div className="container mx-auto flex items-center justify-between gap-4">
+                    <div className="flex flex-col">
+                        <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold leading-none mb-1">
+                            {selectedTier ? selectedTier : "Price"}
+                        </span>
+                        <div className="flex items-baseline gap-1">
+                            <span className="text-2xl font-serif font-bold text-primary">{selectedPrice}</span>
+                            <span className="text-[10px] text-muted-foreground font-medium">/pax</span>
+                        </div>
+                    </div>
+                    <Button
+                        className="flex-1 max-w-[200px] h-12 text-base font-bold bg-primary hover:bg-primary/90 rounded-xl shadow-lg transition-all"
+                        onClick={() => {/* Booking logic */ }}
+                    >
+                        Request Booking
+                    </Button>
+                </div>
+            </div>
 
             <Footer />
         </div>
