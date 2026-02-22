@@ -2,6 +2,10 @@ import chardhamImage from "@/assets/chardham.jpg";
 import kedarnathImage from "@/assets/kedarnath.jpg";
 import badrinathImage from "@/assets/badrinath.jpg";
 import heroHelicopterImage from "@/assets/hero-helicopter.jpg";
+import kainchiGallery1 from "@/assets/nanitalKachi.jpeg";
+import kainchiGallery2 from "@/assets/nanitalkachi2.jpeg";
+import kainchiGallery3 from "@/assets/nanitalkachi3.jpeg";
+import kainchiGallery4 from "@/assets/nanitalkachi4.png";
 
 export interface Package {
   id: number;
@@ -21,6 +25,7 @@ export interface Package {
   inclusions?: string[];
   exclusions?: string[];
   additionalInfo?: { title: string; content: string[] }[];
+  gallery?: string[];
 }
 
 export const packages: Package[] = [
@@ -81,6 +86,7 @@ export const packages: Package[] = [
     groupSize: "Customizable",
     locations: "Naukuchiatal, Nainital & Kainchi Dham",
     price: "₹25,000",
+    gallery: [kainchiGallery1, kainchiGallery2, kainchiGallery3, kainchiGallery4],
     description: "A serene lakeside escape. Visit the holy Kainchi Dham and explore the emerald lakes of Kumaon via helicopter.",
     highlights: ["Kainchi Dham Visit", "Heritage Lakeside Stay", "Nainital Trip", "Private Cab"],
     rating: 4.9,
