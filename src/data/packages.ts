@@ -11,6 +11,10 @@ import tehriGallery1 from "@/assets/tehri1.png";
 import tehriGallery2 from "@/assets/tehri2.png";
 import tehriGallery3 from "@/assets/tehri3.png";
 import tehriGallery4 from "@/assets/tehri4.png";
+import auliGallery1 from "@/assets/auli1.png";
+import auliGallery2 from "@/assets/auli2.png";
+import auliGallery3 from "@/assets/auli3.png";
+import auliGallery4 from "@/assets/auli4.png";
 
 export interface Package {
   id: number;
@@ -181,11 +185,12 @@ export const packages: Package[] = [
     id: 4,
     title: "Sky Trip to Auli",
     subtitle: "Auli and Joshimath (2 Nights 3 Days)",
-    image: heroHelicopterImage,
+    image: auliGallery1,
     duration: "3 Days",
     groupSize: "Customizable",
     locations: "Auli & Joshimath",
     price: "₹26,000",
+    gallery: [auliGallery1, auliGallery2, auliGallery3, auliGallery4],
     description: "Fly to the ski capital of India. A 3-day luxury escape to Auli and Joshimath with helicopter transfers.",
     highlights: ["Helicopter Ride", "Auli Skiing", "Joshimath Stay", "Snow Activities"],
     rating: 4.8,
