@@ -287,42 +287,46 @@ const PackageDetail = () => {
                             )}
                         </div>
 
-                        {/* Sidebar */}
                         <div className="lg:col-span-1">
-                            <div className="sticky top-24 rounded-2xl border border-border bg-card p-8 shadow-lg">
-                                <div className="mb-8 text-center">
-                                    <span className="text-muted-foreground text-sm uppercase tracking-wide">{selectedTier ? `Selected Tier: ${selectedTier}` : "Starting from"}</span>
-                                    <div className="text-4xl font-serif font-bold text-primary mt-2">
+                            <div className="sticky top-24 rounded-[2.5rem] border border-border/50 bg-card p-10 shadow-soft">
+                                <div className="mb-10 text-center">
+                                    <span className="text-muted-foreground text-[10px] uppercase tracking-[0.2em] font-bold">
+                                        {selectedTier ? `Selected Tier: ${selectedTier}` : "Starting from"}
+                                    </span>
+                                    <div className="text-5xl md:text-6xl font-serif font-bold text-primary mt-3">
                                         {selectedPrice}
                                     </div>
-                                    <p className="text-xs text-muted-foreground mt-2">Per person</p>
+                                    <p className="text-sm text-muted-foreground mt-2">Per person</p>
                                 </div>
 
-                                <div className="space-y-6 mb-8">
-                                    <div className="flex items-center justify-between py-3 border-b border-border/50">
-                                        <span className="text-muted-foreground flex items-center gap-2">
-                                            <Calendar className="w-4 h-4" /> Duration
-                                        </span>
-                                        <span className="font-semibold">{pkg.duration}</span>
+                                <div className="space-y-6 mb-10">
+                                    <div className="flex items-center justify-between py-4 border-b border-border/50">
+                                        <div className="flex items-center gap-3 text-muted-foreground">
+                                            <Calendar className="w-5 h-5" />
+                                            <span className="text-sm font-medium uppercase tracking-wider">Duration</span>
+                                        </div>
+                                        <span className="font-bold text-lg">{pkg.duration}</span>
                                     </div>
-                                    <div className="flex items-center justify-between py-3 border-b border-border/50">
-                                        <span className="text-muted-foreground flex items-center gap-2">
-                                            <Users className="w-4 h-4" /> Group Size
-                                        </span>
-                                        <span className="font-semibold">{pkg.groupSize}</span>
+                                    <div className="flex items-center justify-between py-4 border-b border-border/50">
+                                        <div className="flex items-center gap-3 text-muted-foreground">
+                                            <Users className="w-5 h-5" />
+                                            <span className="text-sm font-medium uppercase tracking-wider">Group Size</span>
+                                        </div>
+                                        <span className="font-bold text-lg">{pkg.groupSize}</span>
                                     </div>
-                                    <div className="flex items-center justify-between py-3 border-b border-border/50">
-                                        <span className="text-muted-foreground flex items-center gap-2">
-                                            <Star className="w-4 h-4" /> Rating
-                                        </span>
-                                        <span className="font-semibold">{pkg.rating}/5.0</span>
+                                    <div className="flex items-center justify-between py-4 border-b border-border/50">
+                                        <div className="flex items-center gap-3 text-muted-foreground">
+                                            <Star className="w-5 h-5" />
+                                            <span className="text-sm font-medium uppercase tracking-wider">Rating</span>
+                                        </div>
+                                        <span className="font-bold text-lg">{pkg.rating}/5.0</span>
                                     </div>
                                 </div>
 
-                                <Button className="w-full h-12 text-lg" size="lg">
+                                <Button className="w-full h-14 text-xl font-bold bg-primary hover:bg-primary/90 rounded-2xl shadow-lg transition-all" size="lg">
                                     Request Booking
                                 </Button>
-                                <p className="text-center text-xs text-muted-foreground mt-4">
+                                <p className="text-center text-[10px] uppercase tracking-wider text-muted-foreground mt-6 font-medium">
                                     *Prices vary based on season and availability
                                 </p>
                             </div>
