@@ -2,6 +2,7 @@ import chardhamImage from "@/assets/chardham.jpg";
 import kedarnathImage from "@/assets/kedarnath.jpg";
 import badrinathImage from "@/assets/badrinath.jpg";
 import heroHelicopterImage from "@/assets/hero-helicopter.jpg";
+import kachidhamImage from "@/assets/kachidham.png";
 import kainchiGallery1 from "@/assets/nanitalKachi.jpeg";
 import kainchiGallery2 from "@/assets/nanitalkachi2.jpeg";
 import kainchiGallery3 from "@/assets/nanitalkachi3.jpeg";
@@ -81,7 +82,7 @@ export const packages: Package[] = [
     id: 5,
     title: "Sky Trip to Kainchi Dham",
     subtitle: "Kainchi Dham And Lakes of Kumaon",
-    image: heroHelicopterImage,
+    image: kachidhamImage,
     duration: "3 Days",
     groupSize: "Customizable",
     locations: "Naukuchiatal, Nainital & Kainchi Dham",
