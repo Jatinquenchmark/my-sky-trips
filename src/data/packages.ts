@@ -38,7 +38,7 @@ export const packages: Package[] = [
     id: 6,
     title: "Tehri Lake Helicopter Adventure",
     subtitle: "Helicopter + Water Adventure (1N/2D)",
-    image: heroHelicopterImage,
+    image: tehriGallery3,
     duration: "2 Days",
     groupSize: "Customizable",
     locations: "Tehri Lake",
