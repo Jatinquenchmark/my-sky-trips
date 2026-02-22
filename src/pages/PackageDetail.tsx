@@ -41,65 +41,19 @@ const PackageDetail = () => {
             <main className="pt-20">
                 {/* Hero Section */}
                 <div className="relative h-[60vh] min-h-[500px] w-full overflow-hidden">
-                    {/* Hero Background / Collage */}
-                    {pkg.gallery && pkg.gallery.length >= 4 ? (
-                        <div className="absolute inset-0 grid grid-cols-4 grid-rows-2 gap-1 p-1 bg-black">
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ duration: 1 }}
-                                className="col-span-2 row-span-2 relative cursor-pointer group overflow-hidden"
-                                onClick={() => window.open(pkg.gallery![0], '_blank')}
-                            >
-                                <img src={pkg.gallery[0]} alt={pkg.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
-                            </motion.div>
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ duration: 1, delay: 0.1 }}
-                                className="col-span-2 row-span-1 relative cursor-pointer group overflow-hidden"
-                                onClick={() => window.open(pkg.gallery![1], '_blank')}
-                            >
-                                <img src={pkg.gallery[1]} alt={pkg.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
-                            </motion.div>
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ duration: 1, delay: 0.2 }}
-                                className="col-span-1 row-span-1 relative cursor-pointer group overflow-hidden"
-                                onClick={() => window.open(pkg.gallery![2], '_blank')}
-                            >
-                                <img src={pkg.gallery[2]} alt={pkg.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
-                            </motion.div>
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ duration: 1, delay: 0.3 }}
-                                className="col-span-1 row-span-1 relative cursor-pointer group overflow-hidden"
-                                onClick={() => window.open(pkg.gallery![3], '_blank')}
-                            >
-                                <img src={pkg.gallery[3]} alt={pkg.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
-                            </motion.div>
-                        </div>
-                    ) : (
-                        <motion.div
-                            initial={{ scale: 1.1 }}
-                            animate={{ scale: 1 }}
-                            transition={{ duration: 1.5 }}
-                            className="absolute inset-0"
-                        >
-                            <img
-                                src={pkg.image}
-                                alt={pkg.title}
-                                className="w-full h-full object-cover"
-                            />
-                            <div className="absolute inset-0 bg-black/40" />
-                        </motion.div>
-                    )}
+                    <motion.div
+                        initial={{ scale: 1.1 }}
+                        animate={{ scale: 1 }}
+                        transition={{ duration: 1.5 }}
+                        className="absolute inset-0"
+                    >
+                        <img
+                            src={pkg.image}
+                            alt={pkg.title}
+                            className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/40" />
+                    </motion.div>
 
                     {/* Back Button Overlay */}
                     <div className="absolute top-24 left-4 z-20 md:left-8">
@@ -113,13 +67,12 @@ const PackageDetail = () => {
                         </Button>
                     </div>
 
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <div className="container px-4 text-center text-white pointer-events-auto">
+                    <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="container px-4 text-center text-white">
                             <motion.div
                                 initial={{ opacity: 0, y: 30 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.2 }}
-                                className="bg-black/30 backdrop-blur-md p-8 rounded-3xl inline-block"
                             >
                                 <span className="inline-block px-3 py-1 bg-saffron/80 rounded-full text-sm font-medium mb-4 backdrop-blur-sm">
                                     {pkg.subtitle}
@@ -268,6 +221,48 @@ const PackageDetail = () => {
                                             </div>
                                         ))}
                                     </div>
+                                </section>
+                            )}
+
+                            {/* Image Gallery / Collage Section */}
+                            {pkg.gallery && pkg.gallery.length >= 4 && (
+                                <section>
+                                    <h2 className="text-3xl font-serif font-bold mb-8 text-foreground">Visual Journey</h2>
+                                    <div className="grid grid-cols-4 grid-rows-2 gap-3 h-[500px] rounded-3xl overflow-hidden shadow-2xl">
+                                        <motion.div
+                                            whileHover={{ scale: 1.02 }}
+                                            className="col-span-2 row-span-2 relative cursor-pointer group overflow-hidden"
+                                            onClick={() => window.open(pkg.gallery![0], '_blank')}
+                                        >
+                                            <img src={pkg.gallery[0]} alt="Gallery 1" className="w-full h-full object-cover" />
+                                            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors" />
+                                        </motion.div>
+                                        <motion.div
+                                            whileHover={{ scale: 1.02 }}
+                                            className="col-span-2 row-span-1 relative cursor-pointer group overflow-hidden"
+                                            onClick={() => window.open(pkg.gallery![1], '_blank')}
+                                        >
+                                            <img src={pkg.gallery[1]} alt="Gallery 2" className="w-full h-full object-cover" />
+                                            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors" />
+                                        </motion.div>
+                                        <motion.div
+                                            whileHover={{ scale: 1.02 }}
+                                            className="col-span-1 row-span-1 relative cursor-pointer group overflow-hidden"
+                                            onClick={() => window.open(pkg.gallery![2], '_blank')}
+                                        >
+                                            <img src={pkg.gallery[2]} alt="Gallery 3" className="w-full h-full object-cover" />
+                                            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors" />
+                                        </motion.div>
+                                        <motion.div
+                                            whileHover={{ scale: 1.02 }}
+                                            className="col-span-1 row-span-1 relative cursor-pointer group overflow-hidden"
+                                            onClick={() => window.open(pkg.gallery![3], '_blank')}
+                                        >
+                                            <img src={pkg.gallery[3]} alt="Gallery 4" className="w-full h-full object-cover" />
+                                            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors" />
+                                        </motion.div>
+                                    </div>
+                                    <p className="text-sm text-muted-foreground mt-4 text-center italic">Click on any image to view in full size</p>
                                 </section>
                             )}
 
