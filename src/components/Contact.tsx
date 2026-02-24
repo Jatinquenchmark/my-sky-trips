@@ -151,7 +151,7 @@ export const Contact = () => {
           className="mt-16 w-full h-[400px] rounded-3xl overflow-hidden shadow-strong border border-border"
         >
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3442.8256561576403!2d78.07727407556553!3d30.35588307476834!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3908d1f7c164ed25%3A0x6739618e7d23d476!2sATS%20Arcade!5e0!3m2!1sen!2sin!4v1740408552345!5m2!1sen!2sin"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3442.8256561576403!2d78.07727407556553!3d30.35588307476834!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3908d1f7c164ed25%3A0x1e36f86134b9d07!2sMy%20Sky%20Trips!5e0!3m2!1sen!2sin!4v1740409552123!5m2!1sen!2sin"
             className="w-full h-full border-0"
             allowFullScreen={true}
             loading="lazy"
