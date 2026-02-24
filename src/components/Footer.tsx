@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Heart } from "lucide-react";
-import logo from '@/assets/logo.png';
+import logo from '@/assets/logo-DFfutrEX.png';
 
 const footerLinks = {
   company: [
