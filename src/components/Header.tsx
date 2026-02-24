@@ -4,7 +4,7 @@ import { Menu, X, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { EnquiryDialog } from "@/components/EnquiryDialog";
-import logo from '@/assets/logo-DFfutrEX.png';
+import logo from '@/assets/logo.png';
 
 const navLinks = [
   { name: "Home", href: "#home" },

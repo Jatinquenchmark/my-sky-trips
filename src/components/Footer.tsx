@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Heart } from "lucide-react";
+import logo from '@/assets/logo.png';
 
 const footerLinks = {
   company: [
@@ -38,7 +39,7 @@ export const Footer = () => {
             >
               <div className="flex items-center mb-6">
                 <img
-                  src="/src/assets/logo-DFfutrEX.png"
+                  src={logo}
                   alt="My Sky Trips"
                   className="w-32 h-32 object-contain brightness-0 invert"
                 />
