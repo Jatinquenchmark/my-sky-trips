@@ -35,6 +35,7 @@ export interface Package {
   exclusions?: string[];
   additionalInfo?: { title: string; content: string[] }[];
   gallery?: string[];
+  pdfUrl?: string;
 }
 
 export const packages: Package[] = [
@@ -49,6 +50,7 @@ export const packages: Package[] = [
     price: "₹15,000",
     description: "Helicopter + Water Adventure. All in 48 hours! Reach Tehri in just 15 minutes with breathtaking aerial views.",
     gallery: [tehriGallery1, tehriGallery2, tehriGallery3, tehriGallery4],
+    pdfUrl: "/brochures/Tehri Lake Helicopter Adventure (1Night 2Days).pdf",
     highlights: ["Helicopter Ride", "Water Thrill", "Jet Ski Ride", "Fly Boarding"],
     rating: 4.9,
     featured: true,

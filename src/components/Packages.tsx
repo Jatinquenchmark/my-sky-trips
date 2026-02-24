@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Clock, Users, MapPin, Star, ArrowRight } from "lucide-react";
+import { Clock, Users, MapPin, Star, ArrowRight, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { packages } from "@/data/packages";
@@ -148,13 +148,34 @@ export const Packages = () => {
                     </div>
                   </div>
 
-                  <Button variant="premium" size="icon" className="w-12 h-12 rounded-2xl group/btn overflow-hidden relative shadow-strong-primary" onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(`/package/${pkg.id}`);
-                  }}>
-                    <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-10 transition-transform duration-500 absolute" />
-                    <ArrowRight className="w-5 h-5 -translate-x-10 group-hover/btn:translate-x-0 transition-transform duration-500" />
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    {pkg.pdfUrl && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="w-12 h-12 rounded-2xl bg-primary/5 hover:bg-primary/10 text-primary border border-primary/10 transition-colors duration-300"
+                        title="Download Brochure"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const link = document.createElement('a');
+                          link.href = pkg.pdfUrl!;
+                          link.download = `${pkg.title}.pdf`;
+                          document.body.appendChild(link);
+                          link.click();
+                          document.body.removeChild(link);
+                        }}
+                      >
+                        <FileText className="w-5 h-5" />
+                      </Button>
+                    )}
+                    <Button variant="premium" size="icon" className="w-12 h-12 rounded-2xl group/btn overflow-hidden relative shadow-strong-primary" onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/package/${pkg.id}`);
+                    }}>
+                      <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-10 transition-transform duration-500 absolute" />
+                      <ArrowRight className="w-5 h-5 -translate-x-10 group-hover/btn:translate-x-0 transition-transform duration-500" />
+                    </Button>
+                  </div>
                 </div>
               </div>
             </motion.div>
