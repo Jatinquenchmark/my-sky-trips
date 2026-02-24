@@ -204,11 +204,11 @@ const PackageDetail = () => {
                             </section>
 
                             {/* Itinerary */}
-                            {pkg.itinerary && (
+                            {(pkg.itinerary || (selectedTier && pkg.tiers?.find(t => t.name === selectedTier)?.itinerary)) && (
                                 <section>
                                     <h2 className="text-3xl font-serif font-bold mb-8 text-foreground">Itinerary</h2>
                                     <div className="space-y-8">
-                                        {pkg.itinerary.map((item, index) => (
+                                        {(selectedTier && pkg.tiers?.find(t => t.name === selectedTier)?.itinerary || pkg.itinerary)!.map((item, index) => (
                                             <div key={index} className="relative pl-8 border-l-2 border-saffron/20 pb-8 last:pb-0 last:border-l-0">
                                                 <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-saffron ring-4 ring-background" />
                                                 <div className="mb-2 flex items-center gap-3">
@@ -268,14 +268,14 @@ const PackageDetail = () => {
 
                             {/* Inclusions & Exclusions */}
                             <div className="grid md:grid-cols-2 gap-8">
-                                {pkg.inclusions && (
+                                {(pkg.inclusions || (selectedTier && pkg.tiers?.find(t => t.name === selectedTier)?.inclusions)) && (
                                     <div className="bg-primary/5 p-8 rounded-2xl border border-primary/10">
                                         <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-primary">
                                             <CheckCircle2 className="w-6 h-6" />
                                             Inclusions
                                         </h3>
                                         <ul className="space-y-3">
-                                            {pkg.inclusions.map((inc, i) => (
+                                            {(selectedTier && pkg.tiers?.find(t => t.name === selectedTier)?.inclusions || pkg.inclusions)!.map((inc, i) => (
                                                 <li key={i} className="flex items-start gap-3">
                                                     <span className="mt-2 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
                                                     <span className="text-sm text-foreground/80">{inc}</span>
@@ -285,14 +285,14 @@ const PackageDetail = () => {
                                     </div>
                                 )}
 
-                                {pkg.exclusions && (
+                                {(pkg.exclusions || (selectedTier && pkg.tiers?.find(t => t.name === selectedTier)?.exclusions)) && (
                                     <div className="bg-destructive/5 p-8 rounded-2xl border border-destructive/10">
                                         <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-destructive">
                                             <XCircle className="w-6 h-6" />
                                             Exclusions
                                         </h3>
                                         <ul className="space-y-3">
-                                            {pkg.exclusions.map((exc, i) => (
+                                            {(selectedTier && pkg.tiers?.find(t => t.name === selectedTier)?.exclusions || pkg.exclusions)!.map((exc, i) => (
                                                 <li key={i} className="flex items-start gap-3">
                                                     <span className="mt-2 w-1.5 h-1.5 rounded-full bg-destructive shrink-0" />
                                                     <span className="text-sm text-foreground/80">{exc}</span>

@@ -36,6 +36,12 @@ export interface Package {
   additionalInfo?: { title: string; content: string[] }[];
   gallery?: string[];
   pdfUrl?: string;
+  tiers?: {
+    name: string;
+    itinerary?: { day: number; title: string; description: string }[];
+    inclusions?: string[];
+    exclusions?: string[];
+  }[];
 }
 
 export const packages: Package[] = [
@@ -133,6 +139,68 @@ export const packages: Package[] = [
       "Lunch, Dinner and Day 1 breakfast",
       "Travel from your city to Dehradun",
       "Anything not mentioned in inclusions"
+    ],
+    tiers: [
+      {
+        name: "Standard",
+        inclusions: [
+          "Round-trip helicopter ride (Dehradun ⇔ Naukuchiatal)",
+          "1-night stay at a heritage lakeside property",
+          "One breakfast",
+          "High tea by the lake (one evening)",
+          "Private cab for local sightseeing (1 day)"
+        ],
+        exclusions: [
+          "Lunch, Dinner and Day 1 breakfast",
+          "Travel from your city to Dehradun",
+          "Anything not mentioned in inclusions"
+        ],
+        itinerary: [
+          {
+            day: 1,
+            title: "Dehradun → Naukuchiatal & Kainchi Dham",
+            description: "Arrive at Jolly Grant Airport, Dehradun by 7:15 AM. Fly to Naukuchiatal by helicopter (approx. 40 min). Check in at a heritage lakeside property. Later, visit the holy Kainchi Dham Temple. Evening at leisure by the lake with high tea. Night at the property."
+          },
+          {
+            day: 2,
+            title: "Relaxed Morning + Return",
+            description: "Breakfast at the property. Morning lakeside walk. Afternoon helicopter flight back to Dehradun (Jolly Grant Airport)."
+          }
+        ]
+      },
+      {
+        name: "Luxury",
+        inclusions: [
+          "Round-trip helicopter ride (Dehradun ⇔ Naukuchiatal)",
+          "2-night stay at premium lakeside suites",
+          "Breakfast on both days",
+          "Lakeside high tea",
+          "Dedicated private cab for 2 days",
+          "Priority darshan assistance"
+        ],
+        exclusions: [
+          "Lunch, Dinner and Day 1 breakfast",
+          "Travel from your city to Dehradun",
+          "Anything not mentioned in inclusions"
+        ],
+        itinerary: [
+          {
+            day: 1,
+            title: "Dehradun → Naukuchiatal & Kainchi Dham",
+            description: "Arrive at Jolly Grant Airport, Dehradun by 7:15 AM. Fly to Naukuchiatal by helicopter (approx. 40 min). Check in at a heritage lakeside property surrounded by mountains and enjoy a refreshing welcome drink. Later, visit the holy Kainchi Dham Temple. You may also opt for a light trek to a nearby viewpoint. Spend the evening at Bhimtal or Sattal, followed by high tea by the lakeside. Night at the property with bonfire & dinner."
+          },
+          {
+            day: 2,
+            title: "Exploring Nainital & Surrounding Lakes",
+            description: "After breakfast at the property, head out for a day trip to Nainital. Enjoy boating at Naini Lake, mall road café hopping, and local shopping. Continue exploring hidden gems like Sattal and Bhimtal. Spend a chill evening back at the property with music, conversations, and lakeside vibes. Perfect for group bonding and picture-perfect spots."
+          },
+          {
+            day: 3,
+            title: "Relaxed Morning + Helicopter Return",
+            description: "Start your day with a peaceful morning walk or nature hike. After breakfast at the property, enjoy your last few hours soaking in the mountain air. Afternoon helicopter flight back to Dehradun (Jolly Grant Airport). Optional: Visit the Colonel's cafe just 5 minutes walking distance from the helipad before your farewell."
+          }
+        ]
+      }
     ],
     additionalInfo: [
       {
