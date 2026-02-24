@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Clock, Users, MapPin, Star, ArrowRight, FileText } from "lucide-react";
+import { Clock, Users, MapPin, Star, ArrowRight, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { packages } from "@/data/packages";
@@ -165,7 +165,7 @@ export const Packages = () => {
                           document.body.removeChild(link);
                         }}
                       >
-                        <FileText className="w-5 h-5" />
+                        <Download className="w-5 h-5" />
                       </Button>
                     )}
                     <Button variant="premium" size="icon" className="w-12 h-12 rounded-2xl group/btn overflow-hidden relative shadow-strong-primary" onClick={(e) => {
