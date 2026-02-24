@@ -190,10 +190,10 @@ const PackageDetail = () => {
                                                 </div>
 
                                                 <div className="space-y-4">
-                                                    {features.split(",").map((feat, fIdx) => (
+                                                    {features.split(/,(?![0-9])|;/).map(f => f.trim()).filter(Boolean).map((feat, fIdx) => (
                                                         <div key={fIdx} className="flex items-center gap-3 text-sm text-foreground/80 font-medium">
                                                             <div className={`w-1.5 h-1.5 rounded-full ${isSelected ? "bg-primary" : "bg-primary/30"}`} />
-                                                            {feat.trim()}
+                                                            {feat}
                                                         </div>
                                                     ))}
                                                 </div>
