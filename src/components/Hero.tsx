@@ -96,9 +96,6 @@ export const Hero = () => {
           transition={{ duration: 0.8, delay: 1 }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
-          <Button variant="saffron" size="xl" onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>
-            Start Your Journey
-          </Button>
           <Button variant="heroOutline" size="xl" onClick={() => document.getElementById('packages')?.scrollIntoView({ behavior: 'smooth' })}>
             View Packages
           </Button>
