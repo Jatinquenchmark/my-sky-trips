@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Heart } from "lucide-react";
+import { Heart, Facebook, Instagram, Youtube } from "lucide-react";
 import logo from '@/assets/logo-DFfutrEX.png';
 
 const footerLinks = {
@@ -48,6 +48,36 @@ export const Footer = () => {
                 My Sky Trips is your premier partner for helicopter journeys and curated travel experiences.
                 From sacred pilgrimages to luxury escapes, we make every journey seamless and extraordinary.
               </p>
+              
+              <div className="flex items-center gap-4 mt-8">
+                <a
+                  href="https://www.facebook.com/profile.php?id=61573197836599"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-saffron transition-colors group"
+                  title="Facebook"
+                >
+                  <Facebook className="w-5 h-5 text-primary-foreground group-hover:text-mountain-dark transition-colors" />
+                </a>
+                <a
+                  href="https://www.instagram.com/myskytrips"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-saffron transition-colors group"
+                  title="Instagram"
+                >
+                  <Instagram className="w-5 h-5 text-primary-foreground group-hover:text-mountain-dark transition-colors" />
+                </a>
+                <a
+                  href="https://www.youtube.com/@myskytrips"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-saffron transition-colors group"
+                  title="YouTube"
+                >
+                  <Youtube className="w-5 h-5 text-primary-foreground group-hover:text-mountain-dark transition-colors" />
+                </a>
+              </div>
             </motion.div>
           </div>
 

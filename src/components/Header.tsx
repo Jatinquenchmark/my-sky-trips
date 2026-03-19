@@ -76,7 +76,7 @@ export const Header = () => {
           <img
             src={logo}
             alt="My Sky Trips"
-            className={`w-16 h-16 lg:w-24 lg:h-24 object-contain transition-all duration-300 ${isScrolled || !isHome ? "brightness-0" : ""
+            className={`w-36 h-auto lg:w-56 lg:h-auto object-contain transition-all duration-300 ${isScrolled || !isHome ? "brightness-0" : ""
               }`}
           />
         </Link>
