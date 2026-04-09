@@ -3,7 +3,7 @@ import { packages } from "@/data/packages";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Clock, Users, MapPin, CheckCircle2, XCircle, ArrowLeft, Calendar, Star } from "lucide-react";
+import { Clock, Users, MapPin, CheckCircle2, XCircle, ArrowLeft, Calendar, Star, Download } from "lucide-react";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
@@ -365,9 +365,27 @@ const PackageDetail = () => {
                                     </div>
                                 </div>
 
-                                <Button className="w-full h-14 text-xl font-bold bg-primary hover:bg-primary/90 rounded-2xl shadow-lg transition-all" size="lg">
-                                    Request Booking
-                                </Button>
+                                {pkg.pdfUrl ? (
+                                    <Button 
+                                        className="w-full h-14 text-xl font-bold bg-primary hover:bg-primary/90 rounded-2xl shadow-lg transition-all gap-2" 
+                                        size="lg"
+                                        onClick={() => {
+                                            const link = document.createElement('a');
+                                            link.href = pkg.pdfUrl!;
+                                            link.download = `${pkg.title}.pdf`;
+                                            document.body.appendChild(link);
+                                            link.click();
+                                            document.body.removeChild(link);
+                                        }}
+                                    >
+                                        <Download className="w-5 h-5" />
+                                        Download Brochure
+                                    </Button>
+                                ) : (
+                                    <Button className="w-full h-14 text-xl font-bold bg-primary hover:bg-primary/90 rounded-2xl shadow-lg transition-all" size="lg">
+                                        Request Booking
+                                    </Button>
+                                )}
                                 <p className="text-center text-[10px] uppercase tracking-wider text-muted-foreground mt-6 font-medium">
                                     *Prices vary based on season and availability
                                 </p>
@@ -389,12 +407,28 @@ const PackageDetail = () => {
                             <span className="text-[10px] text-muted-foreground font-medium">/pax</span>
                         </div>
                     </div>
-                    <Button
-                        className="flex-1 max-w-[200px] h-12 text-base font-bold bg-primary hover:bg-primary/90 rounded-xl shadow-lg transition-all"
-                        onClick={() => {/* Booking logic */ }}
-                    >
-                        Request Booking
-                    </Button>
+                    {pkg.pdfUrl ? (
+                        <Button
+                            className="flex-1 max-w-[200px] h-12 text-base font-bold bg-primary hover:bg-primary/90 rounded-xl shadow-lg transition-all gap-2"
+                            onClick={() => {
+                                const link = document.createElement('a');
+                                link.href = pkg.pdfUrl!;
+                                link.download = `${pkg.title}.pdf`;
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                            }}
+                        >
+                            <Download className="w-4 h-4" />
+                            Brochure
+                        </Button>
+                    ) : (
+                        <Button
+                            className="flex-1 max-w-[200px] h-12 text-base font-bold bg-primary hover:bg-primary/90 rounded-xl shadow-lg transition-all"
+                        >
+                            Request Booking
+                        </Button>
+                    )}
                 </div>
             </div>
 
