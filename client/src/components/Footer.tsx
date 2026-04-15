@@ -27,7 +27,7 @@ export const Footer = () => {
   return (
     <footer className="bg-mountain-dark text-primary-foreground">
       {/* Main Footer */}
-      <div className="container mx-auto px-4 py-16">
+      <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12">
           {/* Brand */}
           <div className="lg:col-span-2">
@@ -134,7 +134,7 @@ export const Footer = () => {
 
       {/* Bottom Bar */}
       <div className="border-t border-primary-foreground/10">
-        <div className="container mx-auto px-4 py-6">
+        <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-primary-foreground/60 text-sm">
               © 2024 My Sky Trips. All rights reserved.

@@ -1,0 +1,42 @@
+export const packages = [
+  {
+    id: 6,
+    title: "Tehri Lake Helicopter Adventure",
+    image: "https://images.unsplash.com/photo-1544735030-449e79391071?auto=format&fit=crop&q=80&w=800",
+    duration: "2 Days",
+    locations: "Tehri Lake",
+    price: "₹17,000",
+    rating: 4.9,
+    featured: true,
+  },
+  {
+    id: 5,
+    title: "Nainital/Kainchi Dham Trip",
+    image: "https://images.unsplash.com/photo-1598091383021-15ddea10925d?auto=format&fit=crop&q=80&w=800",
+    duration: "2 Days",
+    locations: "Kainchi Dham",
+    price: "₹20,000",
+    rating: 4.9,
+    featured: false,
+  },
+  {
+    id: 4,
+    title: "Sky Trip to Auli",
+    image: "https://images.unsplash.com/photo-1548678967-f1ac5821074c?auto=format&fit=crop&q=80&w=800",
+    duration: "3 Days",
+    locations: "Auli & Joshimath",
+    price: "₹28,000",
+    rating: 4.8,
+    featured: true,
+  },
+  {
+    id: 1,
+    title: "Chardham Yatra",
+    image: "https://images.unsplash.com/photo-1624535311267-3316819eb760?auto=format&fit=crop&q=80&w=800",
+    duration: "6 Days",
+    locations: "4 Sacred Dhams",
+    price: "₹2,30,000",
+    rating: 5.0,
+    featured: true,
+  }
+];

@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #2563eb;
+  --color-primary-foreground: #ffffff;
+  --color-background: #f8fafc;
+  --color-surface: #ffffff;
+  --color-border: #e2e8f0;
+  --color-text-primary: #1e293b;
+  --color-text-secondary: #64748b;
+
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+
+  --shadow-premium: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-premium-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+
+  --font-sans: "Inter", "system-ui", "sans-serif";
+}
+
+@layer base {
+  body {
+    @apply bg-background text-text-primary antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "flat";
+  }
+}
+
+@layer components {
+  .stat-card {
+    @apply bg-surface p-6 rounded-2xl border border-border shadow-premium transition-all duration-200 hover:shadow-premium-hover;
+  }
+  
+  .sidebar-link {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-text-secondary font-medium hover:bg-primary/5 hover:text-primary;
+  }
+  
+  .sidebar-link.active {
+    @apply bg-primary/10 text-primary font-semibold border-r-4 border-primary rounded-r-none;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all;
+  }
+
+  .primary-btn {
+    @apply px-6 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2;
+  }
+}

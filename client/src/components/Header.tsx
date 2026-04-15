@@ -67,16 +67,16 @@ export const Header = () => {
         : "bg-transparent py-3"
         }`}
     >
-      <div className="container mx-auto px-4 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between w-full">
         {/* Logo */}
         <Link
           to="/"
-          className="flex items-center"
+          className="flex items-center shrink-0"
         >
           <img
             src={logo}
             alt="My Sky Trips"
-            className={`w-36 h-auto lg:w-56 lg:h-auto object-contain transition-all duration-300 ${isScrolled || !isHome ? "brightness-0" : ""
+            className={`w-36 h-auto lg:w-48 lg:h-auto object-contain transition-all duration-300 ${isScrolled || !isHome ? "brightness-0" : ""
               }`}
           />
         </Link>
@@ -88,7 +88,7 @@ export const Header = () => {
               key={link.name}
               to={isHome ? link.href : `/${link.href}`}
               onClick={(e) => handleNavClick(e, link.href)}
-              className={`font-sans text-sm font-medium transition-colors hover:text-primary ${(isScrolled || !isHome) ? "text-foreground" : "text-primary-foreground"
+              className={`font-sans text-sm font-bold transition-colors hover:text-primary ${(isScrolled || !isHome) ? "text-foreground" : "text-primary-foreground"
                 }`}
             >
               {link.name}
@@ -97,8 +97,8 @@ export const Header = () => {
         </nav>
 
         {/* CTA Button */}
-        <div className="hidden lg:flex items-center gap-4">
-          <a href="tel:+916395678642" className={`flex items-center gap-2 text-sm font-medium ${(isScrolled || !isHome) ? 'text-foreground' : 'text-primary-foreground'}`}>
+        <div className="hidden lg:flex items-center gap-6 shrink-0">
+          <a href="tel:+916395678642" className={`flex items-center gap-2 text-sm font-bold ${(isScrolled || !isHome) ? 'text-foreground' : 'text-primary-foreground'}`}>
             <Phone className="w-4 h-4" />
             +91 6395678642
           </a>
@@ -131,13 +131,13 @@ export const Header = () => {
             exit={{ opacity: 0, height: 0 }}
             className="lg:hidden bg-card shadow-strong"
           >
-            <nav className="container mx-auto px-4 py-6 flex flex-col gap-4">
+            <nav className="max-w-7xl mx-auto px-6 py-8 flex flex-col gap-4">
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
                   to={isHome ? link.href : `/${link.href}`}
                   onClick={(e) => handleNavClick(e, link.href)}
-                  className="font-sans text-foreground hover:text-primary py-2 border-b border-border"
+                  className="font-sans text-foreground hover:text-primary py-2 border-b border-border font-bold"
                 >
                   {link.name}
                 </Link>

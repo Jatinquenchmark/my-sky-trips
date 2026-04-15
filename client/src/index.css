@@ -1,142 +1,151 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@theme {
+  /* Sky Blue Theme - Spiritual Adventure */
+  --color-background: hsl(210 50% 98%);
+  --color-foreground: hsl(220 25% 12%);
 
-@layer base {
-  :root {
-    /* Sky Blue Theme - Spiritual Adventure */
-    --background: 210 50% 98%;
-    --foreground: 220 25% 12%;
+  --color-card: hsl(0 0% 100%);
+  --color-card-foreground: hsl(220 25% 12%);
 
-    --card: 0 0% 100%;
-    --card-foreground: 220 25% 12%;
+  --color-popover: hsl(0 0% 100%);
+  --color-popover-foreground: hsl(220 25% 12%);
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 25% 12%;
+  /* Deep Sky Blue - Primary */
+  --color-primary: hsl(210 80% 35%);
+  --color-primary-foreground: hsl(0 0% 100%);
 
-    /* Deep Sky Blue - Primary */
-    --primary: 210 80% 35%;
-    --primary-foreground: 0 0% 100%;
+  /* Sky Blue - Secondary/Accent */
+  --color-secondary: hsl(200 90% 55%);
+  --color-secondary-foreground: hsl(220 50% 10%);
 
-    /* Sky Blue - Secondary/Accent */
-    --secondary: 200 90% 55%;
-    --secondary-foreground: 220 50% 10%;
+  --color-muted: hsl(210 30% 95%);
+  --color-muted-foreground: hsl(220 15% 45%);
 
-    --muted: 210 30% 95%;
-    --muted-foreground: 220 15% 45%;
+  /* Sky Accent */
+  --color-accent: hsl(200 95% 50%);
+  --color-accent-foreground: hsl(220 60% 10%);
 
-    /* Sky Accent */
-    --accent: 200 95% 50%;
-    --accent-foreground: 220 60% 10%;
+  --color-destructive: hsl(0 84.2% 60.2%);
+  --color-destructive-foreground: hsl(210 40% 98%);
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+  --color-border: hsl(210 25% 88%);
+  --color-input: hsl(210 25% 88%);
+  --color-ring: hsl(210 80% 35%);
 
-    --border: 210 25% 88%;
-    --input: 210 25% 88%;
-    --ring: 210 80% 35%;
+  --radius-lg: 0.75rem;
 
-    --radius: 0.75rem;
+  /* Admin Specific Theme Variables */
+  --color-surface: #ffffff;
+  --color-text-primary: #1e293b;
+  --color-text-secondary: #64748b;
+  
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
 
-    /* Custom Colors */
-    --sky-deep: 210 80% 25%;
-    --sky-light: 200 85% 60%;
-    --saffron: 210 90% 45%;
-    --saffron-light: 200 95% 65%;
-    --gold: 220 90% 50%;
-    --mountain-dark: 220 25% 18%;
-    --mountain-gray: 220 15% 35%;
-    --cream: 40 40% 96%;
-    --snow: 210 50% 99%;
+  /* Custom Colors from Client */
+  --color-sky-deep: hsl(210 80% 25%);
+  --color-sky-light: hsl(200 85% 60%);
+  --color-saffron: hsl(210 90% 45%);
+  --color-saffron-light: hsl(200 95% 65%);
+  --color-gold: hsl(220 90% 50%);
+  --color-mountain-dark: hsl(220 25% 18%);
+  --color-mountain-gray: hsl(220 15% 35%);
+  --color-cream: #f5f5f5;
+  --color-snow: #fafdff;
 
-    /* Gradients */
-    --gradient-sky: linear-gradient(135deg, hsl(210 80% 35%) 0%, hsl(200 85% 50%) 100%);
-    --gradient-sunset: linear-gradient(135deg, hsl(210 95% 50%) 0%, hsl(190 90% 55%) 100%);
-    --gradient-spiritual: linear-gradient(180deg, hsl(210 50% 98%) 0%, hsl(200 40% 96%) 100%);
-    --gradient-hero-overlay: linear-gradient(180deg, hsla(220 25% 12% / 0.4) 0%, hsla(220 25% 12% / 0.7) 100%);
+  --font-serif: "Playfair Display", "Georgia", "serif";
+  --font-sans: "Inter", "system-ui", "sans-serif";
 
-    /* Shadows */
-    --shadow-soft: 0 4px 20px -4px hsla(220 25% 12% / 0.1);
-    --shadow-medium: 0 8px 30px -6px hsla(220 25% 12% / 0.15);
-    --shadow-strong: 0 20px 50px -12px hsla(220 25% 12% / 0.25);
-    --shadow-gold: 0 8px 30px -6px hsla(210 95% 50% / 0.3);
+  /* Shadows */
+  --shadow-soft: 0 4px 20px -4px rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 8px 30px -6px rgba(0, 0, 0, 0.15);
+  --shadow-strong: 0 20px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadow-premium: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-premium-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+  --shadow-gold: 0 8px 30px -6px rgba(210, 150, 50, 0.3);
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+  /* Custom Gradients */
+  --gradient-sky: linear-gradient(135deg, hsl(210, 80%, 35%) 0%, hsl(200, 85%, 50%) 100%);
+  --gradient-sunset: linear-gradient(135deg, hsl(210, 95%, 50%) 0%, hsl(190, 90%, 55%) 100%);
+  --gradient-spiritual: linear-gradient(180deg, hsl(210, 50%, 98%) 0%, hsl(200, 40%, 96%) 100%);
+  --gradient-hero-overlay: linear-gradient(180deg, rgba(30, 41, 59, 0.4) 0%, rgba(30, 41, 59, 0.7) 100%);
+
+  /* Animations from tailwind.config.ts */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  --animate-fade-in: fade-in 0.6s ease-out forwards;
+  --animate-fade-in-up: fade-in-up 0.8s ease-out forwards;
+  --animate-scale-in: scale-in 0.5s ease-out forwards;
+  --animate-slide-in-right: slide-in-right 0.6s ease-out forwards;
+  --animate-float: float 6s ease-in-out infinite;
+
+  @keyframes accordion-down {
+    from { height: 0; }
+    to { height: var(--radix-accordion-content-height); }
   }
-
-  .dark {
-    --background: 220 25% 8%;
-    --foreground: 210 40% 98%;
-
-    --card: 220 25% 12%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 220 25% 12%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 200 85% 55%;
-    --primary-foreground: 220 25% 8%;
-
-    --secondary: 200 90% 55%;
-    --secondary-foreground: 220 50% 10%;
-
-    --muted: 220 20% 18%;
-    --muted-foreground: 215 20% 65%;
-
-    --accent: 200 95% 50%;
-    --accent-foreground: 220 60% 8%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 220 20% 20%;
-    --input: 220 20% 20%;
-    --ring: 200 85% 55%;
-
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+  @keyframes accordion-up {
+    from { height: var(--radix-accordion-content-height); }
+    to { height: 0; }
+  }
+  @keyframes fade-in {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fade-in-up {
+    0% { opacity: 0; transform: translateY(40px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes scale-in {
+    0% { opacity: 0; transform: scale(0.95); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes slide-in-right {
+    0% { opacity: 0; transform: translateX(20px); }
+    100% { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
   }
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-
   html {
     scroll-behavior: smooth;
   }
-
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "flat";
   }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
+  h1, h2, h3, h4, h5, h6 {
     @apply font-serif;
   }
 }
 
-@layer utilities {
+@layer components {
+  /* Admin Components */
+  .stat-card {
+    @apply bg-surface p-6 rounded-2xl border border-border shadow-premium transition-all duration-200 hover:shadow-premium-hover;
+  }
+  
+  .sidebar-link {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-text-secondary font-medium hover:bg-primary/5 hover:text-primary cursor-pointer;
+  }
+  
+  .sidebar-link.active {
+    @apply bg-primary/10 text-primary font-semibold border-r-4 border-primary rounded-r-none;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all;
+  }
+
+  .primary-btn {
+    @apply px-6 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 cursor-pointer;
+  }
+
+  /* Client Utilities */
   .text-gradient-sky {
     background: var(--gradient-sky);
     -webkit-background-clip: text;
@@ -151,71 +160,7 @@
     background-clip: text;
   }
 
-  .bg-gradient-sky {
-    background: var(--gradient-sky);
-  }
-
-  .bg-gradient-sunset {
-    background: var(--gradient-sunset);
-  }
-
-  .bg-gradient-spiritual {
-    background: var(--gradient-spiritual);
-  }
-
-  .bg-gradient-hero-overlay {
-    background: var(--gradient-hero-overlay);
-  }
-
-  .shadow-soft {
-    box-shadow: var(--shadow-soft);
-  }
-
-  .shadow-medium {
-    box-shadow: var(--shadow-medium);
-  }
-
-  .shadow-strong {
-    box-shadow: var(--shadow-strong);
-  }
-
-  .shadow-gold {
-    box-shadow: var(--shadow-gold);
-  }
-
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
-  }
-
-  .animate-float-slow {
-    animation: float 8s ease-in-out infinite;
-  }
-
-  @keyframes float {
-
-    0%,
-    100% {
-      transform: translateY(0px);
-    }
-
-    50% {
-      transform: translateY(-10px);
-    }
-  }
-
-  .animate-pulse-glow {
-    animation: pulse-glow 3s ease-in-out infinite;
-  }
-
-  @keyframes pulse-glow {
-
-    0%,
-    100% {
-      box-shadow: 0 0 20px hsla(200 95% 50% / 0.3);
-    }
-
-    50% {
-      box-shadow: 0 0 40px hsla(200 95% 50% / 0.5);
-    }
-  }
+  .bg-gradient-sky { background: var(--gradient-sky); }
+  .bg-gradient-sunset { background: var(--gradient-sunset); }
+  .bg-gradient-hero-overlay { background: var(--gradient-hero-overlay); }
 }

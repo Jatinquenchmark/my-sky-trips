@@ -13,7 +13,7 @@ const Index = () => {
       <Header />
       <main>
         <Hero />
-        <Packages />
+        <Packages limit={9} />
         <About />
         <Reviews />
         <FAQ />

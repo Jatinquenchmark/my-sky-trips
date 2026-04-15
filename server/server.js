@@ -6,6 +6,8 @@ import connectDB from './config/db.js';
 
 // Load env vars
 dotenv.config();
+// Server updated with Cloudinary credentials
+
 
 // Connect to database
 connectDB();
@@ -24,9 +26,19 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // API Routes
+import authRoutes from './routes/authRoutes.js';
+import packageRoutes from './routes/packageRoutes.js';
+import paymentRoutes from './routes/paymentRoutes.js';
+
+app.use('/api/auth', authRoutes);
+app.use('/api/packages', packageRoutes);
+app.use('/api/payment', paymentRoutes);
+
+
 app.get('/', (req, res) => {
     res.json({ message: 'Welcome to Sky-trip API' });
 });
+
 
 const PORT = process.env.PORT || 5000;
 

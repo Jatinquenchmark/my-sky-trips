@@ -37,16 +37,17 @@ const offerings = [
 export const About = () => {
   return (
     <section id="about" className="py-24 bg-card overflow-hidden">
-      <div className="container mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-16 items-center mb-24">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <div className="flex flex-col lg:flex-row gap-16 items-center mb-24">
           {/* Left Content */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
+            className="w-full lg:w-1/2"
           >
-            <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
+            <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-bold mb-4">
               About Us — My Sky Trips
             </span>
             <h2 className="text-3xl md:text-5xl font-serif font-bold text-foreground mb-6 leading-tight">
@@ -60,7 +61,7 @@ export const About = () => {
               Founded with the vision of making aerial travel more accessible, seamless, and memorable, we bridge the gap between luxury aviation services and personalized travel planning. From sacred pilgrimages like Char Dham to leisure joyrides—we design journeys that go far beyond transportation.
             </p>
 
-            <div className="grid sm:grid-cols-2 gap-4 mb-8">
+            <div className="flex flex-wrap gap-x-8 gap-y-3 mb-8">
               {offerings.map((offering, index) => (
                 <motion.div
                   key={offering}
@@ -71,7 +72,7 @@ export const About = () => {
                   className="flex items-center gap-2"
                 >
                   <div className="w-1.5 h-1.5 rounded-full bg-saffron" />
-                  <span className="text-foreground font-medium">{offering}</span>
+                  <span className="text-foreground font-bold text-sm tracking-tight">{offering}</span>
                 </motion.div>
               ))}
             </div>
@@ -83,7 +84,7 @@ export const About = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="grid sm:grid-cols-2 gap-6"
+            className="w-full lg:w-1/2 flex flex-wrap gap-6"
           >
             {features.map((feature, index) => (
               <motion.div
@@ -92,7 +93,7 @@ export const About = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.1 * index }}
-                className="group p-6 rounded-2xl bg-background border border-border hover:border-primary/30 hover:shadow-medium transition-all duration-300"
+                className="group p-6 rounded-2xl bg-background border border-border hover:border-primary/30 hover:shadow-medium transition-all duration-300 w-full sm:w-[calc(50%-12px)]"
               >
                 <div className="w-12 h-12 rounded-xl bg-gradient-sky flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
                   <feature.icon className="w-6 h-6 text-primary-foreground" />
@@ -109,12 +110,12 @@ export const About = () => {
         </div>
 
         {/* Mission & Vision */}
-        <div className="grid md:grid-cols-2 gap-8 mb-24">
+        <div className="flex flex-col md:flex-row gap-8 mb-24">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="p-8 rounded-3xl bg-primary/5 border border-primary/10 relative overflow-hidden"
+            className="flex-1 p-8 rounded-3xl bg-primary/5 border border-primary/10 relative overflow-hidden"
           >
             <Target className="absolute -right-4 -bottom-4 w-32 h-32 text-primary/5" />
             <h3 className="text-2xl font-serif font-bold text-primary mb-4 flex items-center gap-2">
@@ -129,10 +130,10 @@ export const About = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="p-8 rounded-3xl bg-saffron/5 border border-saffron/10 relative overflow-hidden"
+            className="flex-1 p-8 rounded-3xl bg-secondary/5 border border-secondary/10 relative overflow-hidden"
           >
-            <Eye className="absolute -right-4 -bottom-4 w-32 h-32 text-saffron/5" />
-            <h3 className="text-2xl font-serif font-bold text-saffron mb-4 flex items-center gap-2">
+            <Eye className="absolute -right-4 -bottom-4 w-32 h-32 text-secondary/5" />
+            <h3 className="text-2xl font-serif font-bold text-secondary mb-4 flex items-center gap-2">
               <Eye className="w-6 h-6" /> Our Vision
             </h3>
             <p className="text-muted-foreground leading-relaxed">
@@ -157,7 +158,7 @@ export const About = () => {
             <div className="flex flex-col items-center">
               <div className="w-16 h-1 bg-primary rounded-full mb-4" />
               <p className="font-serif font-bold text-xl text-foreground">Surya Pratap</p>
-              <p className="text-primary font-medium">Founder, My Sky Trips</p>
+              <p className="text-primary font-bold">Founder, My Sky Trips</p>
             </div>
           </div>
         </motion.div>

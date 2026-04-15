@@ -43,8 +43,8 @@ const faqs = [
 
 export const FAQ = () => {
   return (
-    <section id="faq" className="py-24 bg-card">
-      <div className="container mx-auto px-4 max-w-4xl">
+    <section id="faq" className="py-24 bg-surface">
+      <div className="max-w-4xl mx-auto px-6">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

@@ -8,8 +8,8 @@ import { useState } from "react";
 export const Contact = () => {
 
   return (
-    <section id="contact" className="py-24 bg-gradient-spiritual">
-      <div className="container mx-auto px-4">
+    <section id="contact" className="py-24 bg-background">
+      <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

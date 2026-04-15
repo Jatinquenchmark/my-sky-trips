@@ -1,29 +1,50 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { packages } from "@/data/packages";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Clock, Users, MapPin, CheckCircle2, XCircle, ArrowLeft, Calendar, Star, Download } from "lucide-react";
-import { motion } from "framer-motion";
+import { Clock, Users, MapPin, CheckCircle2, XCircle, ArrowLeft, Calendar, Star, Download, Loader2, Play, ChevronRight, Info } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
+import { fetchPackageById, Package } from "@/lib/api";
+import PaymentButton from "@/components/PaymentButton";
 
 const PackageDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const pkg = packages.find((p) => p.id === Number(id));
-    const [selectedPrice, setSelectedPrice] = useState(pkg?.price || "");
-    const [selectedTier, setSelectedTier] = useState<string | null>(null);
+    const [pkg, setPkg] = useState<Package | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [selectedTier, setSelectedTier] = useState<any>(null);
 
     useEffect(() => {
         window.scrollTo(0, 0);
+        const loadPackage = async () => {
+            if (!id) return;
+            try {
+                const data = await fetchPackageById(id);
+                setPkg(data);
+                // Set default tier
+                if (data.pricingTiers && data.pricingTiers.length > 0) {
+                    setSelectedTier(data.pricingTiers[0]);
+                } else {
+                    setSelectedTier({ tier: 'Standard', price: data.price });
+                }
+            } catch (error) {
+                console.error("Error loading package details:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        loadPackage();
     }, [id]);
 
-    useEffect(() => {
-        if (pkg) {
-            setSelectedPrice(pkg.price);
-            setSelectedTier(null);
-        }
-    }, [pkg]);
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-background flex flex-col items-center justify-center">
+                <Loader2 className="w-12 h-12 text-primary animate-spin mb-4" />
+                <p className="text-muted-foreground font-medium">Preparing your journey...</p>
+            </div>
+        );
+    }
 
     if (!pkg) {
         return (
@@ -35,12 +56,12 @@ const PackageDetail = () => {
     }
 
     return (
-        <div className="min-h-screen bg-background">
+        <div className="min-h-screen bg-[#f8fafc]">
             <Header />
 
             <main className="pt-20">
                 {/* Hero Section */}
-                <div className="relative h-[60vh] min-h-[500px] w-full overflow-hidden">
+                <div className="relative h-[70vh] min-h-[600px] w-full overflow-hidden">
                     <motion.div
                         initial={{ scale: 1.1 }}
                         animate={{ scale: 1 }}
@@ -52,385 +73,320 @@ const PackageDetail = () => {
                             alt={pkg.title}
                             className="w-full h-full object-cover"
                         />
-                        <div className="absolute inset-0 bg-black/40" />
+                        <div className="absolute inset-0 bg-gradient-hero-overlay" />
                     </motion.div>
 
-                    {/* Back Button Overlay */}
-                    <div className="absolute top-24 left-4 z-20 md:left-8">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className="bg-background/20 backdrop-blur-md border-white/30 text-white hover:bg-white/20 hover:text-white transition-all gap-2"
-                            onClick={() => navigate("/")}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 rounded-full mb-6"
                         >
-                            <ArrowLeft className="w-4 h-4" /> Back
-                        </Button>
-                    </div>
+                            <span className="text-white text-sm font-bold flex items-center gap-2">
+                                ✨ Premium Travel Experiences in India
+                            </span>
+                        </motion.div>
 
-                    <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="container px-4 text-center text-white">
-                            <motion.div
-                                initial={{ opacity: 0, y: 30 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.2 }}
-                            >
-                                <span className="inline-block px-3 py-1 bg-saffron/80 rounded-full text-sm font-medium mb-4 backdrop-blur-sm">
-                                    {pkg.subtitle}
-                                </span>
-                                <h1 className="text-4xl md:text-6xl font-serif font-bold mb-4">
-                                    {pkg.title}
-                                </h1>
-                                <div className="flex flex-wrap justify-center gap-6 text-sm md:text-base font-medium">
-                                    <div className="flex items-center gap-2">
-                                        <Clock className="w-5 h-5 text-saffron" />
-                                        {pkg.duration}
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <Users className="w-5 h-5 text-saffron" />
-                                        {pkg.groupSize}
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <MapPin className="w-5 h-5 text-saffron" />
-                                        {pkg.locations}
-                                    </div>
-                                </div>
-                            </motion.div>
-                        </div>
+                        <motion.h1
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 }}
+                            className="text-3xl md:text-5xl lg:text-6xl font-serif font-bold text-white mb-6"
+                        >
+                            Explore {pkg.locations.split(',')[0]}
+                            <br />
+                            <span className="text-gradient-sunset">Like Never Before</span>
+                        </motion.h1>
+
+                        <motion.div 
+                           initial={{ opacity: 0 }}
+                           animate={{ opacity: 1 }}
+                           transition={{ delay: 0.4 }}
+                           className="flex flex-wrap justify-center gap-8 mt-4 text-white/90"
+                        >
+                           <div className="flex flex-col items-center gap-1">
+                              <Clock className="w-6 h-6 text-saffron" />
+                              <span className="text-xs font-bold uppercase tracking-widest">{pkg.duration}</span>
+                           </div>
+                           <div className="flex flex-col items-center gap-1">
+                              <Users className="w-6 h-6 text-saffron" />
+                              <span className="text-xs font-bold uppercase tracking-widest">{pkg.groupSize}+ People</span>
+                           </div>
+                           <div className="flex flex-col items-center gap-1">
+                              <MapPin className="w-6 h-6 text-saffron" />
+                              <span className="text-xs font-bold uppercase tracking-widest">{pkg.locations}</span>
+                           </div>
+                        </motion.div>
                     </div>
                 </div>
 
-                <div className="container mx-auto px-4 py-12">
-                    <Button
-                        variant="ghost"
-                        className="mb-8 hover:bg-transparent pl-0 hover:pl-2 transition-all gap-2"
-                        onClick={() => navigate("/")}
-                    >
-                        <ArrowLeft className="w-4 h-4" /> Back to Packages
-                    </Button>
+                <div className="container mx-auto px-4 -mt-20 relative z-20 pb-20">
+                    <div className="grid lg:grid-cols-3 gap-12 items-start">
+                        
+                        {/* Main Detail Content */}
+                        <div className="lg:col-span-2 space-y-8">
+                            
 
-                    <div className="grid lg:grid-cols-3 gap-12">
-                        {/* Main Content */}
-                        <div className="lg:col-span-2 space-y-12">
-                            {/* Overview */}
-                            <section>
-                                <h2 className="text-3xl font-serif font-bold mb-6 text-foreground">Overview</h2>
-                                <p className="text-lg text-muted-foreground leading-relaxed">
-                                    {pkg.overview || pkg.description}
+                            {/* Section: Overview */}
+                            <section id="overview" className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-premium border border-slate-100">
+                                <h2 className="text-4xl font-serif font-bold mb-8">Overview</h2>
+                                <p className="text-lg text-slate-600 leading-relaxed mb-10 whitespace-pre-line">
+                                    {pkg.description}
                                 </p>
+
+                                {/* Feature Box */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                   <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100 group hover:border-primary/20 transition-all">
+                                      <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary mb-4">
+                                         <Clock size={24} />
+                                      </div>
+                                      <h4 className="font-bold text-slate-800 mb-2">Duration</h4>
+                                      <p className="text-sm text-slate-500">{pkg.duration}</p>
+                                   </div>
+                                   <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100 group hover:border-primary/20 transition-all">
+                                      <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary mb-4">
+                                         <Users size={24} />
+                                      </div>
+                                      <h4 className="font-bold text-slate-800 mb-2">Group Capacity</h4>
+                                      <p className="text-sm text-slate-500">Ideal for {pkg.groupSize} People</p>
+                                   </div>
+                                </div>
                             </section>
 
-                            {/* Pricing Tiers Section */}
-                            <section className="scroll-mt-24">
-                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                                    <h2 className="text-3xl font-serif font-bold text-foreground">Choose Your Travel Tier</h2>
-                                    <span className="text-sm font-medium text-primary px-4 py-1.5 bg-primary/10 rounded-full border border-primary/20">
-                                        Tailored Experiences
-                                    </span>
+                            {/* Section: Choose Your Travel Tier */}
+                            <section className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-premium border border-slate-100">
+                               <div className="flex justify-between items-end mb-8">
+                                  <div>
+                                     <h2 className="text-4xl font-serif font-bold">Choose Your Travel Tier</h2>
+                                  </div>
+                                  <span className="px-4 py-1.5 bg-sky-50 text-sky-600 text-xs font-bold rounded-full border border-sky-100">Tailored Experiences</span>
+                               </div>
+
+                               <div className={`grid grid-cols-1 ${(pkg.pricingTiers && pkg.pricingTiers.length > 2) ? 'md:grid-cols-3' : 'md:grid-cols-2'} gap-6`}>
+                                  {(pkg.pricingTiers && pkg.pricingTiers.length > 0 ? pkg.pricingTiers : [
+                                     { tier: 'Standard', price: pkg.price, features: ['+ 5% GST'] }
+                                  ]).map((tier, idx) => {
+                                     const isSelected = selectedTier?.tier === tier.tier;
+                                     return (
+                                       <div 
+                                         key={idx} 
+                                         onClick={() => setSelectedTier(tier)}
+                                         className={`p-8 border-2 ${isSelected ? 'border-primary bg-primary/5 shadow-lg scale-[1.02]' : 'border-slate-100 hover:border-primary/20'} rounded-[2.5rem] relative overflow-hidden group transition-all cursor-pointer`}
+                                       >
+                                          <div className="absolute top-0 right-0 p-4">
+                                             <div className={`w-6 h-6 rounded-full flex items-center justify-center border-2 transition-colors ${isSelected ? 'bg-primary border-primary text-white' : 'border-slate-200 text-transparent'}`}>
+                                                <CheckCircle2 size={14} />
+                                             </div>
+                                          </div>
+                                          <p className={`text-[10px] font-bold uppercase tracking-widest mb-3 ${isSelected ? 'text-primary' : 'text-slate-400'}`}>{tier.tier}</p>
+                                          <h3 className="text-4xl font-serif font-bold text-slate-800 mb-2">₹{tier.price.toLocaleString()}</h3>
+                                          <p className="text-xs text-slate-500 mb-6">PER PERSON</p>
+                                          <ul className="space-y-3">
+                                             {(tier.features || ['+ 5% GST']).map((feat, fIdx) => (
+                                                <li key={fIdx} className="flex items-center gap-2 text-xs font-medium text-slate-600">
+                                                   <div className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-primary' : 'bg-slate-300'}`} /> {feat}
+                                                </li>
+                                             ))}
+                                          </ul>
+                                       </div>
+                                     );
+                                  })}
+                               </div>
+                            </section>
+
+                            {/* Section: Itinerary */}
+                            <section id="itinerary" className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-premium border border-slate-100">
+                                <h2 className="text-4xl font-serif font-bold mb-10">Itinerary</h2>
+                                <div className="space-y-0">
+                                    {(pkg.itinerary && pkg.itinerary.length > 0 ? pkg.itinerary : [
+                                       { day: 'Day 1', title: 'Arrival & Welcome', activities: 'Arrive at the destination, check-in to your premium stay, and enjoy a welcome dinner.' },
+                                       { day: 'Day 2', title: 'Exploration', activities: 'Full day of guided tours and immersion into local culture and landmarks.' },
+                                       { day: 'Day 3', title: 'Departure', activities: 'Morning experience followed by transfer to the airport/station.' }
+                                    ]).map((item, idx) => (
+                                       <div key={idx} className="flex gap-6 group">
+                                          <div className="flex flex-col items-center">
+                                             <div className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center text-white font-bold text-xs shrink-0 z-10">
+                                                {item.day.match(/\d+/) ? item.day.match(/\d+/)[0] : idx + 1}
+                                             </div>
+                                             {idx !== (pkg.itinerary?.length || 3) - 1 && <div className="w-px h-full bg-slate-200" />}
+                                          </div>
+                                          <div className="pb-10 pt-1">
+                                             <h4 className="text-xl font-bold text-slate-800 mb-2">{item.title}</h4>
+                                             <p className="text-slate-500 leading-relaxed text-sm">{item.activities}</p>
+                                          </div>
+                                       </div>
+                                    ))}
                                 </div>
-                                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    {pkg.additionalInfo?.find(info => info.title === "Pricing Structure")?.content.filter(line => line.includes("—")).map((line, idx) => {
-                                        const name = line.split("—")[0].trim();
-                                        const rest = line.split("—")[1]?.trim() || "";
+                            </section>
 
-                                        // Extract price excluding what's in parentheses
-                                        const rawPricePart = rest.split("(")[0].trim();
-                                        // Remove "per person" suffix if present
-                                        const pricePart = rawPricePart.replace(/ per person$/i, "");
+                            {/* Section: Visual Journey */}
+                            <section id="gallery" className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-premium border border-slate-100">
+                                <h2 className="text-4xl font-serif font-bold mb-10 text-slate-800">Visual Journey</h2>
+                                
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-[600px]">
+                                   {/* Main Image Slot */}
+                                   <div className="md:col-span-2 h-full rounded-[2rem] overflow-hidden relative group">
+                                      {pkg.gallery?.[0] ? (
+                                        <a 
+                                          href={pkg.gallery[0]} 
+                                          target="_blank" 
+                                          rel="noopener noreferrer"
+                                          className="w-full h-full cursor-pointer block"
+                                        >
+                                           <img 
+                                             src={pkg.gallery[0]} 
+                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                                           />
+                                           <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
+                                        </a>
+                                      ) : (
+                                        <div className="w-full h-full bg-slate-50 border-2 border-dashed border-slate-200 flex flex-col items-center justify-center p-12 text-center">
+                                           <div className="w-20 h-20 bg-white rounded-full shadow-sm flex items-center justify-center text-slate-200 mb-6 group-hover:scale-110 transition-transform duration-500">
+                                              <Info size={40} />
+                                           </div>
+                                           <h3 className="text-2xl font-serif font-bold text-slate-400 mb-2 italic">Gallery Coming Soon</h3>
+                                           <p className="text-xs text-slate-300 uppercase tracking-[0.2em] font-bold">Capturing the magic for you</p>
+                                        </div>
+                                      )}
+                                   </div>
 
-                                        // Extract content inside parentheses
-                                        const featuresMatch = rest.match(/\((.*?)\)/);
-                                        let featuresStr = featuresMatch ? featuresMatch[1] : "";
-
-                                        // Extract discount if present
-                                        const discountMatch = featuresStr.match(/after (₹[0-9,]+) discount/i);
-                                        let originalPrice = "";
-                                        if (discountMatch) {
-                                            const discountValStr = discountMatch[1].replace(/[₹,]/g, "");
-                                            const currentPriceValStr = pricePart.replace(/[₹,]/g, "");
-                                            const discountVal = parseInt(discountValStr);
-                                            const currentPriceVal = parseInt(currentPriceValStr);
-
-                                            if (!isNaN(discountVal) && !isNaN(currentPriceVal)) {
-                                                const originalVal = currentPriceVal + discountVal;
-                                                originalPrice = "₹" + originalVal.toLocaleString("en-IN");
-                                            }
-                                            // Remove discount mention from features string
-                                            featuresStr = featuresStr.replace(/,? ?after ₹[0-9,]+ discount/i, "").trim();
-                                        }
-
-                                        const features = featuresStr;
-                                        const isSelected = selectedTier === name;
-
-                                        return (
-                                            <motion.div
-                                                key={idx}
-                                                whileHover={{ y: -5 }}
-                                                onClick={() => {
-                                                    setSelectedPrice(pricePart);
-                                                    setSelectedTier(name);
-                                                }}
-                                                className={`relative p-8 rounded-[2rem] border cursor-pointer transition-all duration-300 flex flex-col ${isSelected
-                                                    ? "bg-gradient-to-b from-primary/10 to-transparent border-primary shadow-strong-primary ring-2 ring-primary/20"
-                                                    : "bg-card border-border hover:border-primary/20 shadow-soft"
-                                                    }`}
+                                   {/* Sidebar Gallery (Remaining Images) */}
+                                   <div className="md:col-span-1 flex flex-col gap-4 h-full overflow-hidden">
+                                      {pkg.gallery && pkg.gallery.length > 1 ? (
+                                        <div className="flex flex-col gap-4 h-full overflow-y-auto no-scrollbar pr-1">
+                                          {pkg.gallery.slice(1).map((img, idx) => (
+                                            <a 
+                                              key={idx}
+                                              href={img} 
+                                              target="_blank" 
+                                              rel="noopener noreferrer" 
+                                              className="w-full rounded-2xl overflow-hidden group relative bg-slate-100 flex-shrink-0 min-h-[180px] h-[calc(33.33%-11px)]"
                                             >
-                                                <div className="text-center mb-8">
-                                                    <span className={`text-[10px] uppercase tracking-[0.2em] font-bold ${isSelected ? "text-primary" : "text-muted-foreground"}`}>
-                                                        {name}
-                                                    </span>
-                                                    <div className="mt-4 flex flex-col items-center justify-center gap-1">
-                                                        {originalPrice && (
-                                                            <span className="text-sm line-through text-red-500 font-medium">
-                                                                {originalPrice}
-                                                            </span>
-                                                        )}
-                                                        <span className="text-3xl font-serif font-bold text-foreground leading-none">{pricePart}</span>
-                                                        <span className="text-[10px] mt-1 text-muted-foreground font-bold uppercase tracking-wider">Per Person</span>
-                                                    </div>
-                                                </div>
-
-                                                <div className="space-y-4">
-                                                    {features.split(/,(?![0-9])|;/).map(f => f.trim()).filter(Boolean).map((feat, fIdx) => (
-                                                        <div key={fIdx} className="flex items-center gap-3 text-sm text-foreground/80 font-medium">
-                                                            <div className={`w-1.5 h-1.5 rounded-full ${isSelected ? "bg-primary" : "bg-primary/30"}`} />
-                                                            {feat}
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </motion.div>
-                                        );
-                                    })}
+                                              <img 
+                                                src={img} 
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                                              />
+                                              <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors" />
+                                            </a>
+                                          ))}
+                                        </div>
+                                      ) : (
+                                        <div className="h-full rounded-2xl border-2 border-dashed border-slate-100 flex items-center justify-center text-slate-300 font-bold text-xs">
+                                          More images coming soon
+                                        </div>
+                                      )}
+                                   </div>
                                 </div>
+                                <p className="text-center text-xs text-slate-400 italic mt-6">Click on any image to view in full size</p>
                             </section>
 
-                            {/* Itinerary */}
-                            {(pkg.itinerary || (selectedTier && pkg.tiers?.find(t => t.name === selectedTier)?.itinerary)) && (
-                                <section>
-                                    <h2 className="text-3xl font-serif font-bold mb-8 text-foreground">Itinerary</h2>
-                                    <div className="space-y-8">
-                                        {(selectedTier && pkg.tiers?.find(t => t.name === selectedTier)?.itinerary || pkg.itinerary)!.map((item, index) => (
-                                            <div key={index} className="relative pl-8 border-l-2 border-saffron/20 pb-8 last:pb-0 last:border-l-0">
-                                                <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-saffron ring-4 ring-background" />
-                                                <div className="mb-2 flex items-center gap-3">
-                                                    <span className="text-sm font-bold text-saffron uppercase tracking-wider">
-                                                        Day {item.day}
-                                                    </span>
-                                                </div>
-                                                <h3 className="text-xl font-semibold mb-3 text-foreground">{item.title}</h3>
-                                                <p className="text-muted-foreground leading-relaxed">{item.description}</p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </section>
-                            )}
+                            {/* Section: Inclusions & Exclusions */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                               {/* Inclusions */}
+                               <div className="bg-blue-50/50 rounded-[2.5rem] p-10 border border-blue-100/50">
+                                  <h3 className="text-2xl font-serif font-bold text-blue-900 mb-8 flex items-center gap-3">
+                                     <CheckCircle2 className="text-primary" /> Inclusions
+                                  </h3>
+                                  <ul className="space-y-4">
+                                     {(pkg.inclusions && pkg.inclusions.length > 0 ? pkg.inclusions : [
+                                       'Round-trip helicopter ride',
+                                       'Premium hotel stays',
+                                       'All meals included',
+                                       'Personal tour guide'
+                                     ]).map((item, idx) => (
+                                       <li key={idx} className="flex items-start gap-3 text-sm font-medium text-slate-600">
+                                          <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" /> {item}
+                                       </li>
+                                     ))}
+                                  </ul>
+                               </div>
 
-                            {/* Image Gallery / Collage Section */}
-                            {pkg.gallery && pkg.gallery.length >= 4 && (
-                                <section>
-                                    <h2 className="text-3xl font-serif font-bold mb-8 text-foreground">Visual Journey</h2>
-                                    <div className="grid grid-cols-4 grid-rows-2 gap-3 h-[500px] rounded-3xl overflow-hidden shadow-2xl">
-                                        <motion.div
-                                            whileHover={{ scale: 1.02 }}
-                                            className="col-span-2 row-span-2 relative cursor-pointer group overflow-hidden"
-                                            onClick={() => window.open(pkg.gallery![0], '_blank')}
-                                        >
-                                            <img src={pkg.gallery[0]} alt="Gallery 1" className="w-full h-full object-cover" />
-                                            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors" />
-                                        </motion.div>
-                                        <motion.div
-                                            whileHover={{ scale: 1.02 }}
-                                            className="col-span-2 row-span-1 relative cursor-pointer group overflow-hidden"
-                                            onClick={() => window.open(pkg.gallery![1], '_blank')}
-                                        >
-                                            <img src={pkg.gallery[1]} alt="Gallery 2" className="w-full h-full object-cover" />
-                                            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors" />
-                                        </motion.div>
-                                        <motion.div
-                                            whileHover={{ scale: 1.02 }}
-                                            className="col-span-1 row-span-1 relative cursor-pointer group overflow-hidden"
-                                            onClick={() => window.open(pkg.gallery![2], '_blank')}
-                                        >
-                                            <img src={pkg.gallery[2]} alt="Gallery 3" className="w-full h-full object-cover" />
-                                            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors" />
-                                        </motion.div>
-                                        <motion.div
-                                            whileHover={{ scale: 1.02 }}
-                                            className="col-span-1 row-span-1 relative cursor-pointer group overflow-hidden"
-                                            onClick={() => window.open(pkg.gallery![3], '_blank')}
-                                        >
-                                            <img src={pkg.gallery[3]} alt="Gallery 4" className="w-full h-full object-cover" />
-                                            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors" />
-                                        </motion.div>
-                                    </div>
-                                    <p className="text-sm text-muted-foreground mt-4 text-center italic">Click on any image to view in full size</p>
-                                </section>
-                            )}
-
-                            {/* Inclusions & Exclusions */}
-                            <div className="grid md:grid-cols-2 gap-8">
-                                {(pkg.inclusions || (selectedTier && pkg.tiers?.find(t => t.name === selectedTier)?.inclusions)) && (
-                                    <div className="bg-primary/5 p-8 rounded-2xl border border-primary/10">
-                                        <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-primary">
-                                            <CheckCircle2 className="w-6 h-6" />
-                                            Inclusions
-                                        </h3>
-                                        <ul className="space-y-3">
-                                            {(selectedTier && pkg.tiers?.find(t => t.name === selectedTier)?.inclusions || pkg.inclusions)!.map((inc, i) => (
-                                                <li key={i} className="flex items-start gap-3">
-                                                    <span className="mt-2 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
-                                                    <span className="text-sm text-foreground/80">{inc}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                )}
-
-                                {(pkg.exclusions || (selectedTier && pkg.tiers?.find(t => t.name === selectedTier)?.exclusions)) && (
-                                    <div className="bg-destructive/5 p-8 rounded-2xl border border-destructive/10">
-                                        <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-destructive">
-                                            <XCircle className="w-6 h-6" />
-                                            Exclusions
-                                        </h3>
-                                        <ul className="space-y-3">
-                                            {(selectedTier && pkg.tiers?.find(t => t.name === selectedTier)?.exclusions || pkg.exclusions)!.map((exc, i) => (
-                                                <li key={i} className="flex items-start gap-3">
-                                                    <span className="mt-2 w-1.5 h-1.5 rounded-full bg-destructive shrink-0" />
-                                                    <span className="text-sm text-foreground/80">{exc}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                )}
+                               {/* Exclusions */}
+                               <div className="bg-rose-50/50 rounded-[2.5rem] p-10 border border-rose-100/50">
+                                  <h3 className="text-2xl font-serif font-bold text-rose-900 mb-8 flex items-center gap-3">
+                                     <XCircle className="text-rose-500" /> Exclusions
+                                  </h3>
+                                  <ul className="space-y-4">
+                                     {(pkg.exclusions && pkg.exclusions.length > 0 ? pkg.exclusions : [
+                                       'Personal shopping',
+                                       'Anything not mentioned in inclusions',
+                                       'Alcoholic beverages'
+                                     ]).map((item, idx) => (
+                                       <li key={idx} className="flex items-start gap-3 text-sm font-medium text-slate-600">
+                                          <div className="w-1.5 h-1.5 rounded-full bg-rose-400 mt-1.5 shrink-0" /> {item}
+                                       </li>
+                                     ))}
+                                  </ul>
+                               </div>
                             </div>
 
-                            {/* Additional Info */}
-                            {pkg.additionalInfo && (
-                                <section className="space-y-8 mt-12 bg-card/50 rounded-2xl border border-border/50 p-8 hover:border-border transition-colors">
-                                    {pkg.additionalInfo.map((info, index) => (
-                                        <div key={index} className="space-y-4">
-                                            <h3 className="text-xl font-serif font-bold text-foreground flex items-center gap-2">
-                                                <div className="w-1.5 h-6 bg-saffron rounded-full" />
-                                                {info.title}
-                                            </h3>
-                                            <ul className="space-y-3 pl-4">
-                                                {info.content.map((line, i) => (
-                                                    <li key={i} className="flex items-start gap-3 group">
-                                                        <span className="mt-2 w-1.5 h-1.5 rounded-full bg-saffron/50 group-hover:bg-saffron transition-colors shrink-0" />
-                                                        <span className="text-muted-foreground leading-relaxed text-sm md:text-base">{line}</span>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                            {index !== pkg.additionalInfo!.length - 1 && (
-                                                <div className="h-px w-full bg-border/50 my-8" />
-                                            )}
-                                        </div>
-                                    ))}
-                                </section>
-                            )}
+                            {/* Pricing Structure */}
+                            <section id="pricing" className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-premium border border-slate-100">
+                                <h3 className="text-2xl font-serif font-bold text-slate-800 mb-8 border-l-4 border-primary pl-4">Pricing Structure</h3>
+                                <ul className="space-y-4">
+                                   <li className="flex items-start gap-3 text-sm font-medium text-slate-600 leading-relaxed">
+                                      <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" /> 
+                                      Package Cost — ₹{(pkg.price).toLocaleString()} per person (+ 5% GST)
+                                   </li>
+                                   <li className="flex items-start gap-3 text-sm font-medium text-slate-600 leading-relaxed">
+                                      <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" /> 
+                                      Booking: Pay 50% now to book; Balance 30 days before trip.
+                                   </li>
+                                </ul>
+                            </section>
                         </div>
 
-                        <div className="hidden lg:col-span-1 lg:block">
-                            <div className="sticky top-24 rounded-[2.5rem] border border-border/50 bg-card p-10 shadow-soft">
-                                <div className="mb-10 text-center">
-                                    <span className="text-muted-foreground text-[10px] uppercase tracking-[0.2em] font-bold">
-                                        {selectedTier ? `Selected Tier: ${selectedTier}` : "Starting from"}
-                                    </span>
-                                    <div className="text-5xl md:text-6xl font-serif font-bold text-primary mt-3">
-                                        {selectedPrice}
-                                    </div>
-                                    <p className="text-sm text-muted-foreground mt-2">Per person</p>
-                                </div>
+                        {/* Sticky Booking Card (Desktop) */}
+                        <div className="lg:col-span-1 hidden lg:block sticky top-24">
+                           <div className="bg-white rounded-[2rem] p-8 shadow-strong border border-slate-100 text-center">
+                              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">
+                                {selectedTier?.tier ? `${selectedTier.tier} Package` : 'STARTING FROM'}
+                              </p>
+                               <div className="flex justify-center items-center gap-2 mb-1">
+                                 <h2 className="text-4xl md:text-5xl font-serif font-bold text-primary">₹{(selectedTier?.price || pkg.price).toLocaleString()}</h2>
+                              </div>
+                              <p className="text-[10px] text-slate-500 font-bold uppercase mb-8">Per person</p>
 
-                                <div className="space-y-6 mb-10">
-                                    <div className="flex items-center justify-between py-4 border-b border-border/50">
-                                        <div className="flex items-center gap-3 text-muted-foreground">
-                                            <Calendar className="w-5 h-5" />
-                                            <span className="text-sm font-medium uppercase tracking-wider">Duration</span>
-                                        </div>
-                                        <span className="font-bold text-lg">{pkg.duration}</span>
-                                    </div>
-                                    <div className="flex items-center justify-between py-4 border-b border-border/50">
-                                        <div className="flex items-center gap-3 text-muted-foreground">
-                                            <Users className="w-5 h-5" />
-                                            <span className="text-sm font-medium uppercase tracking-wider">Group Size</span>
-                                        </div>
-                                        <span className="font-bold text-lg">{pkg.groupSize}</span>
-                                    </div>
-                                    <div className="flex items-center justify-between py-4 border-b border-border/50">
-                                        <div className="flex items-center gap-3 text-muted-foreground">
-                                            <Star className="w-5 h-5" />
-                                            <span className="text-sm font-medium uppercase tracking-wider">Rating</span>
-                                        </div>
-                                        <span className="font-bold text-lg">{pkg.rating}/5.0</span>
-                                    </div>
-                                </div>
+                               <div className="space-y-3 mb-8 text-left">
+                                 <div className="flex items-center justify-between pb-3 border-b border-slate-50">
+                                    <div className="flex items-center gap-2 text-slate-400"><Calendar size={16} /> <span className="text-[9px] font-bold uppercase">Duration</span></div>
+                                    <span className="text-xs font-bold text-slate-700">{pkg.duration}</span>
+                                 </div>
+                                 <div className="flex items-center justify-between pb-3 border-b border-slate-50">
+                                    <div className="flex items-center gap-2 text-slate-400"><Users size={16} /> <span className="text-[9px] font-bold uppercase">Group Size</span></div>
+                                    <span className="text-xs font-bold text-slate-700">Customizable</span>
+                                 </div>
+                                 <div className="flex items-center justify-between pb-3 border-b border-slate-50">
+                                    <div className="flex items-center gap-2 text-slate-400"><Star size={16} /> <span className="text-[9px] font-bold uppercase">Rating</span></div>
+                                    <span className="text-xs font-bold text-slate-700">{pkg.rating}/5.0</span>
+                                 </div>
+                              </div>
 
-                                {pkg.pdfUrl ? (
-                                    <Button 
-                                        className="w-full h-14 text-xl font-bold bg-primary hover:bg-primary/90 rounded-2xl shadow-lg transition-all gap-2" 
-                                        size="lg"
-                                        onClick={() => {
-                                            const link = document.createElement('a');
-                                            link.href = pkg.pdfUrl!;
-                                            link.download = `${pkg.title}.pdf`;
-                                            document.body.appendChild(link);
-                                            link.click();
-                                            document.body.removeChild(link);
-                                        }}
-                                    >
-                                        <Download className="w-5 h-5" />
-                                        Download Brochure
-                                    </Button>
-                                ) : (
-                                    <Button className="w-full h-14 text-xl font-bold bg-primary hover:bg-primary/90 rounded-2xl shadow-lg transition-all" size="lg">
-                                        Request Booking
-                                    </Button>
-                                )}
-                                <p className="text-center text-[10px] uppercase tracking-wider text-muted-foreground mt-6 font-medium">
-                                    *Prices vary based on season and availability
-                                </p>
-                            </div>
+                              <PaymentButton 
+                                 amount={selectedTier?.price || pkg.price} 
+                                 packageName={pkg.title}
+                                 onSuccess={(data) => {
+                                     console.log("Success:", data);
+                                     // You could navigate to a success page or show a modal
+                                 }}
+                              />
+                              <p className="text-[10px] text-slate-400 mt-6 italic">*PRICES VARY BASED ON SEASON AND AVAILABILITY</p>
+                           </div>
+
+                           <div className="mt-6 p-6 bg-slate-900 rounded-[2rem] text-white overflow-hidden relative group">
+                              <h4 className="font-bold relative z-10">Need Help?</h4>
+                              <p className="text-xs text-white/60 mb-4 relative z-10">Chat with our travel experts on WhatsApp.</p>
+                              <a href="https://wa.me/91XXXXXXXXXX" className="px-4 py-2 bg-emerald-500 rounded-lg text-xs font-bold relative z-10 flex items-center justify-center gap-2">
+                                 WhatsApp Support
+                              </a>
+                              <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:scale-110 transition-transform -rotate-12 translate-x-4 -translate-y-4">
+                                 <MapPin size={84} />
+                              </div>
+                           </div>
                         </div>
                     </div>
                 </div>
             </main>
-
-            {/* Mobile Sticky Booking Bar */}
-            <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-background/80 backdrop-blur-xl border-t border-border p-4 shadow-2xl safe-area-bottom">
-                <div className="container mx-auto flex items-center justify-between gap-4">
-                    <div className="flex flex-col">
-                        <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold leading-none mb-1">
-                            {selectedTier ? selectedTier : "Price"}
-                        </span>
-                        <div className="flex items-baseline gap-1">
-                            <span className="text-2xl font-serif font-bold text-primary">{selectedPrice}</span>
-                            <span className="text-[10px] text-muted-foreground font-medium">/pax</span>
-                        </div>
-                    </div>
-                    {pkg.pdfUrl ? (
-                        <Button
-                            className="flex-1 max-w-[200px] h-12 text-base font-bold bg-primary hover:bg-primary/90 rounded-xl shadow-lg transition-all gap-2"
-                            onClick={() => {
-                                const link = document.createElement('a');
-                                link.href = pkg.pdfUrl!;
-                                link.download = `${pkg.title}.pdf`;
-                                document.body.appendChild(link);
-                                link.click();
-                                document.body.removeChild(link);
-                            }}
-                        >
-                            <Download className="w-4 h-4" />
-                            Brochure
-                        </Button>
-                    ) : (
-                        <Button
-                            className="flex-1 max-w-[200px] h-12 text-base font-bold bg-primary hover:bg-primary/90 rounded-xl shadow-lg transition-all"
-                        >
-                            Request Booking
-                        </Button>
-                    )}
-                </div>
-            </div>
 
             <Footer />
         </div>
