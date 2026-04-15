@@ -3,6 +3,7 @@ import { Button } from './ui/button';
 import { loadRazorpayScript } from '@/lib/razorpay';
 import { useAuth } from '@/admin/context/AuthContext';
 import { toast } from 'sonner';
+import { API_BASE_URL as BASE_URL } from '../lib/api';
 import {
     Dialog,
     DialogContent,
@@ -31,7 +32,7 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({ amount, packageName, onSu
     });
 
     const { token, user } = useAuth();
-    const API_BASE_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/payment`;
+    const API_BASE_URL = `${BASE_URL}/payment`;
 
     const handleInitiatePayment = () => {
         if (token) {

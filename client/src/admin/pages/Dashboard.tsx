@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { API_BASE_URL } from '../../lib/api';
 
 const StatCard = ({ title, value, icon: Icon, color }: any) => {
   const colorMap: any = {
@@ -66,10 +67,10 @@ const Dashboard = () => {
       setLoading(true);
       
       const [statsRes, pkgsRes] = await Promise.all([
-        fetch('http://localhost:5000/api/packages/dashboard/stats', {
+        fetch(`${API_BASE_URL}/packages/dashboard/stats`, {
           headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
         }),
-        fetch('http://localhost:5000/api/packages')
+        fetch(`${API_BASE_URL}/packages`)
       ]);
 
       const statsData = await statsRes.json();

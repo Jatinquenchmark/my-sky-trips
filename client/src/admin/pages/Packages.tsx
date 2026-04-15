@@ -36,6 +36,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { API_BASE_URL } from '../../lib/api';
 
 interface Package {
   _id: string;
@@ -137,7 +138,7 @@ const Packages = () => {
   const fetchPackages = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5000/api/packages');
+      const response = await fetch(`${API_BASE_URL}/packages`);
       const data = await response.json();
       if (data.success) {
         setPackages(data.data);
@@ -162,7 +163,7 @@ const Packages = () => {
     const toastId = toast.loading('Deleting package...');
 
     try {
-      const response = await fetch(`http://localhost:5000/api/packages/${deleteId}`, {
+      const response = await fetch(`${API_BASE_URL}/packages/${deleteId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

@@ -16,6 +16,7 @@ import {
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'sonner';
+import { API_BASE_URL } from '../../lib/api';
 
 const PackageForm = () => {
   const [searchParams] = useSearchParams();
@@ -63,7 +64,7 @@ const PackageForm = () => {
   const fetchPackageDetails = async () => {
     try {
       setFetching(true);
-      const response = await fetch(`http://localhost:5000/api/packages/${id}`);
+      const response = await fetch(`${API_BASE_URL}/packages/${id}`);
       const data = await response.json();
       if (data.success) {
         const pkg = data.data;
@@ -173,7 +174,7 @@ const PackageForm = () => {
     if (heroImage) data.append('image', heroImage);
 
     try {
-      const url = id ? `http://localhost:5000/api/packages/${id}` : 'http://localhost:5000/api/packages';
+      const url = id ? `${API_BASE_URL}/packages/${id}` : `${API_BASE_URL}/packages`;
       const response = await fetch(url, {
         method: id ? 'PUT' : 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
