@@ -120,7 +120,7 @@ const PackageDetail = () => {
                     </div>
                 </div>
 
-                <div className="container mx-auto px-4 -mt-20 relative z-20 pb-20">
+                <div className="container mx-auto px-4 -mt-20 relative z-20 pb-32 lg:pb-20">
                     <div className="grid lg:grid-cols-3 gap-12 items-start">
                         
                         {/* Main Detail Content */}
@@ -336,7 +336,7 @@ const PackageDetail = () => {
                             </section>
                         </div>
 
-                        {/* Sticky Booking Card (Desktop) */}
+                        {/* Sticky Booking Card (Desktop only) */}
                         <div className="lg:col-span-1 hidden lg:block sticky top-24">
                            <div className="bg-white rounded-[2rem] p-8 shadow-strong border border-slate-100 text-center">
                               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">
@@ -367,7 +367,6 @@ const PackageDetail = () => {
                                  packageName={pkg.title}
                                  onSuccess={(data) => {
                                      console.log("Success:", data);
-                                     // You could navigate to a success page or show a modal
                                  }}
                               />
                               <p className="text-[10px] text-slate-400 mt-6 italic">*PRICES VARY BASED ON SEASON AND AVAILABILITY</p>
@@ -387,6 +386,33 @@ const PackageDetail = () => {
                     </div>
                 </div>
             </main>
+
+            {/* ── Mobile Sticky Bottom Bar ── */}
+            <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 shadow-[0_-4px_20px_rgba(0,0,0,0.1)]">
+                <div className="flex items-center justify-between px-4 py-3 gap-4">
+                    {/* Price Info */}
+                    <div className="flex flex-col">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                            {selectedTier?.tier ? `${selectedTier.tier} Package` : 'Starting From'}
+                        </span>
+                        <span className="text-2xl font-serif font-bold text-primary leading-tight">
+                            ₹{(selectedTier?.price || pkg.price).toLocaleString()}
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-medium">per person + 5% GST</span>
+                    </div>
+
+                    {/* Pay Button */}
+                    <div className="flex-1 max-w-[200px]">
+                        <PaymentButton
+                            amount={selectedTier?.price || pkg.price}
+                            packageName={pkg.title}
+                            onSuccess={(data) => {
+                                console.log("Success:", data);
+                            }}
+                        />
+                    </div>
+                </div>
+            </div>
 
             <Footer />
         </div>
