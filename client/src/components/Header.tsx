@@ -7,7 +7,7 @@ import { EnquiryDialog } from "@/components/EnquiryDialog";
 import logo from '@/assets/logo-DFfutrEX.png';
 
 const navLinks = [
-  { name: "Home", href: "#home" },
+  { name: "Home", href: "/" },
   { name: "Packages", href: "#packages" },
   { name: "About Us", href: "#about" },
   { name: "Reviews", href: "#reviews" },
@@ -44,6 +44,9 @@ export const Header = () => {
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     setIsMobileMenuOpen(false);
+
+    // For root path, let React Router handle navigation normally
+    if (href === "/") return;
 
     if (isHome) {
       e.preventDefault();
