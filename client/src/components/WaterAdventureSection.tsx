@@ -472,7 +472,7 @@ export const WaterAdventureSection = () => {
   const fetchActivities = async (showLoader = false) => {
     if (showLoader) setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/activities`);
+      const res = await fetch(`${API_BASE_URL}/water-activities`);
       const data = await res.json();
       if (data.success) setActivities(data.data);
     } catch (err) {
@@ -573,7 +573,7 @@ export const WaterAdventureSection = () => {
 
             if (verifyData.success) {
               // Step 5: ONLY NOW deduct seats
-              const bookRes = await fetch(`${API_BASE_URL}/activities/book`, {
+              const bookRes = await fetch(`${API_BASE_URL}/water-activities/book`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

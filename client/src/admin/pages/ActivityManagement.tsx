@@ -195,7 +195,7 @@ const ActivityManagement = () => {
   const fetchActivities = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${API_BASE_URL}/activities/admin`, {
+      const res = await fetch(`${API_BASE_URL}/water-activities/admin`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -216,7 +216,7 @@ const ActivityManagement = () => {
     if (!confirm('This will add the default 8 Tehri Water Adventure activities. Continue?')) return;
     setSeeding(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/activities/seed`, {
+      const res = await fetch(`${API_BASE_URL}/water-activities/seed`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -238,7 +238,7 @@ const ActivityManagement = () => {
     if (!confirm('Mark this ride as complete? This will reset booked seats to 0.')) return;
     setResettingId(id);
     try {
-      const res = await fetch(`${API_BASE_URL}/activities/${id}/reset`, {
+      const res = await fetch(`${API_BASE_URL}/water-activities/${id}/reset`, {
         method: 'PUT',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -260,7 +260,7 @@ const ActivityManagement = () => {
 
   const handleToggle = async (id: string, current: boolean) => {
     try {
-      const res = await fetch(`${API_BASE_URL}/activities/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/water-activities/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -286,7 +286,7 @@ const ActivityManagement = () => {
     if (!confirm('Reset ALL activity seats to 0? This will remove all booked seat counts.')) return;
     setResettingAll(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/activities/reset-all`, {
+      const res = await fetch(`${API_BASE_URL}/water-activities/reset-all`, {
         method: 'PUT',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -307,7 +307,7 @@ const ActivityManagement = () => {
   const handleDelete = async (id: string, name: string) => {
     if (!confirm(`Are you sure you want to delete "${name}"? This action cannot be undone.`)) return;
     try {
-      const res = await fetch(`${API_BASE_URL}/activities/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/water-activities/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });

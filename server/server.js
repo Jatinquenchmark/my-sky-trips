@@ -33,12 +33,10 @@ import authRoutes from './routes/authRoutes.js';
 import packageRoutes from './routes/packageRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
 import activityRoutes from './routes/activityRoutes.js';
-
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/packages', apiLimiter, packageRoutes);
 app.use('/api/payment', apiLimiter, paymentRoutes);
-app.use('/api/activities', apiLimiter, activityRoutes);
-
+app.use('/api/water-activities', activityRoutes);
 
 app.get('/', (req, res) => {
     res.json({ message: 'Welcome to Sky-trip API' });
