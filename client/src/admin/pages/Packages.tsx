@@ -12,7 +12,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Loader2,
-  AlertTriangle
+  AlertTriangle,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -48,11 +50,12 @@ interface Package {
   rating: number;
   image: string;
   featured: boolean;
+  showPrice: boolean;
   groupSize: number;
   status: string;
 }
 
-const PackageCard = ({ item, onDelete, onEdit }: { item: Package; onDelete: (id: string) => void; onEdit: (id: string) => void }) => (
+const PackageCard = ({ item, onDelete, onEdit, onTogglePrice }: { item: Package; onDelete: (id: string) => void; onEdit: (id: string) => void; onTogglePrice: (id: string, current: boolean) => void }) => (
   <motion.div 
     layout
     initial={{ opacity: 0, scale: 0.95 }}
@@ -94,13 +97,33 @@ const PackageCard = ({ item, onDelete, onEdit }: { item: Package; onDelete: (id:
         <MapPin size={14} className="text-primary" /> {item.locations}
       </div>
 
-      <div className="flex items-center gap-4 text-text-secondary text-[10px] font-bold uppercase tracking-wider mb-6 border-y border-slate-50 py-3">
+      <div className="flex items-center gap-4 text-text-secondary text-[10px] font-bold uppercase tracking-wider mb-4 border-y border-slate-50 py-3">
         <div className="flex items-center gap-1.5">
           <Clock size={14} /> {item.duration}
         </div>
         <div className="flex items-center gap-1.5 border-l border-slate-200 pl-4">
           <TrendingUp size={14} /> up to {item.groupSize || '6 People'}
         </div>
+      </div>
+
+      {/* Show Price Toggle */}
+      <div className="flex items-center justify-between mb-4 px-3 py-2 bg-slate-50 rounded-xl border border-slate-100">
+        <div className="flex items-center gap-2">
+          {item.showPrice ? <Eye size={14} className="text-emerald-500" /> : <EyeOff size={14} className="text-slate-400" />}
+          <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Show Price</span>
+        </div>
+        <button
+          onClick={() => onTogglePrice(item._id, item.showPrice)}
+          className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors duration-200 cursor-pointer ${
+            item.showPrice ? 'bg-emerald-500' : 'bg-slate-300'
+          }`}
+        >
+          <span
+            className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform duration-200 ${
+              item.showPrice ? 'translate-x-4' : 'translate-x-1'
+            }`}
+          />
+        </button>
       </div>
 
       <div className="flex gap-2">
@@ -129,6 +152,7 @@ const Packages = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [togglingId, setTogglingId] = useState<string | null>(null);
   
   const itemsPerPage = 6;
   
@@ -186,6 +210,34 @@ const Packages = () => {
 
   const handleEdit = (id: string) => {
     navigate(`/admin/add-package?id=${id}`);
+  };
+
+  const handleTogglePrice = async (id: string, currentValue: boolean) => {
+    if (togglingId) return;
+    setTogglingId(id);
+    try {
+      const response = await fetch(`${API_BASE_URL}/packages/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ showPrice: !currentValue })
+      });
+      const data = await response.json();
+      if (data.success) {
+        setPackages(prev =>
+          prev.map(p => p._id === id ? { ...p, showPrice: !currentValue } : p)
+        );
+        toast.success(`Price ${!currentValue ? 'shown' : 'hidden'} for this package`);
+      } else {
+        throw new Error(data.error || 'Failed to update');
+      }
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      setTogglingId(null);
+    }
   };
 
   const filteredPackages = packages.filter(p => 
@@ -291,7 +343,7 @@ const Packages = () => {
       {/* Packages Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {currentItems.map(item => (
-          <PackageCard key={item._id} item={item} onDelete={setDeleteId} onEdit={handleEdit} />
+          <PackageCard key={item._id} item={item} onDelete={setDeleteId} onEdit={handleEdit} onTogglePrice={handleTogglePrice} />
         ))}
       </div>
 

@@ -4,7 +4,8 @@ import {
   Package, 
   PlusCircle, 
   LogOut, 
-  User
+  User,
+  Waves
 } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { clsx, type ClassValue } from 'clsx';
@@ -25,9 +26,10 @@ const Sidebar = () => {
   };
 
   const links = [
-    { name: 'Dashboard', icon: LayoutDashboard, path: '/admin' },
-    { name: 'Packages', icon: Package, path: '/admin/packages' },
-    { name: 'Add Package', icon: PlusCircle, path: '/admin/add-package' },
+    { name: 'Dashboard',         icon: LayoutDashboard, path: '/admin' },
+    { name: 'Packages',          icon: Package,         path: '/admin/packages' },
+    { name: 'Add Package',       icon: PlusCircle,      path: '/admin/add-package' },
+    { name: 'Water Activities',  icon: Waves,           path: '/admin/activities' },
   ];
 
   return (

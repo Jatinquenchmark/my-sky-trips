@@ -25,14 +25,19 @@ if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
 
+// Rate Limiting
+import { apiLimiter, authLimiter } from './middleware/rateLimiter.js';
+
 // API Routes
 import authRoutes from './routes/authRoutes.js';
 import packageRoutes from './routes/packageRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
+import activityRoutes from './routes/activityRoutes.js';
 
-app.use('/api/auth', authRoutes);
-app.use('/api/packages', packageRoutes);
-app.use('/api/payment', paymentRoutes);
+app.use('/api/auth', authLimiter, authRoutes);
+app.use('/api/packages', apiLimiter, packageRoutes);
+app.use('/api/payment', apiLimiter, paymentRoutes);
+app.use('/api/activities', apiLimiter, activityRoutes);
 
 
 app.get('/', (req, res) => {

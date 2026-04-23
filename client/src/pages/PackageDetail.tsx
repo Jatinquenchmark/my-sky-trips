@@ -342,8 +342,8 @@ const PackageDetail = () => {
                               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">
                                 {selectedTier?.tier ? `${selectedTier.tier} Package` : 'STARTING FROM'}
                               </p>
-                               <div className="flex justify-center items-center gap-2 mb-1">
-                                 <h2 className="text-4xl md:text-5xl font-serif font-bold text-primary">₹{(selectedTier?.price || pkg.price).toLocaleString()}</h2>
+                              <div className="flex justify-center items-center gap-2 mb-1">
+                                <h2 className="text-4xl md:text-5xl font-serif font-bold text-primary">₹{(selectedTier?.price || pkg.price).toLocaleString()}</h2>
                               </div>
                               <p className="text-[10px] text-slate-500 font-bold uppercase mb-8">Per person</p>
 
@@ -360,15 +360,22 @@ const PackageDetail = () => {
                                     <div className="flex items-center gap-2 text-slate-400"><Star size={16} /> <span className="text-[9px] font-bold uppercase">Rating</span></div>
                                     <span className="text-xs font-bold text-slate-700">{pkg.rating}/5.0</span>
                                  </div>
-                              </div>
+                               </div>
 
-                              <PaymentButton 
-                                 amount={selectedTier?.price || pkg.price} 
-                                 packageName={pkg.title}
-                                 onSuccess={(data) => {
-                                     console.log("Success:", data);
-                                 }}
-                              />
+                               {pkg.showPrice === true ? (
+                                 <PaymentButton 
+                                    amount={selectedTier?.price || pkg.price} 
+                                    packageName={pkg.title}
+                                    onSuccess={(data) => {
+                                        console.log("Success:", data);
+                                    }}
+                                 />
+                               ) : (
+                                 <div className="w-full py-4 px-5 bg-amber-50 border border-amber-200 rounded-2xl text-center">
+                                   <p className="text-xs font-bold text-amber-700 mb-1">📞 Contact Our Team</p>
+                                   <p className="text-[11px] text-amber-600 leading-relaxed">To book this package, please reach out to us directly.</p>
+                                 </div>
+                               )}
                               <p className="text-[10px] text-slate-400 mt-6 italic">*PRICES VARY BASED ON SEASON AND AVAILABILITY</p>
                            </div>
 
@@ -403,13 +410,19 @@ const PackageDetail = () => {
 
                     {/* Pay Button */}
                     <div className="flex-1 max-w-[200px]">
-                        <PaymentButton
-                            amount={selectedTier?.price || pkg.price}
-                            packageName={pkg.title}
-                            onSuccess={(data) => {
-                                console.log("Success:", data);
-                            }}
-                        />
+                        {pkg.showPrice === true ? (
+                          <PaymentButton
+                              amount={selectedTier?.price || pkg.price}
+                              packageName={pkg.title}
+                              onSuccess={(data) => {
+                                  console.log("Success:", data);
+                              }}
+                          />
+                        ) : (
+                          <div className="w-full py-2.5 px-4 bg-amber-50 border border-amber-200 rounded-xl text-center">
+                            <p className="text-[10px] font-bold text-amber-700">📞 Contact Team</p>
+                          </div>
+                        )}
                     </div>
                 </div>
             </div>

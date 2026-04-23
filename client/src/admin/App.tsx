@@ -4,6 +4,7 @@ import { AdminLayout } from './components/AdminLayout';
 import Dashboard from './pages/Dashboard';
 import Packages from './pages/Packages';
 import PackageForm from './pages/PackageForm';
+import ActivityManagement from './pages/ActivityManagement';
 import Login from './pages/Login';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -41,6 +42,16 @@ function App() {
               <ProtectedRoute>
                 <AdminLayout title="Add Package">
                   <PackageForm />
+                </AdminLayout>
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/activities" 
+            element={
+              <ProtectedRoute>
+                <AdminLayout title="Water Adventure Activities">
+                  <ActivityManagement />
                 </AdminLayout>
               </ProtectedRoute>
             } 

@@ -49,6 +49,15 @@ const orderSchema = new mongoose.Schema(
       type: Map,
       of: String,
     },
+    items: [
+      {
+        name: String,
+        emoji: String,
+        persons: Number,
+        totalPrice: Number,
+        duration: String,
+      }
+    ],
   },
   {
     timestamps: true,

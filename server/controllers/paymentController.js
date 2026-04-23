@@ -1,13 +1,15 @@
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
 import Order from '../models/Order.js';
+import sendEmail from '../utils/sendEmail.js';
+import { generateInvoiceHTML } from '../utils/invoiceTemplate.js';
 
 // @desc    Create Razorpay Order
 // @route   POST /api/payment/create-order
 // @access  Private (or Public depending on use case)
 export const createOrder = async (req, res) => {
   try {
-    const { amount, currency, notes, customerName, customerEmail, customerPhone } = req.body;
+    const { amount, currency, notes, customerName, customerEmail, customerPhone, items } = req.body;
 
     if (!amount) {
       return res.status(400).json({ success: false, error: 'Amount is required' });
@@ -42,6 +44,7 @@ export const createOrder = async (req, res) => {
       currency: options.currency,
       status: 'created',
       notes: options.notes,
+      items: items || [],
     });
 
     res.status(201).json({
@@ -93,9 +96,21 @@ export const verifyPayment = async (req, res) => {
         return res.status(404).json({ success: false, error: 'Order not found in database' });
       }
 
+      // Send Invoice Email
+      try {
+        await sendEmail({
+          email: order.customerEmail,
+          subject: `Booking Confirmed! Invoice for Order ${order.razorpayOrderId}`,
+          message: generateInvoiceHTML(order),
+        });
+      } catch (mailErr) {
+        console.error('Failed to send invoice email:', mailErr);
+        // We don't fail the request if email fails, but we log it
+      }
+
       return res.status(200).json({
         success: true,
-        message: 'Payment verified successfully',
+        message: 'Payment verified successfully and invoice sent',
         data: order,
       });
     } else {

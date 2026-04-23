@@ -16,6 +16,7 @@ import { AdminLayout } from "./admin/components/AdminLayout";
 import Dashboard from "./admin/pages/Dashboard";
 import AdminPackages from "./admin/pages/Packages";
 import PackageForm from "./admin/pages/PackageForm";
+import ActivityManagement from "./admin/pages/ActivityManagement";
 import AdminLogin from "./admin/pages/Login";
 import ForgotPassword from "./admin/pages/ForgotPassword";
 import ResetPassword from "./admin/pages/ResetPassword";
@@ -75,6 +76,17 @@ const App = () => (
                 <ProtectedRoute>
                   <AdminLayout title="Edit Package">
                     <PackageForm />
+                  </AdminLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/admin/activities"
+              element={
+                <ProtectedRoute>
+                  <AdminLayout title="Water Adventure Activities">
+                    <ActivityManagement />
                   </AdminLayout>
                 </ProtectedRoute>
               }

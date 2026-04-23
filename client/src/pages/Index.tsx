@@ -1,5 +1,6 @@
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
+import { WaterAdventureSection } from "@/components/WaterAdventureSection";
 import { Packages } from "@/components/Packages";
 import { About } from "@/components/About";
 import { Reviews } from "@/components/Reviews";
@@ -13,6 +14,7 @@ const Index = () => {
       <Header />
       <main>
         <Hero />
+        <WaterAdventureSection />
         <Packages limit={9} />
         <About />
         <Reviews />

@@ -38,6 +38,10 @@ const packageSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    showPrice: {
+      type: Boolean,
+      default: false,
+    },
     groupSize: {
       type: Number,
       default: 6,

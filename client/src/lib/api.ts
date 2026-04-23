@@ -10,6 +10,7 @@ export interface Package {
   rating: number;
   image: string;
   featured: boolean;
+  showPrice: boolean;
   groupSize: number;
   status: string;
   itinerary?: { day: string; title: string; activities: string }[];
