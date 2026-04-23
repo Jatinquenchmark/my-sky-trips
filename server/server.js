@@ -34,13 +34,13 @@ import packageRoutes from './routes/packageRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
 import activityRoutes from './routes/activityRoutes.js';
 import { getActivities } from './controllers/activityController.js';
+app.get('/api/debug', (req, res) => res.json({ success: true, message: 'API is responding' }));
+app.get('/api/activities', getActivities);
+app.use('/api/water-activities', activityRoutes);
+
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/packages', apiLimiter, packageRoutes);
 app.use('/api/payment', apiLimiter, paymentRoutes);
-
-// Activity Routes
-app.get('/api/activities', getActivities); // Backward compatibility
-app.use('/api/water-activities', activityRoutes);
 
 app.get('/', (req, res) => {
     res.json({ message: 'Welcome to Sky-trip API' });
