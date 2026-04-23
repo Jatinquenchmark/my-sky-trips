@@ -15,7 +15,8 @@ import { protect, authorize } from '../middleware/authMiddleware.js';
 const router = express.Router();
 
 // ── Public ──────────────────────────────────────────────
-router.get('/', getActivities);          // Frontend: get all activities + seat info
+router.get('/', getActivities);          // Matches /api/water-activities/
+router.get('', getActivities);           // Matches /api/water-activities
 router.post('/book', bookActivities);    // Frontend: reserve seats (called before payment)
 
 // ── Admin Only ───────────────────────────────────────────
