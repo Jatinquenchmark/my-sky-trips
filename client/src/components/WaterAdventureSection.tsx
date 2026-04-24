@@ -457,11 +457,12 @@ const GuestModal = ({ total, subtotal, charge, gst, onConfirm, onClose, loading,
             <span>⚡ Razorpay</span>
           </div>
 
-          <div className="pt-4 mt-4 border-t border-slate-100 text-center">
-            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-2">Internal Testing Only</p>
+          <div className="pt-6 mt-6 border-t border-slate-100">
+            <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] mb-3 text-center">Internal Testing Only</p>
             <button 
               type="button"
               onClick={async () => {
+                if (!name || !email || !phone) { toast.error('Please fill Name, Email and Phone first'); return; }
                 const toastId = toast.loading('Creating test booking...');
                 try {
                   const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/payment/test-booking`, {
@@ -488,9 +489,9 @@ const GuestModal = ({ total, subtotal, charge, gst, onConfirm, onClose, loading,
                   toast.error('Connection error', { id: toastId });
                 }
               }}
-              className="text-xs font-bold text-blue-600 hover:text-blue-800 transition-colors uppercase tracking-widest cursor-pointer"
+              className="w-full py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-black rounded-xl transition-all border border-emerald-100 uppercase tracking-widest text-[11px] cursor-pointer shadow-sm"
             >
-              Test Booking (No Real Payment)
+              🚀 Run Test Booking (No Payment)
             </button>
           </div>
         </form>
