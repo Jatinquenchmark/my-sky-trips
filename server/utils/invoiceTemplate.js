@@ -131,7 +131,7 @@ export const generateInvoiceHTML = (order) => {
       </div>
       
       <div class="footer">
-        <div class="footer-text">Help: +91 98765 43210 | support@mysytrips.com</div>
+        <div class="footer-text">Help: +91 98765 43210 | support@myskytrips.com</div>
       </div>
     </div>
   </div>

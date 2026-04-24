@@ -367,9 +367,10 @@ const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCa
 };
 
 
-const GuestModal = ({ total, subtotal, charge, gst, onConfirm, onClose, loading }: {
-  total: number; subtotal: number; charge: number; gst: number; onConfirm: (name: string, email: string, phone: string, aadhar: string) => void;
-  onClose: () => void; loading: boolean;
+const GuestModal = ({ total, subtotal, charge, gst, onConfirm, onClose, loading, bookedItems, bookingDate, onSuccess }: {
+  total: number; subtotal: number; charge: number; gst: number; 
+  onConfirm: (name: string, email: string, phone: string, aadhar: string) => void;
+  onClose: () => void; loading: boolean; bookedItems: any[]; bookingDate: string; onSuccess: (data: any) => void;
 }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -1078,7 +1079,20 @@ export const WaterAdventureSection = () => {
             gst={cartGst}
             onConfirm={handleConfirmPayment} 
             onClose={() => setShowModal(false)} 
-            loading={paying} 
+            loading={paying}
+            bookedItems={cart}
+            bookingDate={selectedDate}
+            onSuccess={(data) => {
+              setSuccessData({
+                items: data.items,
+                total: data.amount / 100,
+                name: data.customerName,
+                date: data.bookingDate
+              });
+              setShowSuccess(true);
+              clearCart();
+              setShowModal(false);
+            }}
           />
         )}
       </AnimatePresence>
