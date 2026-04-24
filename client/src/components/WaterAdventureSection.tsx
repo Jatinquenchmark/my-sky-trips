@@ -465,7 +465,8 @@ const GuestModal = ({ total, subtotal, charge, gst, onConfirm, onClose, loading,
                 if (!name || !email || !phone) { toast.error('Please fill Name, Email and Phone first'); return; }
                 const toastId = toast.loading('Creating test booking...');
                 try {
-                  const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/payment/test-booking`, {
+                  const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/+api\/*$/, '');
+                  const response = await fetch(`${baseUrl}/api/payment/test-booking`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

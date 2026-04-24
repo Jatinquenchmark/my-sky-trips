@@ -68,13 +68,14 @@ export const createOrder = async (req, res) => {
 // @access  Public
 export const testBooking = async (req, res) => {
   try {
-    const { customerName, customerEmail, customerPhone, items, bookingDate, amount } = req.body;
+    const { customerName, customerEmail, customerPhone, customerAadhar, items, bookingDate, amount } = req.body;
 
     const order = await Order.create({
       razorpayOrderId: `test_${Date.now()}`,
       customerName,
       customerEmail,
       customerPhone,
+      customerAadhar,
       amount: amount * 100,
       status: 'paid',
       items,
