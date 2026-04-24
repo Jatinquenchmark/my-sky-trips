@@ -11,6 +11,7 @@ import html2canvas from 'html2canvas';
 import { PackageCard } from './PackageCard';
 import { API_BASE_URL, Package as PackageType, fetchPackageById } from '@/lib/api';
 import { loadRazorpayScript } from '@/lib/razorpay';
+import { Ticket } from './Ticket';
 
 // Import local assets
 import SpeedBoatImg from '../assets/Speed Boat.jpg.jpeg';
@@ -26,7 +27,7 @@ import LogoImg from '../assets/logo-DFfutrEX.png';
 
 // ── Success Modal (Ticket Design) ─────────────────────────────────────────────
 const SuccessModal = ({ bookedItems, total, customerName, bookingDate, onClose }: {
-  bookedItems: { name: string; emoji: string; persons: number; totalPrice: number }[];
+  bookedItems: any[];
   total: number;
   customerName: string;
   bookingDate?: string;
@@ -39,15 +40,27 @@ const SuccessModal = ({ bookedItems, total, customerName, bookingDate, onClose }
     const toastId = toast.loading('Generating your ticket...');
     
     try {
+      // Ensure all images are loaded
+      if (ticketRef.current) {
+        const images = ticketRef.current.getElementsByTagName('img');
+        const imagePromises = Array.from(images).map(img => {
+          if (img.complete) return Promise.resolve();
+          return new Promise(resolve => {
+            img.onload = resolve;
+            img.onerror = resolve;
+          });
+        });
+        await Promise.all(imagePromises);
+      }
+
       // Small delay to ensure everything is settled
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
       const canvas = await html2canvas(ticketRef.current, {
         scale: 2,
         useCORS: true,
-        allowTaint: true,
         backgroundColor: '#ffffff',
-        logging: false,
+        logging: true,
         onclone: (clonedDoc) => {
           const el = clonedDoc.querySelector('[data-ticket-container]');
           if (el instanceof HTMLElement) {
@@ -68,8 +81,6 @@ const SuccessModal = ({ bookedItems, total, customerName, bookingDate, onClose }
     }
   };
 
-  const comboName = bookedItems.map(i => i.name).join(' + ');
-
   return (
     <div className="fixed inset-0 z-[60] flex justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto pt-10 pb-20">
       <motion.div
@@ -78,149 +89,29 @@ const SuccessModal = ({ bookedItems, total, customerName, bookingDate, onClose }
         exit={{ opacity: 0, y: 50 }}
         className="w-full max-w-lg h-fit"
       >
-        {/* Ticket Container */}
-        <div 
-          ref={ticketRef} 
-          data-ticket-container
-          className="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden font-sans border border-slate-100 w-full"
-        >
-          {/* Header */}
-          <div className="bg-[#004D56] p-8 text-white relative">
-             <div className="flex justify-between items-start mb-6">
-               <div className="flex flex-col">
-                 <img src={LogoImg} alt="MYSKYTRIPS" crossOrigin="anonymous" className="h-10 w-auto mb-2 brightness-0 invert" />
-                 <span className="text-xl font-black tracking-tighter">
-                   MYSKYTRIPS
-                 </span>
-               </div>
-               <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center">
-                 <span className="text-xs font-bold italic">i</span>
-               </div>
-             </div>
+        <div className="flex flex-col items-center gap-6">
+          <Ticket 
+            ticketRef={ticketRef}
+            bookedItems={bookedItems}
+            total={total}
+            customerName={customerName}
+            bookingDate={bookingDate}
+          />
 
-             <div className="inline-block px-3 py-1 bg-white/10 rounded-full text-[10px] font-black uppercase tracking-widest mb-3 text-[#00F2FF]">
-               Water Sports
-             </div>
-             
-             <h1 className="text-3xl font-black leading-tight mb-2">
-               {comboName}
-             </h1>
-             <p className="text-white/60 text-sm font-medium">
-               Tehri Lake Adventure Hub, Uttarakhand
-             </p>
+          <div className="flex flex-col gap-3 w-full max-w-[300px]">
+            <button 
+              onClick={handleDownload}
+              className="w-full h-14 bg-[#004D56] hover:bg-[#003A41] text-white rounded-2xl font-black text-sm uppercase tracking-wider shadow-xl flex items-center justify-center gap-2 transition-all cursor-pointer"
+            >
+              <Download size={20} /> Download Ticket
+            </button>
+            <button 
+              onClick={onClose}
+              className="w-full h-14 bg-white text-slate-500 hover:text-slate-700 rounded-2xl font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer border border-slate-200"
+            >
+              Close
+            </button>
           </div>
-
-          {/* Details Section */}
-          <div className="p-8 pb-4">
-             <div className="grid grid-cols-2 gap-y-6 gap-x-4 mb-8">
-                <div>
-                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Date</p>
-                   <p className="font-bold text-slate-800">{bookingDate ? new Date(bookingDate).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) : 'TBA'}</p>
-                </div>
-                <div>
-                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Time Slot</p>
-                   <p className="font-bold text-slate-800">09:00 — 11:00 AM</p>
-                </div>
-                <div>
-                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Report By</p>
-                   <p className="font-bold text-slate-800">08:45 AM</p>
-                </div>
-                <div>
-                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Venue</p>
-                   <p className="font-bold text-slate-800 text-sm">Tehri Lake Adventure Zone</p>
-                </div>
-             </div>
-
-             <div className="flex items-center justify-between py-4 border-t border-b border-dashed border-slate-200 mb-8">
-                <div>
-                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Booking ID</p>
-                   <p className="text-xl font-black text-slate-900 tracking-tight uppercase">MST-2025-00{Math.floor(100 + Math.random() * 900)}</p>
-                </div>
-                <div className="bg-[#E6FFFA] text-[#00A389] px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 border border-[#B2F5EA]">
-                   <div className="w-1.5 h-1.5 bg-[#00A389] rounded-full animate-pulse" />
-                   Paid
-                </div>
-             </div>
-
-             <div className="flex items-center gap-4 mb-8">
-                <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center text-3xl shadow-inner">
-                   {bookedItems[0]?.emoji || '🎫'}
-                </div>
-                <div>
-                   <h3 className="text-xl font-black text-slate-900 leading-tight">{customerName}</h3>
-                   <p className="text-xs font-bold text-slate-500">Ticket #1 — Adult</p>
-                   <div className="mt-1 inline-flex items-center gap-1.5 px-2 py-0.5 bg-blue-50 text-blue-600 rounded text-[10px] font-black uppercase tracking-tighter">
-                      {bookedItems.length} {bookedItems.length > 1 ? 'Packages' : 'Package'} Booked
-                   </div>
-                </div>
-             </div>
-
-             <div className="flex items-baseline justify-between mb-8">
-                <span className="text-sm font-bold text-slate-500 italic">Total Paid (incl. GST)</span>
-                <span className="text-3xl font-black text-[#004D56] tracking-tighter">₹{total.toLocaleString()}</span>
-             </div>
-
-             {/* Disclaimers */}
-             <div className="space-y-3 pt-6 border-t border-slate-100">
-                <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Important Disclaimers</h4>
-                <ul className="space-y-2 text-[11px] text-slate-500 font-medium leading-relaxed">
-                   <li className="flex gap-2">
-                      <span className="text-slate-300">•</span>
-                      Participants with heart conditions, back/neck injuries, or pregnancy must not participate.
-                   </li>
-                   <li className="flex gap-2 text-rose-500 font-bold">
-                      <span className="text-rose-200">•</span>
-                      Activities subject to weather & lake conditions. Operator may reschedule.
-                   </li>
-                   <li className="flex gap-2">
-                      <span className="text-slate-300">•</span>
-                      Life jacket and safety gear must be worn at all times.
-                   </li>
-                   <li className="flex gap-2">
-                      <span className="text-slate-300">•</span>
-                      Participants under alcohol/substance influence will be denied entry — no refund.
-                   </li>
-                   <li className="flex gap-2">
-                      <span className="text-slate-300">•</span>
-                      Company is not liable for loss of personal valuables during activity.
-                   </li>
-                   <li className="flex gap-2">
-                      <span className="text-slate-300">•</span>
-                      Physical waiver must be signed at the venue before participating.
-                   </li>
-                   <li className="flex gap-2">
-                      <span className="text-slate-300">•</span>
-                      Min. age 12 yrs; under 18 requires guardian consent at check-in.
-                   </li>
-                </ul>
-             </div>
-
-             <div className="mt-10 pt-6 border-t border-slate-100 flex flex-col items-center gap-1 pb-4">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Help: +91 98765 43210 | support@mysytrips.com</p>
-             </div>
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="mt-6 flex gap-4 no-print">
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={handleDownload}
-            className="flex-1 py-4 bg-[#004D56] hover:bg-[#00363D] text-white font-black rounded-2xl transition-all cursor-pointer shadow-xl flex items-center justify-center gap-2 uppercase tracking-widest text-xs"
-          >
-            <Download size={18} />
-            Download Ticket
-          </motion.button>
-          
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={onClose}
-            className="flex-1 py-4 bg-white hover:bg-slate-50 text-slate-900 font-black rounded-2xl transition-all cursor-pointer shadow-xl border-2 border-slate-100 uppercase tracking-widest text-xs"
-          >
-            Back to Activities
-          </motion.button>
         </div>
       </motion.div>
     </div>
@@ -247,7 +138,7 @@ const CONVENIENCE_CHARGE_AMOUNT = 500;
 // ── Activity Card ─────────────────────────────────────────────────────────────
 const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCart: (item: CartItem) => void }) => {
   const navigate = useNavigate();
-  const isMulti = activity.durations?.length > 0;
+  const isMulti = (activity.durations?.length ?? 0) > 0;
   const [selDur, setSelDur] = useState<Duration | null>(isMulti ? activity.durations[0] : null);
   const [persons, setPersons] = useState(1);
 
@@ -684,7 +575,7 @@ export const WaterAdventureSection = () => {
   const [showModal, setShowModal] = useState(false);
   const [paying, setPaying] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [successData, setSuccessData] = useState<{ items: CartItem[]; total: number; name: string; date?: string } | null>(null);
+  const [successData, setSuccessData] = useState<{ items: any[]; total: number; name: string; date?: string } | null>(null);
   const [selectedDate, setSelectedDate] = useState('');
   const [isCartOpen, setIsCartOpen] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
