@@ -56,25 +56,29 @@ const SuccessModal = ({ bookedItems, total, customerName, bookingDate, onClose }
       // Small delay to ensure everything is settled
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      const canvas = await html2canvas(ticketRef.current, {
-        scale: 2,
+      const captureTarget = document.getElementById('ticket-capture-area');
+      if (!captureTarget) throw new Error('Capture target not found');
+
+      const canvas = await html2canvas(captureTarget, {
         useCORS: true,
         backgroundColor: '#ffffff',
-        logging: true,
-        onclone: (clonedDoc) => {
-          const el = clonedDoc.querySelector('[data-ticket-container]');
-          if (el instanceof HTMLElement) {
-             el.style.boxShadow = 'none';
-             el.style.borderRadius = '0';
-          }
-        }
+        scale: 2,
+        logging: false,
+        allowTaint: true,
       });
       
-      const link = document.createElement('a');
-      link.download = `Ticket_MYSKYTRIPS_${customerName.replace(/\s+/g, '_')}.png`;
-      link.href = canvas.toDataURL('image/png', 1.0);
-      link.click();
-      toast.success('Ticket downloaded!', { id: toastId });
+      canvas.toBlob((blob) => {
+        if (!blob) throw new Error('Canvas to Blob failed');
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = `Ticket_MYSKYTRIPS_${customerName.replace(/\s+/g, '_')}.png`;
+        link.href = url;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        toast.success('Ticket downloaded!', { id: toastId });
+      }, 'image/png', 1.0);
     } catch (err) {
       console.error('Download failed', err);
       toast.error('Download failed. Try again or take a screenshot.', { id: toastId });
@@ -114,6 +118,16 @@ const SuccessModal = ({ bookedItems, total, customerName, bookingDate, onClose }
           </div>
         </div>
       </motion.div>
+      
+      {/* Off-screen capture area */}
+      <div id="ticket-capture-area" className="absolute left-[-9999px] top-0">
+        <Ticket 
+          bookedItems={bookedItems}
+          total={total}
+          customerName={customerName}
+          bookingDate={bookingDate}
+        />
+      </div>
     </div>
   );
 };
