@@ -9,6 +9,7 @@ import PackageDetail from "./pages/PackageDetail";
 import AllPackages from "./pages/AllPackages";
 import WaterAdventurePage from "./pages/WaterAdventurePage";
 import WhatsAppButton from "./components/WhatsAppButton";
+import DownloadTicket from "./pages/DownloadTicket";
 
 // Admin Imports
 import { AuthProvider } from "./admin/context/AuthContext";
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/all-packages" element={<AllPackages />} />
             <Route path="/water-adventure" element={<WaterAdventurePage />} />
             <Route path="/package/:id" element={<PackageDetail />} />
+            <Route path="/ticket/:orderId" element={<DownloadTicket />} />
 
             {/* Admin Routes */}
             <Route path="/admin/login" element={<AdminLogin />} />

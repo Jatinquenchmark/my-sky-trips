@@ -6,26 +6,7 @@ export const generateInvoiceHTML = (order) => {
   });
 
   const totalPaid = order.amount / 100;
-  const subtotal = order.items.reduce((acc, item) => acc + item.totalPrice, 0);
   
-  // Back-calculate charge and GST
-  // total = (subtotal + charge) * 1.05
-  const taxable = Math.round(totalPaid / 1.05);
-  const gst = totalPaid - taxable;
-  const charge = taxable - subtotal;
-
-  const itemRows = order.items.map(item => `
-    <tr>
-      <td style="padding: 12px; border-bottom: 1px solid #eee;">
-        <span style="font-size: 20px; margin-right: 8px;">${item.emoji}</span>
-        <strong>${item.name}</strong>
-        ${item.duration ? `<br><small style="color: #666;">Duration: ${item.duration}</small>` : ''}
-      </td>
-      <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: center;">${item.persons}</td>
-      <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right;">₹${(item.totalPrice).toLocaleString()}</td>
-    </tr>
-  `).join('');
-
   return `
 <!DOCTYPE html>
 <html>
@@ -34,8 +15,7 @@ export const generateInvoiceHTML = (order) => {
     body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #334155; margin: 0; padding: 0; background-color: #f8fafc; }
     .ticket-container { max-width: 500px; margin: 40px auto; background: #ffffff; border-radius: 40px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); border: 1px solid #f1f5f9; }
     .header { background-color: #004D56; padding: 40px; color: #ffffff; }
-    .logo { font-size: 24px; font-weight: 900; letter-spacing: -1px; margin-bottom: 24px; }
-    .logo span { color: #00F2FF; }
+    .logo { font-size: 24px; font-weight: 900; letter-spacing: -1px; margin-bottom: 24px; text-transform: uppercase; }
     .badge { display: inline-block; padding: 4px 12px; background: rgba(255, 255, 255, 0.1); border-radius: 20px; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #00F2FF; margin-bottom: 12px; }
     .title { font-size: 28px; font-weight: 900; line-height: 1.2; margin: 0 0 8px 0; color: #ffffff; }
     .subtitle { font-size: 14px; color: rgba(255, 255, 255, 0.6); margin: 0; font-weight: 500; }
@@ -78,7 +58,7 @@ export const generateInvoiceHTML = (order) => {
 <body>
   <div class="ticket-container">
     <div class="header">
-      <div class="logo">MY <span>SY</span> TRIPS</div>
+      <div class="logo">MYSKYTRIPS</div>
       <div class="badge">Water Sports</div>
       <h1 class="title">${order.items.map(i => i.name).join(' + ')}</h1>
       <p class="subtitle">Tehri Lake Adventure Hub, Uttarakhand</p>
@@ -111,7 +91,7 @@ export const generateInvoiceHTML = (order) => {
       <div class="booking-section">
         <div style="display: table-cell;">
           <div class="label">Booking ID</div>
-          <div class="value" style="font-size: 20px; letter-spacing: -0.5px;">MST-2025-00${Math.floor(100 + Math.random() * 900)}</div>
+          <div class="value" style="font-size: 20px; letter-spacing: -0.5px;">MST-${order.razorpayOrderId.slice(-8)}</div>
         </div>
         <div style="display: table-cell; text-align: right; vertical-align: middle;">
           <span style="background: #E6FFFA; color: #00A389; padding: 6px 16px; border-radius: 20px; font-size: 10px; font-weight: 900; text-transform: uppercase; border: 1px solid #B2F5EA;">Paid</span>
@@ -147,7 +127,7 @@ export const generateInvoiceHTML = (order) => {
       </div>
       
       <div class="btn-container">
-        <a href="https://sky-trip.vercel.app" class="btn">Download Your Ticket</a>
+        <a href="https://myskytrips.com/ticket/${order.razorpayOrderId}" class="btn">Click Here to Download Ticket</a>
       </div>
       
       <div class="footer">

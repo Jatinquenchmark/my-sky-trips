@@ -22,6 +22,7 @@ import FlyBoardingImg from '../assets/Fly boarding.jpg.jpeg';
 import ParaSailingImg from '../assets/Para sailing.jpg.jpeg';
 import ShikaraImg from '../assets/Shikara.jpg.jpeg';
 import TehriHeliImg from '../assets/tehri3.png';
+import LogoImg from '../assets/logo-DFfutrEX.png';
 
 // ── Success Modal (Ticket Design) ─────────────────────────────────────────────
 const SuccessModal = ({ bookedItems, total, customerName, bookingDate, onClose }: {
@@ -38,30 +39,32 @@ const SuccessModal = ({ bookedItems, total, customerName, bookingDate, onClose }
     const toastId = toast.loading('Generating your ticket...');
     
     try {
-      // Small delay to ensure everything is rendered
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Small delay to ensure everything is settled
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       const canvas = await html2canvas(ticketRef.current, {
-        scale: 3, // Higher scale for better quality
+        scale: 2,
         useCORS: true,
+        allowTaint: true,
         backgroundColor: '#ffffff',
         logging: false,
         onclone: (clonedDoc) => {
           const el = clonedDoc.querySelector('[data-ticket-container]');
           if (el instanceof HTMLElement) {
-             el.style.borderRadius = '0'; // Clean edges for the image
+             el.style.boxShadow = 'none';
+             el.style.borderRadius = '0';
           }
         }
       });
       
       const link = document.createElement('a');
-      link.download = `SkyTrip_Ticket_${customerName.replace(/\s+/g, '_')}.png`;
+      link.download = `Ticket_MYSKYTRIPS_${customerName.replace(/\s+/g, '_')}.png`;
       link.href = canvas.toDataURL('image/png', 1.0);
       link.click();
       toast.success('Ticket downloaded!', { id: toastId });
     } catch (err) {
       console.error('Download failed', err);
-      toast.error('Download failed. Please try again.', { id: toastId });
+      toast.error('Download failed. Try again or take a screenshot.', { id: toastId });
     }
   };
 
@@ -85,8 +88,9 @@ const SuccessModal = ({ bookedItems, total, customerName, bookingDate, onClose }
           <div className="bg-[#004D56] p-8 text-white relative">
              <div className="flex justify-between items-start mb-6">
                <div className="flex flex-col">
-                 <span className="text-2xl font-black tracking-tighter flex items-center gap-1">
-                   MY <span className="text-[#00F2FF]">SY</span> TRIPS
+                 <img src={LogoImg} alt="MYSKYTRIPS" crossOrigin="anonymous" className="h-10 w-auto mb-2 brightness-0 invert" />
+                 <span className="text-xl font-black tracking-tighter">
+                   MYSKYTRIPS
                  </span>
                </div>
                <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center">
@@ -450,6 +454,43 @@ const GuestModal = ({ total, subtotal, charge, gst, onConfirm, onClose, loading 
             <span>✅ 100% Secure</span>
             <span>🔒 Encrypted</span>
             <span>⚡ Razorpay</span>
+          </div>
+
+          <div className="pt-4 mt-4 border-t border-slate-100 text-center">
+            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-2">Internal Testing Only</p>
+            <button 
+              type="button"
+              onClick={async () => {
+                const toastId = toast.loading('Creating test booking...');
+                try {
+                  const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/payment/test-booking`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      customerName: name,
+                      customerEmail: email,
+                      customerPhone: phone,
+                      customerAadhar: aadhar,
+                      items: bookedItems,
+                      bookingDate: bookingDate,
+                      amount: total
+                    })
+                  });
+                  const data = await response.json();
+                  if (data.success) {
+                    toast.success('Test booking successful!', { id: toastId });
+                    onSuccess(data.data);
+                  } else {
+                    toast.error(data.error || 'Test booking failed', { id: toastId });
+                  }
+                } catch (err) {
+                  toast.error('Connection error', { id: toastId });
+                }
+              }}
+              className="text-xs font-bold text-blue-600 hover:text-blue-800 transition-colors uppercase tracking-widest cursor-pointer"
+            >
+              Test Booking (No Real Payment)
+            </button>
           </div>
         </form>
       </motion.div>

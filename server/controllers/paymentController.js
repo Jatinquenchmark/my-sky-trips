@@ -63,6 +63,41 @@ export const createOrder = async (req, res) => {
   }
 };
 
+// @desc    Create Test Booking (No Payment)
+// @route   POST /api/payment/test-booking
+// @access  Public
+export const testBooking = async (req, res) => {
+  try {
+    const { customerName, customerEmail, customerPhone, items, bookingDate, amount } = req.body;
+
+    const order = await Order.create({
+      razorpayOrderId: `test_${Date.now()}`,
+      customerName,
+      customerEmail,
+      customerPhone,
+      amount: amount * 100,
+      status: 'paid',
+      items,
+      bookingDate,
+    });
+
+    try {
+      await sendEmail({
+        email: order.customerEmail,
+        subject: `Test Booking Confirmed! Invoice for Order ${order.razorpayOrderId}`,
+        message: generateInvoiceHTML(order),
+      });
+    } catch (mailErr) {
+      console.error('Failed to send test email:', mailErr);
+    }
+
+    res.status(201).json({ success: true, data: order });
+  } catch (err) {
+    console.error('Test Booking Error:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
 // @desc    Verify Razorpay Payment
 // @route   POST /api/payment/verify-payment
 // @access  Private (or Public)
@@ -138,6 +173,22 @@ export const getOrders = async (req, res) => {
     res.json({ success: true, data: orders });
   } catch (err) {
     console.error('Get Orders Error:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+// @desc    Get Order By ID (Public for ticket download)
+// @route   GET /api/payment/order/:orderId
+// @access  Public
+export const getOrderById = async (req, res) => {
+  try {
+    const order = await Order.findOne({ razorpayOrderId: req.params.orderId });
+    if (!order) {
+      return res.status(404).json({ success: false, error: 'Order not found' });
+    }
+    res.json({ success: true, data: order });
+  } catch (err) {
+    console.error('Get Order Error:', err);
     res.status(500).json({ success: false, error: err.message });
   }
 };
