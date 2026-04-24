@@ -91,13 +91,22 @@ const SuccessModal = ({ bookedItems, total, customerName, bookingDate, onClose }
                 <title>MYSKYTRIPS Ticket - ${customerName}</title>
                 <script src="https://cdn.tailwindcss.com"></script>
                 <style>
-                  @media print { .no-print { display: none; } }
+                  @media print { 
+                    .no-print { display: none; } 
+                    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+                  }
                   body { background: #f8fafc; padding: 20px; font-family: sans-serif; }
                 </style>
               </head>
               <body>
-                <div class="max-w-[500px] mx-auto bg-white shadow-xl rounded-[2.5rem] overflow-hidden">
-                  ${ticketHtml}
+                <div class="max-w-[500px] mx-auto bg-white shadow-xl rounded-[2.5rem] overflow-hidden border border-slate-200 text-slate-900">
+                  <div class="bg-white p-8 border-b border-slate-100">
+                    <h1 class="text-2xl font-black">MYSKYTRIPS</h1>
+                    <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Official Ticket</p>
+                  </div>
+                  <div class="p-8">
+                    ${ticketHtml}
+                  </div>
                 </div>
                 <div class="text-center mt-8 no-print">
                   <button onclick="window.print()" style="background: #004D56; color: white; padding: 12px 24px; border-radius: 12px; font-weight: bold; cursor: pointer;">

@@ -28,7 +28,7 @@ export const Ticket: React.FC<TicketProps> = ({
       className="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden font-sans border border-slate-100 w-full max-w-[500px] mx-auto text-left"
     >
       {/* Header */}
-      <div className="bg-[#004D56] p-8 text-white relative">
+      <div className="bg-[#0066FF] p-8 text-white relative">
         <div className="flex justify-between items-start mb-6">
           <div className="flex flex-col">
             <img src={LogoImg} alt="MYSKYTRIPS" crossOrigin="anonymous" className="h-10 w-auto mb-2 brightness-0 invert" />
