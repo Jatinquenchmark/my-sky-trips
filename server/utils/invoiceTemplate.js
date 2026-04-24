@@ -5,6 +5,15 @@ export const generateInvoiceHTML = (order) => {
     year: 'numeric'
   });
 
+  const totalPaid = order.amount / 100;
+  const subtotal = order.items.reduce((acc, item) => acc + item.totalPrice, 0);
+  
+  // Back-calculate charge and GST
+  // total = (subtotal + charge) * 1.05
+  const taxable = Math.round(totalPaid / 1.05);
+  const gst = totalPaid - taxable;
+  const charge = taxable - subtotal;
+
   const itemRows = order.items.map(item => `
     <tr>
       <td style="padding: 12px; border-bottom: 1px solid #eee;">
@@ -39,6 +48,7 @@ export const generateInvoiceHTML = (order) => {
 <body>
   <div class="container">
     <div class="header">
+      <img src="https://sky-trip.vercel.app/logo.png" alt="Sky Trip Logo" style="width: 80px; height: auto; margin-bottom: 10px;">
       <div class="logo">SKY TRIP</div>
       <div class="invoice-title">Booking Confirmation & Invoice</div>
     </div>
@@ -46,6 +56,7 @@ export const generateInvoiceHTML = (order) => {
     <div style="margin-top: 25px;">
       <p>Hi <strong>${order.customerName}</strong>,</p>
       <p>Thank you for booking your adventure with Sky Trip! Your payment was successful and your seats are reserved.</p>
+      ${order.bookingDate ? `<p><strong>Planned Visit Date:</strong> ${new Date(order.bookingDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' })}</p>` : ''}
     </div>
 
     <div style="display: table; width: 100%; margin-top: 20px;">
@@ -54,6 +65,7 @@ export const generateInvoiceHTML = (order) => {
         <p style="margin: 0;">${order.customerName}</p>
         <p style="margin: 0;">${order.customerEmail}</p>
         <p style="margin: 0;">${order.customerPhone}</p>
+        ${order.customerAadhar ? `<p style="margin: 0;"><strong>Aadhar:</strong> ${order.customerAadhar}</p>` : ''}
       </div>
       <div style="display: table-cell; text-align: right;">
         <div class="section-title">Invoice Details</div>
@@ -77,8 +89,25 @@ export const generateInvoiceHTML = (order) => {
     </table>
 
     <div class="total-section">
-      <span style="font-size: 14px; color: #64748b; margin-right: 15px;">Total Amount Paid</span>
-      <span style="font-size: 24px; font-weight: bold; color: #1a56db;">₹${(order.amount / 100).toLocaleString()}</span>
+      <table style="width: 250px; margin-left: auto; margin-top: 0; border: none;">
+        <tr>
+          <td style="text-align: right; font-size: 13px; color: #64748b; padding: 4px 0;">Subtotal:</td>
+          <td style="text-align: right; font-size: 13px; font-weight: bold; padding: 4px 0;">₹${subtotal.toLocaleString()}</td>
+        </tr>
+        ${charge > 0 ? `
+        <tr>
+          <td style="text-align: right; font-size: 13px; color: #64748b; padding: 4px 0;">Convenience Charge:</td>
+          <td style="text-align: right; font-size: 13px; font-weight: bold; padding: 4px 0;">₹${charge.toLocaleString()}</td>
+        </tr>` : ''}
+        <tr>
+          <td style="text-align: right; font-size: 13px; color: #64748b; padding: 4px 0;">GST (5%):</td>
+          <td style="text-align: right; font-size: 13px; font-weight: bold; padding: 4px 0;">₹${gst.toLocaleString()}</td>
+        </tr>
+        <tr>
+          <td style="text-align: right; font-size: 16px; font-weight: bold; color: #1a56db; padding: 12px 0 0;">Total Paid:</td>
+          <td style="text-align: right; font-size: 20px; font-weight: bold; color: #1a56db; padding: 12px 0 0;">₹${totalPaid.toLocaleString()}</td>
+        </tr>
+      </table>
     </div>
 
     <div style="margin-top: 25px; padding: 15px; border-left: 4px solid #f59e0b; background: #fffbeb;">

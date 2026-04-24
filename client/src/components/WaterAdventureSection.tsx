@@ -2,10 +2,14 @@ import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ShoppingCart, Plus, Minus, Trash2, Users, AlertCircle,
-  CheckCircle2, Loader2, X, PartyPopper, MapPin, Phone
+  CheckCircle2, Loader2, X, PartyPopper, MapPin, Phone, Calendar as CalendarIcon,
+  ChevronLeft, ChevronRight, Star, Waves, Download
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { API_BASE_URL } from '@/lib/api';
+import { useNavigate } from 'react-router-dom';
+import html2canvas from 'html2canvas';
+import { PackageCard } from './PackageCard';
+import { API_BASE_URL, Package as PackageType, fetchPackageById } from '@/lib/api';
 import { loadRazorpayScript } from '@/lib/razorpay';
 
 // Import local assets
@@ -17,115 +21,190 @@ import BananaRideImg from '../assets/Banana ride.jpg.jpeg';
 import FlyBoardingImg from '../assets/Fly boarding.jpg.jpeg';
 import ParaSailingImg from '../assets/Para sailing.jpg.jpeg';
 import ShikaraImg from '../assets/Shikara.jpg.jpeg';
+import TehriHeliImg from '../assets/tehri3.png';
 
-// ── Success Modal ─────────────────────────────────────────────────────────────
-const SuccessModal = ({ bookedItems, total, customerName, onClose }: {
+// ── Success Modal (Ticket Design) ─────────────────────────────────────────────
+const SuccessModal = ({ bookedItems, total, customerName, bookingDate, onClose }: {
   bookedItems: { name: string; emoji: string; persons: number; totalPrice: number }[];
   total: number;
   customerName: string;
+  bookingDate?: string;
   onClose: () => void;
-}) => (
-  <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8, y: 40 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.9, y: 20 }}
-      transition={{ type: 'spring', damping: 20, stiffness: 300 }}
-      className="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden"
-    >
-      {/* Top gradient */}
-      <div style={{ background: 'linear-gradient(135deg, #0ea5e9 0%, #1a56db 60%, #4f46e5 100%)' }} className="relative px-8 pt-10 pb-8 text-center overflow-hidden">
-        {/* Decorative circles */}
-        <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-white/10 -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full bg-white/5 translate-y-1/2 -translate-x-1/2" />
+}) => {
+  const ticketRef = useRef<HTMLDivElement>(null);
 
-        {/* Animated checkmark */}
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.2, type: 'spring', damping: 15, stiffness: 400 }}
-          className="w-20 h-20 mx-auto mb-4 bg-white/20 rounded-full flex items-center justify-center"
-        >
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.35, type: 'spring' }}
-            className="w-14 h-14 bg-white rounded-full flex items-center justify-center"
-          >
-            <CheckCircle2 size={36} className="text-blue-600" />
-          </motion.div>
-        </motion.div>
+  const handleDownload = async () => {
+    if (!ticketRef.current) return;
+    try {
+      const canvas = await html2canvas(ticketRef.current, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff'
+      });
+      const link = document.createElement('a');
+      link.download = `SkyTrip_Ticket_${customerName.replace(/\s+/g, '_')}_${Date.now()}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      toast.success('Ticket downloaded successfully!');
+    } catch (err) {
+      console.error('Download failed', err);
+      toast.error('Failed to download ticket');
+    }
+  };
 
-        <motion.h2
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="text-white text-2xl font-bold mb-1"
-        >
-          Booking Confirmed! 🎉
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="text-white/80 text-sm"
-        >
-          Hey {customerName}, see you at Tehri Lake!
-        </motion.p>
-      </div>
+  const comboName = bookedItems.map(i => i.name).join(' + ');
 
-      {/* Body */}
-      <div className="px-8 py-6">
-        {/* Booked rides */}
-        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Your Rides</p>
-        <div className="space-y-2 mb-5">
-          {bookedItems.map((item, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.5 + i * 0.08 }}
-              className="flex items-center justify-between p-3 bg-blue-50 rounded-2xl"
-            >
-              <div className="flex items-center gap-2">
-                <span className="text-xl">{item.emoji}</span>
+  return (
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        className="w-full max-w-lg my-8"
+      >
+        {/* Ticket Container */}
+        <div ref={ticketRef} className="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden font-sans border border-slate-100">
+          {/* Header */}
+          <div className="bg-[#004D56] p-8 text-white relative">
+             <div className="flex justify-between items-start mb-6">
+               <div className="flex flex-col">
+                 <span className="text-2xl font-black tracking-tighter flex items-center gap-1">
+                   MY <span className="text-[#00F2FF]">SY</span> TRIPS
+                 </span>
+               </div>
+               <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center">
+                 <span className="text-xs font-bold italic">i</span>
+               </div>
+             </div>
+
+             <div className="inline-block px-3 py-1 bg-white/10 rounded-full text-[10px] font-black uppercase tracking-widest mb-3 text-[#00F2FF]">
+               Water Sports
+             </div>
+             
+             <h1 className="text-3xl font-black leading-tight mb-2">
+               {comboName}
+             </h1>
+             <p className="text-white/60 text-sm font-medium">
+               Tehri Lake Adventure Hub, Uttarakhand
+             </p>
+          </div>
+
+          {/* Details Section */}
+          <div className="p-8 pb-4">
+             <div className="grid grid-cols-2 gap-y-6 gap-x-4 mb-8">
                 <div>
-                  <p className="text-xs font-bold text-slate-800">{item.name}</p>
-                  <p className="text-[10px] text-slate-400">{item.persons} person{item.persons > 1 ? 's' : ''}</p>
+                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Date</p>
+                   <p className="font-bold text-slate-800">{bookingDate ? new Date(bookingDate).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) : 'TBA'}</p>
                 </div>
-              </div>
-              <span className="text-xs font-bold text-blue-600">₹{item.totalPrice.toLocaleString()}</span>
-            </motion.div>
-          ))}
+                <div>
+                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Time Slot</p>
+                   <p className="font-bold text-slate-800">09:00 — 11:00 AM</p>
+                </div>
+                <div>
+                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Report By</p>
+                   <p className="font-bold text-slate-800">08:45 AM</p>
+                </div>
+                <div>
+                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Venue</p>
+                   <p className="font-bold text-slate-800 text-sm">Tehri Lake Adventure Zone</p>
+                </div>
+             </div>
+
+             <div className="flex items-center justify-between py-4 border-t border-b border-dashed border-slate-200 mb-8">
+                <div>
+                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Booking ID</p>
+                   <p className="text-xl font-black text-slate-900 tracking-tight uppercase">MST-2025-00{Math.floor(100 + Math.random() * 900)}</p>
+                </div>
+                <div className="bg-[#E6FFFA] text-[#00A389] px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 border border-[#B2F5EA]">
+                   <div className="w-1.5 h-1.5 bg-[#00A389] rounded-full animate-pulse" />
+                   Paid
+                </div>
+             </div>
+
+             <div className="flex items-center gap-4 mb-8">
+                <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center text-3xl shadow-inner">
+                   {bookedItems[0]?.emoji || '🎫'}
+                </div>
+                <div>
+                   <h3 className="text-xl font-black text-slate-900 leading-tight">{customerName}</h3>
+                   <p className="text-xs font-bold text-slate-500">Ticket #1 — Adult</p>
+                   <div className="mt-1 inline-flex items-center gap-1.5 px-2 py-0.5 bg-blue-50 text-blue-600 rounded text-[10px] font-black uppercase tracking-tighter">
+                      {bookedItems.length} {bookedItems.length > 1 ? 'Packages' : 'Package'} Booked
+                   </div>
+                </div>
+             </div>
+
+             <div className="flex items-baseline justify-between mb-8">
+                <span className="text-sm font-bold text-slate-500 italic">Total Paid (incl. GST)</span>
+                <span className="text-3xl font-black text-[#004D56] tracking-tighter">₹{total.toLocaleString()}</span>
+             </div>
+
+             {/* Disclaimers */}
+             <div className="space-y-3 pt-6 border-t border-slate-100">
+                <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Important Disclaimers</h4>
+                <ul className="space-y-2 text-[11px] text-slate-500 font-medium leading-relaxed">
+                   <li className="flex gap-2">
+                      <span className="text-slate-300">•</span>
+                      Participants with heart conditions, back/neck injuries, or pregnancy must not participate.
+                   </li>
+                   <li className="flex gap-2 text-rose-500 font-bold">
+                      <span className="text-rose-200">•</span>
+                      Activities subject to weather & lake conditions. Operator may reschedule.
+                   </li>
+                   <li className="flex gap-2">
+                      <span className="text-slate-300">•</span>
+                      Life jacket and safety gear must be worn at all times.
+                   </li>
+                   <li className="flex gap-2">
+                      <span className="text-slate-300">•</span>
+                      Participants under alcohol/substance influence will be denied entry — no refund.
+                   </li>
+                   <li className="flex gap-2">
+                      <span className="text-slate-300">•</span>
+                      Company is not liable for loss of personal valuables during activity.
+                   </li>
+                   <li className="flex gap-2">
+                      <span className="text-slate-300">•</span>
+                      Physical waiver must be signed at the venue before participating.
+                   </li>
+                   <li className="flex gap-2">
+                      <span className="text-slate-300">•</span>
+                      Min. age 12 yrs; under 18 requires guardian consent at check-in.
+                   </li>
+                </ul>
+             </div>
+
+             <div className="mt-10 pt-6 border-t border-slate-100 flex flex-col items-center gap-1 pb-4">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Help: +91 98765 43210 | support@mysytrips.com</p>
+             </div>
+          </div>
         </div>
 
-        {/* Total */}
-        <div className="flex justify-between items-center p-4 bg-slate-900 rounded-2xl mb-5">
-          <span className="text-white/70 text-sm font-medium">Total Paid</span>
-          <span className="text-white font-bold text-xl">₹{total.toLocaleString()}</span>
+        {/* Action Buttons */}
+        <div className="mt-6 flex gap-4 no-print">
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={handleDownload}
+            className="flex-1 py-4 bg-[#004D56] hover:bg-[#00363D] text-white font-black rounded-2xl transition-all cursor-pointer shadow-xl flex items-center justify-center gap-2 uppercase tracking-widest text-xs"
+          >
+            <Download size={18} />
+            Download Ticket
+          </motion.button>
+          
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={onClose}
+            className="flex-1 py-4 bg-white hover:bg-slate-50 text-slate-900 font-black rounded-2xl transition-all cursor-pointer shadow-xl border-2 border-slate-100 uppercase tracking-widest text-xs"
+          >
+            Back to Activities
+          </motion.button>
         </div>
-
-        {/* Info */}
-        <div className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-100 rounded-2xl mb-5">
-          <MapPin size={16} className="text-amber-500 shrink-0 mt-0.5" />
-          <p className="text-xs text-amber-700 leading-relaxed">
-            Our team will contact you with your ride schedule. Please arrive <strong>15 minutes early</strong> at Tehri Lake Adventure Zone.
-          </p>
-        </div>
-
-        {/* Close button */}
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={onClose}
-          className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-colors cursor-pointer"
-        >
-          Done — Back to Activities
-        </motion.button>
-      </div>
-    </motion.div>
-  </div>
-);
+      </motion.div>
+    </div>
+  );
+};
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface Duration { label: string; price: number; }
@@ -141,9 +220,12 @@ interface CartItem {
 }
 
 const MIN_BOOKING_AMOUNT = 1;
+const CONVENIENCE_CHARGE_THRESHOLD = 5000;
+const CONVENIENCE_CHARGE_AMOUNT = 500;
 
 // ── Activity Card ─────────────────────────────────────────────────────────────
 const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCart: (item: CartItem) => void }) => {
+  const navigate = useNavigate();
   const isMulti = activity.durations?.length > 0;
   const [selDur, setSelDur] = useState<Duration | null>(isMulti ? activity.durations[0] : null);
   const [persons, setPersons] = useState(1);
@@ -151,7 +233,7 @@ const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCa
   const price = isMulti ? (selDur?.price || 0) : activity.price;
   const available = activity.totalSeats - activity.bookedSeats;
   const isFull = available <= 0;
-  const isLow = !isFull && available <= 10;
+  const isLow = !isFull && available <= 5;
 
   const handleAdd = () => {
     if (isFull) return;
@@ -169,14 +251,15 @@ const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCa
       <div className="relative h-56 overflow-hidden">
         <img 
           src={
-            activity.name === 'Speed Boat' ? SpeedBoatImg : 
-            activity.name === 'High Speed Boat' ? HighSpeedBoatImg : 
+            activity.name === 'Speed Boat' ? HighSpeedBoatImg : 
+            activity.name === 'Motor Boat' ? SpeedBoatImg : 
             activity.name === 'Jet Ski' ? JetSkiImg : 
             activity.name === 'Bumper Ride' ? BumperRideImg : 
             activity.name === 'Banana Ride' ? BananaRideImg : 
-            activity.name === 'Fly Boarding' ? FlyBoardingImg : 
-            activity.name === 'Para Sailing' ? ParaSailingImg : 
-            activity.name === 'Shikara' ? ShikaraImg : 
+            activity.name === 'Flyboarding' ? FlyBoardingImg : 
+            activity.name === 'Parasailing' ? ParaSailingImg : 
+            activity.name === 'Shikara Ride' ? ShikaraImg : 
+            activity.name === 'Helicopter Adventure' ? TehriHeliImg :
             activity.image || 'https://images.unsplash.com/photo-1544551763-71a747970908?auto=format&fit=crop&q=80&w=800'
           } 
           alt={activity.name}
@@ -186,12 +269,13 @@ const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCa
         
         {/* Floating Badges */}
         <div className="absolute top-4 left-4 flex gap-2">
-          <div className="bg-white/90 backdrop-blur-md text-slate-800 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1.5">
-            <Users size={12} className="text-blue-600" />
-            {available} / {activity.totalSeats} LEFT
-          </div>
           {isFull && <div className="bg-rose-500 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg shadow-rose-500/30">FULL</div>}
-          {isLow && !isFull && <div className="bg-amber-500 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg shadow-amber-500/30 animate-pulse">LOW SEATS</div>}
+          {isLow && !isFull && (
+            <div className="bg-amber-500 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg shadow-amber-500/30 animate-pulse flex items-center gap-1.5">
+              <AlertCircle size={12} className="text-white" />
+              HURRY UP ONLY {available} SEATS LEFT
+            </div>
+          )}
         </div>
 
         {/* Emoji Badge */}
@@ -245,9 +329,15 @@ const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCa
             </button>
           </div>
           
-          <button onClick={handleAdd} disabled={isFull}
+          <button onClick={() => {
+            if (activity.name === 'Helicopter Adventure') {
+              navigate('/package/6');
+            } else {
+              handleAdd();
+            }
+          }} disabled={isFull}
             className={`flex-1 h-12 rounded-2xl text-xs font-black uppercase tracking-widest transition-all cursor-pointer shadow-lg active:scale-95 ${isFull ? 'bg-slate-100 text-slate-400 cursor-not-allowed shadow-none' : 'bg-blue-600 text-white hover:bg-blue-700 shadow-blue-200'}`}>
-            {isFull ? 'Full' : `Book Total: ₹${(price * persons).toLocaleString()}`}
+            {isFull ? 'Full' : (activity.name === 'Helicopter Adventure' ? 'Explore Package' : `Book Total: ₹${(price * persons).toLocaleString()}`)}
           </button>
         </div>
       </div>
@@ -255,19 +345,27 @@ const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCa
   );
 };
 
-// ── Guest Details Modal ───────────────────────────────────────────────────────
-const GuestModal = ({ total, onConfirm, onClose, loading }: {
-  total: number; onConfirm: (name: string, email: string, phone: string) => void;
+
+const GuestModal = ({ total, subtotal, charge, gst, onConfirm, onClose, loading }: {
+  total: number; subtotal: number; charge: number; gst: number; onConfirm: (name: string, email: string, phone: string, aadhar: string) => void;
   onClose: () => void; loading: boolean;
 }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [aadhar, setAadhar] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !email || !phone) { toast.error('Please fill all fields'); return; }
-    onConfirm(name, email, phone);
+    if (!name || !email || !phone || !aadhar) { toast.error('Please fill all fields'); return; }
+    
+    // Aadhar Validation (12 digits)
+    if (aadhar.length !== 12) {
+      toast.error('Aadhar Number must be exactly 12 digits');
+      return;
+    }
+    
+    onConfirm(name, email, phone, aadhar);
   };
 
   return (
@@ -279,9 +377,26 @@ const GuestModal = ({ total, onConfirm, onClose, loading }: {
           <button onClick={onClose} className="absolute top-4 right-4 text-white/60 hover:text-white cursor-pointer"><X size={20} /></button>
           <h3 className="text-white font-bold text-lg">Complete Your Booking</h3>
           <p className="text-white/70 text-sm mt-1">Tehri Water Adventure Activities</p>
-          <div className="mt-3 inline-flex items-center gap-2 bg-white/15 rounded-full px-4 py-2">
-            <span className="text-white font-bold text-base">₹{total.toLocaleString()}</span>
+          
+          <div className="mt-4 bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10">
+            <div className="flex justify-between items-center text-white/80 text-xs mb-1">
+              <span>Convenience Charge</span>
+              <span>{charge > 0 ? `+ ₹${charge.toLocaleString()}` : 'FREE'}</span>
+            </div>
+            <div className="flex justify-between items-center text-white/80 text-xs mb-2">
+              <span>GST (5%)</span>
+              <span>+ ₹{gst.toLocaleString()}</span>
+            </div>
+            <div className="pt-2 border-t border-white/20 flex justify-between items-center text-white">
+              <span className="font-bold text-xs uppercase tracking-widest">Total Amount</span>
+              <span className="font-bold text-xl">₹{total.toLocaleString()}</span>
+            </div>
           </div>
+          {charge > 0 && (
+            <p className="text-[10px] text-white/60 mt-3 text-center italic">
+              * Convenience charge applies to bookings under ₹5,000
+            </p>
+          )}
         </div>
 
         {/* Body */}
@@ -290,11 +405,24 @@ const GuestModal = ({ total, onConfirm, onClose, loading }: {
             { id: 'wa-name', label: 'Full Name', type: 'text', val: name, set: setName, placeholder: 'Enter your full name' },
             { id: 'wa-email', label: 'Email Address', type: 'email', val: email, set: setEmail, placeholder: 'you@example.com' },
             { id: 'wa-phone', label: 'Phone Number', type: 'tel', val: phone, set: setPhone, placeholder: '+91 98765 43210' },
+            { id: 'wa-aadhar', label: 'Aadhar Card Number', type: 'text', val: aadhar, set: setAadhar, placeholder: '12 Digit Aadhar Number', maxLength: 12 },
           ].map(f => (
             <div key={f.id}>
               <label htmlFor={f.id} className="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-1">{f.label}</label>
-              <input id={f.id} type={f.type} value={f.val} onChange={e => f.set(e.target.value)} placeholder={f.placeholder} required
-                className="w-full px-4 py-3 border-2 border-slate-100 rounded-xl text-sm focus:outline-none focus:border-blue-400 bg-slate-50 transition-colors" />
+              <input 
+                id={f.id} 
+                type={f.type} 
+                value={f.val} 
+                maxLength={f.maxLength}
+                onChange={e => {
+                  const val = f.id === 'wa-aadhar' ? e.target.value.replace(/\D/g, '') : e.target.value;
+                  f.set(val);
+                }} 
+                placeholder={f.placeholder} 
+                required
+                className="w-full px-4 py-3 border-2 border-slate-100 rounded-xl text-sm focus:outline-none focus:border-blue-400 bg-slate-50 transition-colors" 
+              />
+              {f.id === 'wa-aadhar' && <p className="text-[9px] text-slate-400 mt-1 font-bold uppercase tracking-tight">Required for insurance and safety clearance</p>}
             </div>
           ))}
           <button type="submit" disabled={loading}
@@ -318,8 +446,12 @@ const CartDrawer = ({ cart, onRemove, onClear, onPay, isOpen, onClose }: {
   onClear: () => void; onPay: () => void;
   isOpen: boolean; onClose: () => void;
 }) => {
-  const total = cart.reduce((acc, i) => acc + i.totalPrice, 0);
-  const meetsMin = total >= MIN_BOOKING_AMOUNT;
+  const subtotal = cart.reduce((acc, i) => acc + i.totalPrice, 0);
+  const isTestBooking = subtotal <= 10;
+  const convenienceCharge = (subtotal < CONVENIENCE_CHARGE_THRESHOLD && !isTestBooking) ? CONVENIENCE_CHARGE_AMOUNT : 0;
+  const gst = isTestBooking ? 0 : Math.round((subtotal + convenienceCharge) * 0.05);
+  const total = subtotal + convenienceCharge + gst;
+  const meetsMin = subtotal >= MIN_BOOKING_AMOUNT;
 
   return (
     <AnimatePresence>
@@ -402,19 +534,50 @@ const CartDrawer = ({ cart, onRemove, onClear, onPay, isOpen, onClose }: {
             {/* Footer */}
             {cart.length > 0 && (
               <div className="p-6 bg-slate-50 border-t border-slate-200">
-                <div className="flex justify-between items-center mb-5">
-                  <div>
-                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Total Amount</span>
-                    <p className="text-3xl font-serif font-bold text-blue-600 mt-1">₹{total.toLocaleString()}</p>
+                <div className="space-y-2 mb-5">
+                  <div className="flex justify-between items-center text-sm font-medium">
+                    <span className="text-slate-500">Subtotal</span>
+                    <span className="text-slate-800">₹{subtotal.toLocaleString()}</span>
                   </div>
-                  {!meetsMin && (
-                    <div className="text-right">
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-[10px] font-bold">
-                        <AlertCircle size={10} /> Min Error
-                      </div>
-                      <p className="text-[10px] text-slate-400 mt-1">Need ₹{(MIN_BOOKING_AMOUNT - total).toLocaleString()} more</p>
+                  <div className="flex justify-between items-center text-sm font-medium">
+                    <span className="text-slate-500">Convenience Charge</span>
+                    {convenienceCharge > 0 ? (
+                      <span className="text-rose-500">+ ₹{convenienceCharge.toLocaleString()}</span>
+                    ) : (
+                      <span className="text-emerald-600 font-bold italic">FREE</span>
+                    )}
+                  </div>
+                  <div className="flex justify-between items-center text-sm font-medium">
+                    <span className="text-slate-500">GST (5%)</span>
+                    <span className="text-slate-800">+ ₹{gst.toLocaleString()}</span>
+                  </div>
+                  {convenienceCharge > 0 ? (
+                    <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 mt-1 mb-4 flex items-start gap-2 shadow-sm">
+                      <AlertCircle size={14} className="text-amber-500 shrink-0 mt-0.5" />
+                      <p className="text-[10px] text-amber-800 leading-relaxed">
+                        A <strong>₹500 convenience charge</strong> is applied to bookings under ₹5,000. 
+                        Add <strong>₹{(CONVENIENCE_CHARGE_THRESHOLD - subtotal).toLocaleString()}</strong> more to your cart to get <strong>FREE convenience!</strong>
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 mt-1 mb-4 flex items-center gap-2 shadow-sm">
+                      <PartyPopper size={14} className="text-emerald-600" />
+                      <p className="text-[10px] text-emerald-800 font-bold">
+                        Awesome! Your order is above ₹5,000, so convenience charge is 100% FREE!
+                      </p>
                     </div>
                   )}
+                  <div className="pt-3 mt-3 border-t border-slate-200 flex justify-between items-center">
+                    <div>
+                      <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Total Amount</span>
+                      <p className="text-3xl font-serif font-bold text-blue-600 mt-1">₹{total.toLocaleString()}</p>
+                    </div>
+                    {subtotal >= CONVENIENCE_CHARGE_THRESHOLD && (
+                      <div className="bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-emerald-100">
+                        Top Deal!
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div className="space-y-3">
@@ -434,7 +597,7 @@ const CartDrawer = ({ cart, onRemove, onClear, onPay, isOpen, onClose }: {
 
                   <button onClick={onPay} disabled={!meetsMin}
                     className={`w-full py-4 rounded-2xl font-bold text-base transition-all flex items-center justify-center gap-2 ${meetsMin ? 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer shadow-lg shadow-blue-200 active:scale-95' : 'bg-slate-200 text-slate-400 cursor-not-allowed'}`}>
-                    {meetsMin ? `Proceed to Pay ₹${total.toLocaleString()}` : `Needs ₹5,000 to Book`}
+                    {meetsMin ? `Proceed to Pay ₹${total.toLocaleString()}` : `Add items to book`}
                   </button>
                   <p className="text-[10px] text-slate-400 text-center">Seats are reserved only after successful payment</p>
                 </div>
@@ -450,6 +613,7 @@ const CartDrawer = ({ cart, onRemove, onClear, onPay, isOpen, onClose }: {
 // ── Main Section ──────────────────────────────────────────────────────────────
 export const WaterAdventureSection = () => {
   const [activities, setActivities] = useState<Activity[]>([]);
+  const [heliPackage, setHeliPackage] = useState<PackageType | null>(null);
   const [loading, setLoading] = useState(true);
   const [cart, setCart] = useState<CartItem[]>(() => {
     // Initial load from localStorage
@@ -459,7 +623,8 @@ export const WaterAdventureSection = () => {
   const [showModal, setShowModal] = useState(false);
   const [paying, setPaying] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [successData, setSuccessData] = useState<{ items: CartItem[]; total: number; name: string } | null>(null);
+  const [successData, setSuccessData] = useState<{ items: CartItem[]; total: number; name: string; date?: string } | null>(null);
+  const [selectedDate, setSelectedDate] = useState('');
   const [isCartOpen, setIsCartOpen] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -472,6 +637,14 @@ export const WaterAdventureSection = () => {
   const fetchActivities = async (showLoader = false) => {
     if (showLoader) setLoading(true);
     try {
+      // Fetch Helicopter Package
+      try {
+        const heliData = await fetchPackageById('69d9dac47e9892bc71afb965');
+        setHeliPackage(heliData);
+      } catch (err) {
+        console.error('Failed to fetch helicopter package', err);
+      }
+
       const res = await fetch(`${API_BASE_URL}/water-activities`);
       const data = await res.json();
       if (data.success) setActivities(data.data);
@@ -490,6 +663,10 @@ export const WaterAdventureSection = () => {
     return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
   }, []);
 
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const minDate = tomorrow.toISOString().split('T')[0];
+
   const addToCart = (item: CartItem) => {
     setCart(prev => {
       const exists = prev.findIndex(c => c.activityId === item.activityId);
@@ -507,12 +684,26 @@ export const WaterAdventureSection = () => {
   // 2. User fills → Razorpay opens
   // 3. Payment SUCCESS → THEN book seats via API
   // 4. Payment FAIL/CANCEL → No seat change
-  const handlePay = () => setShowModal(true);
+  const handlePay = () => {
+    if (!selectedDate) {
+      toast.error('Please select a visit date first!');
+      // Scroll to calendar
+      const cal = document.getElementById('visit-date-selector');
+      if (cal) cal.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    setShowModal(true);
+  };
 
-  const handleConfirmPayment = async (name: string, email: string, phone: string) => {
+  const handleConfirmPayment = async (name: string, email: string, phone: string, aadhar: string) => {
     setPaying(true);
     try {
-      const total = cart.reduce((a, i) => a + i.totalPrice, 0);
+      const subtotal = cart.reduce((a, i) => a + i.totalPrice, 0);
+      const isTest = subtotal <= 10;
+      const charge = (subtotal < CONVENIENCE_CHARGE_THRESHOLD && !isTest) ? CONVENIENCE_CHARGE_AMOUNT : 0;
+      const gst = isTest ? 0 : Math.round((subtotal + charge) * 0.05);
+      const total = subtotal + charge + gst;
+      const date = selectedDate;
 
       // Step 1: Load Razorpay SDK
       const isLoaded = await loadRazorpayScript();
@@ -532,7 +723,9 @@ export const WaterAdventureSection = () => {
           customerName: name,
           customerEmail: email,
           customerPhone: phone,
-          notes: { package: 'Tehri Water Adventure', userId: 'Guest' },
+          customerAadhar: aadhar,
+          bookingDate: date,
+          notes: { package: 'Tehri Water Adventure', userId: 'Guest', bookingDate: date, aadhar },
           items: cart.map(i => ({
             name: i.name,
             emoji: i.emoji,
@@ -588,7 +781,7 @@ export const WaterAdventureSection = () => {
 
               if (bookData.success) {
                 // Show premium success popup
-                setSuccessData({ items: [...cart], total, name });
+                setSuccessData({ items: [...cart], total, name, date });
                 setShowSuccess(true);
               }
 
@@ -629,7 +822,11 @@ export const WaterAdventureSection = () => {
     }
   };
 
-  const cartTotal = cart.reduce((a, i) => a + i.totalPrice, 0);
+  const cartSubtotal = cart.reduce((a, i) => a + i.totalPrice, 0);
+  const isCartTest = cartSubtotal <= 10;
+  const cartCharge = (cartSubtotal < CONVENIENCE_CHARGE_THRESHOLD && !isCartTest) ? CONVENIENCE_CHARGE_AMOUNT : 0;
+  const cartGst = isCartTest ? 0 : Math.round((cartSubtotal + cartCharge) * 0.05);
+  const cartTotal = cartSubtotal + cartCharge + cartGst;
 
   return (
     <section className="py-20 bg-gradient-to-b from-blue-50/50 to-white relative overflow-hidden">
@@ -649,13 +846,104 @@ export const WaterAdventureSection = () => {
           <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
             className="text-slate-500 text-base leading-relaxed max-w-xl mx-auto">
             Book your tickets in advance to avoid walk-in rush.{' '}
-            <span className="font-bold text-amber-600">Minimum booking: ₹5,000.</span>
+            <span className="font-bold text-blue-600">Free convenience charge on orders above ₹5,000!</span>
           </motion.p>
+        </div>
+
+        {/* Date Selector */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          id="visit-date-selector"
+          className="max-w-md mx-auto mb-16"
+        >
+          <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-blue-900/5 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full -translate-y-1/2 translate-x-1/2 opacity-50 group-hover:scale-110 transition-transform duration-500" />
+            <div className="relative">
+              <label className="block text-center text-xs font-black text-slate-500 uppercase tracking-[0.2em] mb-5">
+                Step 1: Choose Your Adventure Date
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
+                  <CalendarIcon size={24} className="text-blue-600" />
+                </div>
+                <input 
+                  type="date" 
+                  min={minDate}
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  className="w-full pl-16 pr-8 py-5 bg-slate-50 border-2 border-slate-200 rounded-3xl text-slate-900 font-bold text-xl md:text-2xl focus:outline-none focus:border-blue-600 focus:bg-white transition-all cursor-pointer hover:border-blue-300 shadow-sm"
+                />
+              </div>
+              {!selectedDate && (
+                <p className="text-xs text-amber-600 font-bold text-center mt-4 animate-pulse italic">
+                  * Please select a date to enable activity booking
+                </p>
+              )}
+              {selectedDate && (
+                <p className="text-sm text-emerald-600 font-bold text-center mt-5 flex items-center justify-center gap-2">
+                  <CheckCircle2 size={18} /> Date selected: {new Date(selectedDate).toLocaleDateString('en-IN', { dateStyle: 'long' })}
+                </p>
+              )}
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Unique Header-Integrated Recommendation */}
+        <div className="flex flex-col lg:flex-row items-center gap-12 mb-20">
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="lg:w-1/2 space-y-6 text-center lg:text-left"
+          >
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-600 text-[10px] font-black uppercase tracking-widest rounded-full">
+              <Waves size={14} /> Official Water Sports Zone
+            </div>
+            <h2 className="text-4xl md:text-6xl font-serif font-black text-slate-900 leading-tight">
+              Adventure <br /> 
+              <span className="text-blue-600 italic">Awaits You</span>
+            </h2>
+            <p className="text-slate-500 text-lg max-w-md font-medium leading-relaxed mx-auto lg:mx-0">
+              Pick your thrill from our curated list of water activities. From high-speed rides to peaceful boating, we have it all.
+            </p>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="lg:w-1/2 relative group"
+          >
+            {/* Suggestion Bubble */}
+            <div className="absolute -top-6 -left-6 z-20 bg-blue-600 text-white p-4 rounded-[1.5rem] shadow-xl shadow-blue-200 animate-bounce cursor-default max-w-[150px]">
+              <div className="flex items-center gap-2 mb-1">
+                <Star size={12} className="fill-white" />
+                <span className="text-[10px] font-black uppercase tracking-tighter">Smart Suggestion</span>
+              </div>
+              <p className="text-[9px] font-bold leading-tight">People visiting Tehri often prefer this Helicopter Combo!</p>
+              <div className="absolute -bottom-2 left-8 w-4 h-4 bg-blue-600 rotate-45" />
+            </div>
+
+            {/* The Actual Package Card */}
+            <div className="relative z-10 transform lg:rotate-2 group-hover:rotate-0 transition-transform duration-500 shadow-2xl">
+              {heliPackage && <PackageCard pkg={heliPackage} />}
+            </div>
+
+            {/* Decorative background for the suggestion */}
+            <div className="absolute inset-0 bg-blue-100/50 rounded-[3rem] -rotate-3 scale-105 -z-10 group-hover:rotate-0 transition-transform duration-700" />
+          </motion.div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
           {/* Activity Cards */}
           <div className="lg:col-span-3">
+            <div className="flex items-center gap-4 mb-12">
+              <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight">Available <span className="text-blue-600">Activities</span></h3>
+              <div className="h-px flex-1 bg-slate-100" />
+            </div>
+
             {loading ? (
               <div className="flex flex-col items-center justify-center py-20 gap-4">
                 <Loader2 size={40} className="animate-spin text-blue-500" />
@@ -663,7 +951,26 @@ export const WaterAdventureSection = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {activities.map(a => <ActivityCard key={a._id} activity={a} onAddToCart={addToCart} />)}
+                {activities
+                  .sort((a, b) => {
+                    const order = [
+                      'Flyboarding',
+                      'Parasailing',
+                      'Jet Ski',
+                      'Speed Boat',
+                      'Motor Boat',
+                      'Banana Ride',
+                      'Bumper Ride',
+                      'Shikara Ride'
+                    ];
+                    const indexA = order.indexOf(a.name);
+                    const indexB = order.indexOf(b.name);
+                    if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+                    if (indexA !== -1) return -1;
+                    if (indexB !== -1) return 1;
+                    return 0;
+                  })
+                  .map(a => <ActivityCard key={a._id} activity={a} onAddToCart={addToCart} />)}
               </div>
             )}
           </div>
@@ -706,7 +1013,15 @@ export const WaterAdventureSection = () => {
       {/* Guest Modal */}
       <AnimatePresence>
         {showModal && (
-          <GuestModal total={cartTotal} onConfirm={handleConfirmPayment} onClose={() => setShowModal(false)} loading={paying} />
+          <GuestModal 
+            total={cartTotal} 
+            subtotal={cartSubtotal} 
+            charge={cartCharge} 
+            gst={cartGst}
+            onConfirm={handleConfirmPayment} 
+            onClose={() => setShowModal(false)} 
+            loading={paying} 
+          />
         )}
       </AnimatePresence>
 
@@ -717,6 +1032,7 @@ export const WaterAdventureSection = () => {
             bookedItems={successData.items}
             total={successData.total}
             customerName={successData.name}
+            bookingDate={successData.date}
             onClose={() => { setShowSuccess(false); setSuccessData(null); }}
           />
         )}

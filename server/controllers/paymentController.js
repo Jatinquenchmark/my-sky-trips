@@ -9,7 +9,7 @@ import { generateInvoiceHTML } from '../utils/invoiceTemplate.js';
 // @access  Private (or Public depending on use case)
 export const createOrder = async (req, res) => {
   try {
-    const { amount, currency, notes, customerName, customerEmail, customerPhone, items } = req.body;
+    const { amount, currency, notes, customerName, customerEmail, customerPhone, customerAadhar, items, bookingDate } = req.body;
 
     if (!amount) {
       return res.status(400).json({ success: false, error: 'Amount is required' });
@@ -40,11 +40,13 @@ export const createOrder = async (req, res) => {
       customerName: customerName || (req.user ? req.user.name : 'Guest'),
       customerEmail: customerEmail || (req.user ? req.user.email : ''),
       customerPhone: customerPhone || '',
+      customerAadhar: customerAadhar || '',
       amount: options.amount,
       currency: options.currency,
       status: 'created',
       notes: options.notes,
       items: items || [],
+      bookingDate: bookingDate || null,
     });
 
     res.status(201).json({
@@ -123,6 +125,19 @@ export const verifyPayment = async (req, res) => {
     }
   } catch (err) {
     console.error('Verify Payment Error:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+// @desc    Get All Orders (Admin Only)
+// @route   GET /api/payment/orders
+// @access  Private/Admin
+export const getOrders = async (req, res) => {
+  try {
+    const orders = await Order.find({}).sort({ createdAt: -1 });
+    res.json({ success: true, data: orders });
+  } catch (err) {
+    console.error('Get Orders Error:', err);
     res.status(500).json({ success: false, error: err.message });
   }
 };

@@ -5,7 +5,8 @@ import {
   PlusCircle, 
   LogOut, 
   User,
-  Waves
+  Waves,
+  CreditCard
 } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { clsx, type ClassValue } from 'clsx';
@@ -30,6 +31,7 @@ const Sidebar = () => {
     { name: 'Packages',          icon: Package,         path: '/admin/packages' },
     { name: 'Add Package',       icon: PlusCircle,      path: '/admin/add-package' },
     { name: 'Water Activities',  icon: Waves,           path: '/admin/activities' },
+    { name: 'Bookings',          icon: CreditCard,      path: '/admin/orders' },
   ];
 
   return (

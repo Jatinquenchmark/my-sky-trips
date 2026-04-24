@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import PackageDetail from "./pages/PackageDetail";
 import AllPackages from "./pages/AllPackages";
+import WaterAdventurePage from "./pages/WaterAdventurePage";
 import WhatsAppButton from "./components/WhatsAppButton";
 
 // Admin Imports
@@ -20,6 +21,7 @@ import ActivityManagement from "./admin/pages/ActivityManagement";
 import AdminLogin from "./admin/pages/Login";
 import ForgotPassword from "./admin/pages/ForgotPassword";
 import ResetPassword from "./admin/pages/ResetPassword";
+import Orders from "./admin/pages/Orders";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +36,7 @@ const App = () => (
             {/* Website Routes */}
             <Route path="/" element={<Index />} />
             <Route path="/all-packages" element={<AllPackages />} />
+            <Route path="/water-adventure" element={<WaterAdventurePage />} />
             <Route path="/package/:id" element={<PackageDetail />} />
 
             {/* Admin Routes */}
@@ -87,6 +90,17 @@ const App = () => (
                 <ProtectedRoute>
                   <AdminLayout title="Water Adventure Activities">
                     <ActivityManagement />
+                  </AdminLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/admin/orders"
+              element={
+                <ProtectedRoute>
+                  <AdminLayout title="Bookings & Invoices">
+                    <Orders />
                   </AdminLayout>
                 </ProtectedRoute>
               }

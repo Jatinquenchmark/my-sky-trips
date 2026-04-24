@@ -24,6 +24,10 @@ const orderSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    customerAadhar: {
+      type: String,
+      required: false,
+    },
     razorpayPaymentId: {
       type: String,
       required: false,
@@ -58,6 +62,10 @@ const orderSchema = new mongoose.Schema(
         duration: String,
       }
     ],
+    bookingDate: {
+      type: Date,
+      required: false,
+    },
   },
   {
     timestamps: true,

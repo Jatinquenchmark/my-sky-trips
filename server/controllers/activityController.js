@@ -152,12 +152,20 @@ export const seedActivities = async (req, res) => {
 
     const defaultActivities = [
       { 
-        name: 'Fly Boarding',      
+        name: 'Flyboarding',      
         emoji: '🏄', 
         price: 3500, 
         totalSeats: 50,
         image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80&w=800',
-        description: 'Defy gravity and fly above the crystal clear waters of Tehri Lake.'
+        description: 'Strap on a water-powered jet board and soar above the surface like a superhero — the ultimate water sports experience.'
+      },
+      { 
+        name: 'Parasailing',      
+        emoji: '🪂', 
+        price: 2500, 
+        totalSeats: 50,
+        image: 'https://images.unsplash.com/photo-1520114878142-1e2900cbe511?auto=format&fit=crop&q=80&w=800',
+        description: 'Glide high above the water harnessed to a colourful parachute, enjoying breathtaking aerial views towed by a speedboat.'
       },
       { 
         name: 'Jet Ski',           
@@ -165,23 +173,27 @@ export const seedActivities = async (req, res) => {
         price: 1000, 
         totalSeats: 50,
         image: 'https://images.unsplash.com/photo-1544551763-71a747970908?auto=format&fit=crop&q=80&w=800',
-        description: 'Feel the rush of speed as you zip across the turquoise waves.'
+        description: 'Hop on a personal watercraft and zip across the waves solo or with a partner for a fast and fun aquatic adventure.'
       },
       { 
-        name: 'Para Sailing',      
-        emoji: '🪂', 
-        price: 2500, 
-        totalSeats: 50,
-        image: 'https://images.unsplash.com/photo-1520114878142-1e2900cbe511?auto=format&fit=crop&q=80&w=800',
-        description: 'Soar high like a bird and enjoy a panoramic view of the majestic Himalayas.'
-      },
-      { 
-        name: 'High Speed Boat',   
+        name: 'Speed Boat',   
         emoji: '⚡', 
         price: 1500, 
         totalSeats: 50,
         image: 'https://images.unsplash.com/photo-1517000515150-7171d99676c5?auto=format&fit=crop&q=80&w=800',
-        description: 'A thrilling high-speed adventure for the ultimate adrenaline junkies.'
+        description: 'Hold on tight as a powerful boat races across the water, giving you a thrilling, high-speed ride you won\'t forget.'
+      },
+      {
+        name: 'Motor Boat',
+        emoji: '🚀',
+        price: 0,
+        totalSeats: 50,
+        image: 'https://images.unsplash.com/photo-1582297116812-70b97950c66b?auto=format&fit=crop&q=80&w=800',
+        description: 'A relaxed, scenic cruise on a motorised boat — perfect for sightseeing and soaking in the views at a comfortable pace.',
+        durations: [
+          { label: '15 Min', price: 500  },
+          { label: '30 Min', price: 1000 },
+        ],
       },
       {
         name: 'Banana Ride',
@@ -189,7 +201,7 @@ export const seedActivities = async (req, res) => {
         price: 0,
         totalSeats: 50,
         image: 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&q=80&w=800',
-        description: 'The perfect group activity! Hold on tight as you bounce over the water.',
+        description: 'Straddle a giant inflatable banana with your crew and try to hold on as a speedboat pulls you through the waves!',
         durations: [
           { label: '30 Min', price: 500 },
           { label: '1 Hour', price: 800 },
@@ -201,27 +213,15 @@ export const seedActivities = async (req, res) => {
         price: 500,  
         totalSeats: 50,
         image: 'https://images.unsplash.com/photo-1616422285623-13ff0167295c?auto=format&fit=crop&q=80&w=800',
-        description: 'Twist and turn in this fun-filled chaotic ride on the lake surface.'
-      },
-      {
-        name: 'Speed Boat',
-        emoji: '🚀',
-        price: 0,
-        totalSeats: 50,
-        image: 'https://images.unsplash.com/photo-1582297116812-70b97950c66b?auto=format&fit=crop&q=80&w=800',
-        description: 'Relax and take in the breeze on a comfortable yet fast lake tour.',
-        durations: [
-          { label: '15 Min', price: 500  },
-          { label: '30 Min', price: 1000 },
-        ],
+        description: 'Bounce, spin, and splash on an inflatable ring towed by a speedboat — a hilarious ride guaranteed to get everyone wet.'
       },
       { 
-        name: 'Shikara',           
+        name: 'Shikara Ride',           
         emoji: '🛶', 
         price: 250,  
         totalSeats: 50,
         image: 'https://images.unsplash.com/photo-1566833925222-29ad43e2e996?auto=format&fit=crop&q=80&w=800',
-        description: 'Experience the soul of Tehri Lake on a peaceful, traditional boat ride.'
+        description: 'Drift peacefully across calm waters on a traditional wooden boat — a serene and scenic experience ideal for all ages'
       },
       { 
         name: 'Test Ride',           
