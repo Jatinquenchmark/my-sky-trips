@@ -24,7 +24,7 @@ const DownloadTicket = () => {
         if (data.success) {
           setOrder(data.data);
           // Auto-trigger download after a short delay
-          setTimeout(() => handleDownload(data.data), 1500);
+          setTimeout(() => handleDownload(data.data), 2500);
         } else {
           setError(data.error || "Order not found");
         }

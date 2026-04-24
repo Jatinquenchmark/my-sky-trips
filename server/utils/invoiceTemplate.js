@@ -14,11 +14,11 @@ export const generateInvoiceHTML = (order) => {
   <style>
     body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #334155; margin: 0; padding: 0; background-color: #f8fafc; }
     .ticket-container { max-width: 500px; margin: 40px auto; background: #ffffff; border-radius: 40px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); border: 1px solid #f1f5f9; }
-    .header { background-color: #004D56; padding: 40px; color: #ffffff; }
-    .logo { font-size: 24px; font-weight: 900; letter-spacing: -1px; margin-bottom: 24px; text-transform: uppercase; }
-    .badge { display: inline-block; padding: 4px 12px; background: rgba(255, 255, 255, 0.1); border-radius: 20px; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #00F2FF; margin-bottom: 12px; }
-    .title { font-size: 28px; font-weight: 900; line-height: 1.2; margin: 0 0 8px 0; color: #ffffff; }
-    .subtitle { font-size: 14px; color: rgba(255, 255, 255, 0.6); margin: 0; font-weight: 500; }
+    .header { background-color: #ffffff; padding: 40px; color: #0f172a; border-bottom: 1px solid #f1f5f9; }
+    .logo { font-size: 24px; font-weight: 900; letter-spacing: -1px; margin-bottom: 12px; text-transform: uppercase; color: #000000; }
+    .badge { display: inline-block; padding: 4px 12px; background: #eff6ff; border-radius: 20px; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #2563eb; margin-bottom: 12px; }
+    .title { font-size: 28px; font-weight: 900; line-height: 1.2; margin: 0 0 8px 0; color: #0f172a; }
+    .subtitle { font-size: 14px; color: #64748b; margin: 0; font-weight: 500; }
     
     .content { padding: 40px; }
     .grid { display: table; width: 100%; margin-bottom: 32px; }
@@ -128,6 +128,7 @@ export const generateInvoiceHTML = (order) => {
       
       <div class="btn-container">
         <a href="https://myskytrips.com/ticket/${order.razorpayOrderId}" class="btn">Click Here to Download Ticket</a>
+        <p style="font-size: 10px; color: #94a3b8; margin-top: 15px; font-style: italic;">* If download fails, you can save this email or take a screenshot as a valid ticket.</p>
       </div>
       
       <div class="footer">
