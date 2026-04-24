@@ -35,35 +35,52 @@ const SuccessModal = ({ bookedItems, total, customerName, bookingDate, onClose }
 
   const handleDownload = async () => {
     if (!ticketRef.current) return;
+    const toastId = toast.loading('Generating your ticket...');
+    
     try {
+      // Small delay to ensure everything is rendered
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
       const canvas = await html2canvas(ticketRef.current, {
-        scale: 2,
+        scale: 3, // Higher scale for better quality
         useCORS: true,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        logging: false,
+        onclone: (clonedDoc) => {
+          const el = clonedDoc.querySelector('[data-ticket-container]');
+          if (el instanceof HTMLElement) {
+             el.style.borderRadius = '0'; // Clean edges for the image
+          }
+        }
       });
+      
       const link = document.createElement('a');
-      link.download = `SkyTrip_Ticket_${customerName.replace(/\s+/g, '_')}_${Date.now()}.png`;
-      link.href = canvas.toDataURL('image/png');
+      link.download = `SkyTrip_Ticket_${customerName.replace(/\s+/g, '_')}.png`;
+      link.href = canvas.toDataURL('image/png', 1.0);
       link.click();
-      toast.success('Ticket downloaded successfully!');
+      toast.success('Ticket downloaded!', { id: toastId });
     } catch (err) {
       console.error('Download failed', err);
-      toast.error('Failed to download ticket');
+      toast.error('Download failed. Please try again.', { id: toastId });
     }
   };
 
   const comboName = bookedItems.map(i => i.name).join(' + ');
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
+    <div className="fixed inset-0 z-[60] flex justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto pt-10 pb-20">
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
-        className="w-full max-w-lg my-8"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 50 }}
+        className="w-full max-w-lg h-fit"
       >
         {/* Ticket Container */}
-        <div ref={ticketRef} className="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden font-sans border border-slate-100">
+        <div 
+          ref={ticketRef} 
+          data-ticket-container
+          className="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden font-sans border border-slate-100 w-full"
+        >
           {/* Header */}
           <div className="bg-[#004D56] p-8 text-white relative">
              <div className="flex justify-between items-start mb-6">
