@@ -28,27 +28,27 @@ export const Ticket: React.FC<TicketProps> = ({
       className="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden font-sans border border-slate-100 w-full max-w-[500px] mx-auto text-left"
     >
       {/* Header */}
-      <div className="bg-white p-8 text-slate-900 relative border-b border-slate-100">
+      <div className="bg-[#004D56] p-8 text-white relative">
         <div className="flex justify-between items-start mb-6">
           <div className="flex flex-col">
-            <img src={LogoImg} alt="MYSKYTRIPS" crossOrigin="anonymous" className="h-10 w-auto mb-2 brightness-0" />
+            <img src={LogoImg} alt="MYSKYTRIPS" crossOrigin="anonymous" className="h-10 w-auto mb-2 brightness-0 invert" />
             <span className="text-xl font-black tracking-tighter">
               MYSKYTRIPS
             </span>
           </div>
-          <div className="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center">
-            <span className="text-xs font-bold italic text-slate-400">i</span>
+          <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center">
+            <span className="text-xs font-bold italic text-white/40">i</span>
           </div>
         </div>
 
-        <div className="inline-block px-3 py-1 bg-blue-50 rounded-full text-[10px] font-black uppercase tracking-widest mb-3 text-blue-600">
+        <div className="inline-block px-3 py-1 bg-white/10 rounded-full text-[10px] font-black uppercase tracking-widest mb-3 text-[#00F2FF]">
           Water Sports
         </div>
         
         <h1 className="text-3xl font-black leading-tight mb-2 uppercase">
           {comboName}
         </h1>
-        <p className="text-slate-500 text-sm font-medium">
+        <p className="text-white/60 text-sm font-medium">
           Tehri Lake Adventure Hub, Uttarakhand
         </p>
       </div>

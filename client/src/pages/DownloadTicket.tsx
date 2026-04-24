@@ -43,7 +43,7 @@ const DownloadTicket = () => {
     setDownloading(true);
     const toastId = toast.loading('Generating your ticket...');
     
-    const captureTarget = document.getElementById('ticket-capture-area');
+    const captureTarget = ticketRef.current;
     try {
       // Ensure all images are loaded
       if (captureTarget) {
@@ -178,8 +178,7 @@ const DownloadTicket = () => {
         />
       </div>
 
-      {/* Off-screen capture area */}
-      <div id="ticket-capture-area" className="absolute left-[-9999px] top-0">
+      <div ref={ticketRef} className="absolute left-[-9999px] top-0">
         <Ticket 
           bookedItems={order.items}
           total={order.amount / 100}

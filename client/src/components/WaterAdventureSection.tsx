@@ -36,10 +36,9 @@ const SuccessModal = ({ bookedItems, total, customerName, bookingDate, onClose }
   const ticketRef = useRef<HTMLDivElement>(null);
 
   const handleDownload = async () => {
-    if (!ticketRef.current) return;
+    const captureTarget = ticketRef.current;
     const toastId = toast.loading('Generating your ticket...');
     
-    const captureTarget = document.getElementById('ticket-capture-area');
     try {
       // Ensure all images are loaded
       if (captureTarget) {
@@ -161,7 +160,7 @@ const SuccessModal = ({ bookedItems, total, customerName, bookingDate, onClose }
       </motion.div>
       
       {/* Off-screen capture area */}
-      <div id="ticket-capture-area" className="absolute left-[-9999px] top-0">
+      <div ref={ticketRef} className="absolute left-[-9999px] top-0">
         <Ticket 
           bookedItems={bookedItems}
           total={total}
