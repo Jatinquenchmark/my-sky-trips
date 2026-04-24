@@ -39,10 +39,11 @@ const SuccessModal = ({ bookedItems, total, customerName, bookingDate, onClose }
     if (!ticketRef.current) return;
     const toastId = toast.loading('Generating your ticket...');
     
+    const captureTarget = document.getElementById('ticket-capture-area');
     try {
       // Ensure all images are loaded
-      if (ticketRef.current) {
-        const images = ticketRef.current.getElementsByTagName('img');
+      if (captureTarget) {
+        const images = captureTarget.getElementsByTagName('img');
         const imagePromises = Array.from(images).map(img => {
           if (img.complete) return Promise.resolve();
           return new Promise(resolve => {
@@ -56,7 +57,6 @@ const SuccessModal = ({ bookedItems, total, customerName, bookingDate, onClose }
       // Small delay to ensure everything is settled
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      const captureTarget = document.getElementById('ticket-capture-area');
       if (!captureTarget) throw new Error('Capture target not found');
 
       const canvas = await html2canvas(captureTarget, {
@@ -80,8 +80,49 @@ const SuccessModal = ({ bookedItems, total, customerName, bookingDate, onClose }
         toast.success('Ticket downloaded!', { id: toastId });
       }, 'image/png', 1.0);
     } catch (err) {
-      console.error('Download failed', err);
-      toast.error('Download failed. Try again or take a screenshot.', { id: toastId });
+      console.error('PNG Download failed, falling back to PDF/Print', err);
+      try {
+        // Fallback: Open a printable window
+        const printWindow = window.open('', '_blank');
+        if (printWindow) {
+          const ticketHtml = captureTarget?.innerHTML;
+          printWindow.document.write(`
+            <html>
+              <head>
+                <title>MYSKYTRIPS Ticket - ${customerName}</title>
+                <script src="https://cdn.tailwindcss.com"></script>
+                <style>
+                  @media print { .no-print { display: none; } }
+                  body { background: #f8fafc; padding: 20px; font-family: sans-serif; }
+                </style>
+              </head>
+              <body>
+                <div class="max-w-[500px] mx-auto bg-white shadow-xl rounded-[2.5rem] overflow-hidden">
+                  ${ticketHtml}
+                </div>
+                <div class="text-center mt-8 no-print">
+                  <button onclick="window.print()" style="background: #004D56; color: white; padding: 12px 24px; border-radius: 12px; font-weight: bold; cursor: pointer;">
+                    Print or Save as PDF
+                  </button>
+                </div>
+                <script>
+                  window.onload = () => {
+                    setTimeout(() => {
+                       // window.print();
+                    }, 500);
+                  }
+                </script>
+              </body>
+            </html>
+          `);
+          printWindow.document.close();
+          toast.success('Opening printable ticket...', { id: toastId });
+        } else {
+          throw new Error('Pop-up blocked');
+        }
+      } catch (fallbackErr) {
+        toast.error('Download failed. Please take a screenshot.', { id: toastId });
+      }
     }
   };
 
