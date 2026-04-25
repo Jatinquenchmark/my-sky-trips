@@ -80,20 +80,20 @@ export const WaterAdventureTeaser = () => {
                 viewport={{ once: true }}
                 className="space-y-4"
               >
-                <div className="h-48 md:h-64 rounded-[2.5rem] overflow-hidden relative group">
+                <Link to="/water-adventure" className="block h-48 md:h-64 rounded-[2.5rem] overflow-hidden relative group cursor-pointer">
                   <img src={images[0].url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Adventure 1" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <span className="absolute bottom-6 left-6 text-white text-xs font-black uppercase tracking-widest flex items-center gap-2">
                     {images[0].icon} {images[0].label}
                   </span>
-                </div>
-                <div className="h-40 md:h-48 rounded-[2.5rem] overflow-hidden relative group">
+                </Link>
+                <Link to="/water-adventure" className="block h-40 md:h-48 rounded-[2.5rem] overflow-hidden relative group cursor-pointer">
                   <img src={images[1].url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Adventure 2" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <span className="absolute bottom-6 left-6 text-white text-xs font-black uppercase tracking-widest flex items-center gap-2">
                     {images[1].icon} {images[1].label}
                   </span>
-                </div>
+                </Link>
               </motion.div>
               
               <motion.div 
@@ -103,20 +103,20 @@ export const WaterAdventureTeaser = () => {
                 transition={{ delay: 0.2 }}
                 className="space-y-4 pt-8"
               >
-                <div className="h-40 md:h-48 rounded-[2.5rem] overflow-hidden relative group">
+                <Link to="/water-adventure" className="block h-40 md:h-48 rounded-[2.5rem] overflow-hidden relative group cursor-pointer">
                   <img src={images[2].url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Adventure 3" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <span className="absolute bottom-6 left-6 text-white text-xs font-black uppercase tracking-widest flex items-center gap-2">
                     {images[2].icon} {images[2].label}
                   </span>
-                </div>
-                <div className="h-48 md:h-64 rounded-[2.5rem] overflow-hidden relative group">
+                </Link>
+                <Link to="/water-adventure" className="block h-48 md:h-64 rounded-[2.5rem] overflow-hidden relative group cursor-pointer">
                   <img src={images[3].url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Adventure 4" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <span className="absolute bottom-6 left-6 text-white text-xs font-black uppercase tracking-widest flex items-center gap-2">
                     {images[3].icon} {images[3].label}
                   </span>
-                </div>
+                </Link>
               </motion.div>
             </div>
 
