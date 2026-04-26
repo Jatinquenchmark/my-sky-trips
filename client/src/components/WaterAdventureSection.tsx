@@ -270,16 +270,16 @@ const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCa
         </div>
       </div>
 
-        {/* Emoji Badge */}
-        <div className="absolute -bottom-4 right-6 w-12 h-12 bg-white rounded-2xl shadow-xl flex items-center justify-center text-2xl z-10 border-4 border-white">
+        {/* Emoji Badge - Repositioned to prevent clipping */}
+        <div className="absolute -top-6 right-8 w-12 h-12 bg-white rounded-2xl shadow-xl flex items-center justify-center text-2xl z-20 border-4 border-white transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-12">
           {activity.emoji}
         </div>
       
 
-      <div className="p-7 pt-8">
+      <div className="p-7 pt-10 relative">
         <div>
-          <h3 className="text-xl font-bold text-slate-900 leading-tight group-hover:text-blue-600 transition-colors uppercase tracking-tight">{activity.name}</h3>
-          <p className="text-[13px] text-slate-500 mt-3 leading-relaxed font-medium line-clamp-3 h-14">
+          <h3 className="text-xl font-black text-slate-900 leading-tight group-hover:text-blue-600 transition-colors uppercase tracking-tight">{activity.name}</h3>
+          <p className="text-[13px] text-slate-500 mt-3 leading-relaxed font-medium line-clamp-3 min-h-[60px]">
             {activity.description || "Experience the thrill of Tehri's top-rated water adventure and create unforgettable memories with your loved ones."}
           </p>
         </div>
