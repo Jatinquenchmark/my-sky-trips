@@ -670,9 +670,9 @@ export const WaterAdventureSection = () => {
     localStorage.setItem('sky_trip_water_cart', JSON.stringify(cart));
   }, [cart]);
 
-  // Body Scroll Lock for Modal (only for full-screen modals)
+  // Body Scroll Lock for Modal & Cart
   useEffect(() => {
-    if (showModal || showSuccess) {
+    if (showModal || showSuccess || isCartOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -680,7 +680,7 @@ export const WaterAdventureSection = () => {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [showModal, showSuccess]);
+  }, [showModal, showSuccess, isCartOpen]);
 
   // Fetch without showing spinner (for background polls)
   const fetchActivities = async (showLoader = false, dateToFetch = selectedDate) => {

@@ -6,7 +6,7 @@ import heroImage from "@/assets/hero-helicopter.jpg";
 const features = [
   { icon: Plane, text: "Helicopter Rides" },
   { icon: Mountain, text: "Road Trips" },
-  { icon: Heart, text: "Spiritual Journeys" },
+  { icon: Heart, text: "Helicopter Journeys" },
   { icon: Compass, text: "Curated Experiences" },
 ];
 

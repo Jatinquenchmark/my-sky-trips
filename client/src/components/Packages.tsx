@@ -66,7 +66,7 @@ export const Packages = ({ limit }: PackagesProps) => {
             Our Signature Packages
           </span>
           <h2 className="text-3xl md:text-5xl font-serif font-bold text-foreground mb-4">
-            Curated <span className="text-gradient-sky">Spiritual Journeys</span>
+            Curated <span className="text-gradient-sky">Helicopter Journeys</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Experience the divine beauty of the Himalayas with our premium helicopter yatra packages
