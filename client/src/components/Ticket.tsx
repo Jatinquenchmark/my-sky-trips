@@ -31,11 +31,11 @@ export const Ticket: React.FC<TicketProps> = ({
     <div 
       ref={ticketRef} 
       data-ticket-container
-      className="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden font-sans border border-slate-100 w-full max-w-[500px] mx-auto text-left"
+      className="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden font-sans border border-slate-100 w-full max-w-[500px] mx-auto text-left print:shadow-none print:border-none"
     >
       {/* Header - Moved Info Grid here */}
-      <div className="bg-[#0066FF] p-8 text-white relative">
-        <div className="flex justify-between items-start mb-8">
+      <div className="bg-[#0066FF] p-6 text-white relative">
+        <div className="flex justify-between items-start mb-6">
           <div className="flex flex-col">
             <img src={LogoImg} alt="MY SKY TRIPS" crossOrigin="anonymous" className="h-10 w-auto mb-2 brightness-0 invert" />
             <span className="text-xl font-black tracking-tighter">MY SKY TRIPS</span>
@@ -62,9 +62,9 @@ export const Ticket: React.FC<TicketProps> = ({
         </div>
       </div>
 
-      <div className="p-8">
+      <div className="p-5">
         {/* Booking ID & Aadhar */}
-        <div className="mb-8 p-6 bg-slate-50 rounded-3xl border border-slate-100 flex flex-col gap-4">
+        <div className="mb-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col gap-3">
           <div className="flex justify-between items-start">
             <div>
               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Booking ID</p>
@@ -74,7 +74,7 @@ export const Ticket: React.FC<TicketProps> = ({
               Paid Status
             </div>
           </div>
-          <div className="pt-4 border-t border-slate-200 flex justify-between items-center">
+          <div className="pt-3 border-t border-slate-200 flex justify-between items-center">
             <div>
               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Aadhar Number</p>
               <p className="font-black text-slate-900 text-base tracking-[0.1em]">{customerAadhar || 'XXXX XXXX XXXX'}</p>
@@ -86,72 +86,73 @@ export const Ticket: React.FC<TicketProps> = ({
         </div>
 
         {/* Customer Info */}
-        <div className="flex items-center gap-4 mb-8 p-4 bg-slate-50 rounded-3xl border border-slate-100">
-          <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-xl font-black text-blue-600 shadow-sm border border-slate-100 uppercase">
-            {customerName.charAt(0)}
+        <div className="flex items-center gap-3 mb-4 p-3 bg-slate-50 rounded-2xl border border-slate-100">
+          <div className="w-10 h-10 bg-[#0066FF] rounded-xl flex items-center justify-center text-lg font-black text-white">
+            {customerName.charAt(0).toUpperCase()}
           </div>
           <div>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Customer Name</p>
-            <h3 className="text-lg font-black text-slate-900 leading-tight">{customerName}</h3>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Customer Name</p>
+            <h3 className="text-base font-black text-slate-900 leading-tight">{customerName}</h3>
           </div>
         </div>
 
-        {/* Activities List - One per line with Price */}
-        <div className="mb-8">
-          <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Booked Activities</p>
-          <div className="space-y-3">
+        {/* Activities List */}
+        <div className="mb-3">
+          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Booked Activities</p>
+          <div className={bookedItems.length > 4 ? "grid grid-cols-2 gap-2" : "space-y-1.5"}>
             {bookedItems.map((item, idx) => (
-              <div key={idx} className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl shadow-sm">
-                <div className="flex items-center gap-3">
-                  <span className="text-xl">{item.emoji || '🎫'}</span>
-                  <div>
-                    <p className="font-black text-slate-900 text-sm uppercase tracking-tight">{item.name}</p>
-                    <p className="text-[10px] text-slate-500 font-bold uppercase">{item.persons} Persons • {item.duration || 'Standard'}</p>
+              <div key={idx} className="flex items-center justify-between p-2 bg-white border border-slate-100 rounded-xl shadow-sm">
+                <div className="flex items-center gap-2 overflow-hidden">
+                  <div className="w-6 h-6 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 text-xs shrink-0">
+                    {item.emoji || '🎫'}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-black text-slate-900 text-[10px] uppercase tracking-tight truncate">{item.name}</p>
+                    <p className="text-[8px] text-slate-500 font-bold uppercase truncate">{item.quantity || item.persons || 1} P • {item.duration || 'Std'}</p>
                   </div>
                 </div>
-                <p className="font-black text-slate-900 text-sm">₹{item.totalPrice?.toLocaleString() || '0'}</p>
+                <p className="font-black text-slate-900 text-[10px] shrink-0 ml-1">₹{(item.totalPrice || item.price).toLocaleString()}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* Price Breakdown */}
-        <div className="pt-6 border-t-2 border-dashed border-slate-100 space-y-2 mb-8">
-          <div className="flex justify-between items-center text-sm font-bold text-slate-500">
+        <div className="pt-4 border-t-2 border-dashed border-slate-100 space-y-1 mb-4">
+          <div className="flex justify-between items-center text-[11px] font-bold text-slate-500">
             <span>Subtotal</span>
             <span>₹{subtotal.toLocaleString()}</span>
           </div>
-          <div className="flex justify-between items-center text-sm font-bold text-emerald-600">
+          <div className="flex justify-between items-center text-[11px] font-bold text-emerald-600">
             <span>GST (5%)</span>
             <span>₹{gst.toLocaleString()}</span>
           </div>
-          <div className="flex justify-between items-center pt-4">
-            <span className="text-base font-black text-slate-400 uppercase tracking-widest">Total Amount</span>
-            <span className="text-4xl font-black text-[#0066FF] tracking-tighter">₹{total.toLocaleString()}</span>
+          <div className="flex justify-between items-center pt-2">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Amount</span>
+            <span className="text-2xl font-black text-[#0066FF] tracking-tighter">₹{total.toLocaleString()}</span>
           </div>
         </div>
 
         {/* Disclaimers */}
-        <div className="space-y-4 pt-6 border-t border-slate-100">
-          <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">Important Disclaimers</p>
-          <ul className="space-y-2">
+        <div className="space-y-2 pt-3 border-t border-slate-100">
+          <p className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em]">Disclaimers</p>
+          <ul className="space-y-1">
             {[
-              "Participants with heart conditions or pregnancy must not participate.",
-              "Activities subject to weather conditions. Operator may reschedule.",
-              "Life jacket and safety gear must be worn at all times.",
-              "Participants under influence will be denied entry — no refund."
+              "Heart conditions or pregnancy must not participate.",
+              "Subject to weather. Operator may reschedule.",
+              "Safety gear must be worn at all times."
             ].map((text, i) => (
-              <li key={i} className="flex gap-3 text-[10px] leading-relaxed text-slate-400 font-medium">
-                <span className="text-slate-300 shrink-0">•</span>
-                <span className={i === 1 ? "text-red-500 font-bold" : ""}>{text}</span>
+              <li key={i} className="flex gap-2 text-[9px] leading-tight text-slate-400 font-bold">
+                <span className="text-slate-200 shrink-0">•</span>
+                <span>{text}</span>
               </li>
             ))}
           </ul>
         </div>
         
         {/* Help Footer */}
-        <div className="mt-10 text-center">
-          <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">
+        <div className="mt-4 pt-3 border-t border-slate-100 text-center">
+          <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
             Help: +91 6395678642 | BOOKING@MYSKYTRIPS.COM
           </p>
         </div>
