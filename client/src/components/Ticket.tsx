@@ -1,4 +1,5 @@
 import React from 'react';
+import { CheckCircle2 } from 'lucide-react';
 import LogoImg from '../assets/logo-DFfutrEX.png';
 
 interface TicketProps {
@@ -9,6 +10,7 @@ interface TicketProps {
   customerName: string;
   bookingDate?: string;
   orderId?: string;
+  customerAadhar?: string;
   ticketRef?: React.RefObject<HTMLDivElement | null>;
 }
 
@@ -20,6 +22,7 @@ export const Ticket: React.FC<TicketProps> = ({
   customerName, 
   bookingDate, 
   orderId,
+  customerAadhar,
   ticketRef 
 }) => {
   const displayOrderId = orderId || 'MST-TEST';
@@ -49,8 +52,8 @@ export const Ticket: React.FC<TicketProps> = ({
             <p className="text-sm font-bold">{bookingDate ? new Date(bookingDate).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) : 'Mon, 27 Apr, 2026'}</p>
           </div>
           <div>
-            <p className="text-[10px] font-black text-white/50 uppercase tracking-widest mb-1">Report By</p>
-            <p className="text-sm font-bold text-amber-300">08:45 AM</p>
+            <p className="text-[10px] font-black text-white/50 uppercase tracking-widest mb-1">Venue Timing</p>
+            <p className="text-sm font-bold text-amber-300 uppercase">09 AM - 06 PM</p>
           </div>
           <div>
             <p className="text-[10px] font-black text-white/50 uppercase tracking-widest mb-1">Venue</p>
@@ -60,14 +63,25 @@ export const Ticket: React.FC<TicketProps> = ({
       </div>
 
       <div className="p-8">
-        {/* Booking ID & Badge */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Booking ID</p>
-            <p className="font-black text-slate-900 text-xl tracking-tight uppercase">{displayOrderId}</p>
+        {/* Booking ID & Aadhar */}
+        <div className="mb-8 p-6 bg-slate-50 rounded-3xl border border-slate-100 flex flex-col gap-4">
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Booking ID</p>
+              <p className="font-black text-slate-900 text-lg tracking-tight uppercase leading-none">{displayOrderId}</p>
+            </div>
+            <div className="bg-[#E6FFFA] text-[#00A389] px-3 py-1.5 rounded-xl font-black text-[10px] uppercase border border-[#B2F5EA] shrink-0">
+              Paid Status
+            </div>
           </div>
-          <div className="bg-[#E6FFFA] text-[#00A389] px-4 py-2 rounded-2xl font-black text-[11px] uppercase border border-[#B2F5EA]">
-            Paid Status
+          <div className="pt-4 border-t border-slate-200 flex justify-between items-center">
+            <div>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Aadhar Number</p>
+              <p className="font-black text-slate-900 text-base tracking-[0.1em]">{customerAadhar || 'XXXX XXXX XXXX'}</p>
+            </div>
+            <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
+              <CheckCircle2 size={16} />
+            </div>
           </div>
         </div>
 
@@ -138,7 +152,7 @@ export const Ticket: React.FC<TicketProps> = ({
         {/* Help Footer */}
         <div className="mt-10 text-center">
           <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">
-            Help: +91 98765 43210 | BOOKING@MYSKYTRIPS.COM
+            Help: +91 6395678642 | BOOKING@MYSKYTRIPS.COM
           </p>
         </div>
       </div>

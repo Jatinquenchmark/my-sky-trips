@@ -184,6 +184,7 @@ const DownloadTicket = () => {
           subtotal={Math.round((order.amount / 100) / 1.05)}
           gst={(order.amount / 100) - Math.round((order.amount / 100) / 1.05)}
           customerName={order.customerName}
+          customerAadhar={order.customerAadhar}
           bookingDate={order.bookingDate}
           orderId={order.razorpayOrderId}
         />
@@ -196,6 +197,7 @@ const DownloadTicket = () => {
           subtotal={Math.round((order.amount / 100) / 1.05)}
           gst={(order.amount / 100) - Math.round((order.amount / 100) / 1.05)}
           customerName={order.customerName}
+          customerAadhar={order.customerAadhar}
           bookingDate={order.bookingDate}
           orderId={order.razorpayOrderId}
         />

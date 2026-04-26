@@ -26,12 +26,13 @@ import TehriHeliImg from '../assets/tehri3.png';
 
 
 // ── Success Modal (Ticket Design) ─────────────────────────────────────────────
-const SuccessModal = ({ bookedItems, total, subtotal, gst, customerName, bookingDate, orderId, onClose }: {
+const SuccessModal = ({ bookedItems, total, subtotal, gst, customerName, customerAadhar, bookingDate, orderId, onClose }: {
   bookedItems: any[];
   total: number;
   subtotal: number;
   gst: number;
   customerName: string;
+  customerAadhar?: string;
   bookingDate?: string;
   orderId?: string;
   onClose: () => void;
@@ -153,6 +154,7 @@ const SuccessModal = ({ bookedItems, total, subtotal, gst, customerName, booking
             gst={gst}
             total={total}
             customerName={customerName}
+            customerAadhar={customerAadhar}
             bookingDate={bookingDate}
             orderId={orderId}
           />
@@ -182,6 +184,7 @@ const SuccessModal = ({ bookedItems, total, subtotal, gst, customerName, booking
           gst={gst}
           total={total}
           customerName={customerName}
+          customerAadhar={customerAadhar}
           bookingDate={bookingDate}
           orderId={orderId}
         />
@@ -492,13 +495,22 @@ const CartDrawer = ({ cart, onRemove, onClear, onPay, isOpen, onClose }: {
     <AnimatePresence>
       {isOpen && (
         <>
+          {/* Backdrop for click-outside-to-close */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50"
+          />
+
           {/* Drawer */}
           <motion.div
-            initial={{ x: '-100%' }}
+            initial={{ x: '100%' }}
             animate={{ x: 0 }}
-            exit={{ x: '-100%' }}
+            exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-y-0 left-0 w-full max-w-[400px] bg-white shadow-2xl z-[51] flex flex-col"
+            className="fixed inset-y-0 right-0 w-full max-w-[400px] bg-white shadow-2xl z-[51] flex flex-col"
           >
             {/* Header */}
             <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-white sticky top-0 z-10">
@@ -649,7 +661,7 @@ export const WaterAdventureSection = () => {
   const [showModal, setShowModal] = useState(false);
   const [paying, setPaying] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [successData, setSuccessData] = useState<{ items: any[]; total: number; subtotal: number; gst: number; name: string; date?: string; orderId: string } | null>(null);
+  const [successData, setSuccessData] = useState<{ items: any[]; total: number; subtotal: number; gst: number; name: string; aadhar: string; date?: string; orderId: string } | null>(null);
   const [selectedDate, setSelectedDate] = useState('');
   const [isCartOpen, setIsCartOpen] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -820,7 +832,7 @@ export const WaterAdventureSection = () => {
 
             if (verifyData.success) {
               // Show premium success popup
-              setSuccessData({ items: [...cart], total, subtotal, gst, name, date, orderId: response.razorpay_order_id });
+              setSuccessData({ items: [...cart], total, subtotal, gst, name, aadhar, date, orderId: response.razorpay_order_id });
               setShowSuccess(true);
 
               setShowModal(false);
@@ -912,7 +924,7 @@ export const WaterAdventureSection = () => {
                   min={minDate}
                   value={selectedDate}
                   onChange={(e) => setSelectedDate(e.target.value)}
-                  className="w-full pl-16 pr-8 py-5 bg-slate-50 border-2 border-slate-200 rounded-3xl text-slate-900 font-bold text-xl md:text-2xl focus:outline-none focus:border-blue-600 focus:bg-white transition-all cursor-pointer hover:border-blue-300 shadow-sm"
+                  className="w-full pl-16 pr-8 py-5 bg-slate-50 border-2 border-slate-200 rounded-3xl text-slate-900 font-bold text-xl md:text-2xl focus:outline-none focus:border-blue-600 focus:bg-white transition-all cursor-pointer hover:border-blue-300 shadow-sm min-h-[4rem] appearance-none"
                 />
               </div>
               {!selectedDate && (
@@ -1049,6 +1061,7 @@ export const WaterAdventureSection = () => {
                 subtotal: Math.round((data.amount / 100) / 1.05),
                 gst: Math.round((data.amount / 100) - ((data.amount / 100) / 1.05)),
                 name: data.customerName,
+                aadhar: data.customerAadhar,
                 date: data.bookingDate,
                 orderId: data.razorpayOrderId
               });
@@ -1069,6 +1082,7 @@ export const WaterAdventureSection = () => {
             subtotal={successData.subtotal}
             gst={successData.gst}
             customerName={successData.name}
+            customerAadhar={successData.aadhar}
             bookingDate={successData.date}
             orderId={successData.orderId}
             onClose={() => { setShowSuccess(false); setSuccessData(null); }}
@@ -1082,7 +1096,7 @@ export const WaterAdventureSection = () => {
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
-            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40"
+            className="fixed bottom-8 right-8 z-40"
           >
             <button
               onClick={() => setIsCartOpen(true)}
