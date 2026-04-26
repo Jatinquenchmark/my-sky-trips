@@ -251,7 +251,7 @@ const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCa
             activity.image || 'https://images.unsplash.com/photo-1544551763-71a747970908?auto=format&fit=crop&q=80&w=800'
           } 
           alt={activity.name}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 rounded-t-[2.5rem]"
+          className="w-full h-full object-cover rounded-t-[2.5rem]"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent rounded-t-[2.5rem]" />
         
@@ -659,9 +659,9 @@ export const WaterAdventureSection = () => {
     localStorage.setItem('sky_trip_water_cart', JSON.stringify(cart));
   }, [cart]);
 
-  // Body Scroll Lock for Modal/Drawer
+  // Body Scroll Lock for Modal (only for full-screen modals)
   useEffect(() => {
-    if (isCartOpen || showModal || showSuccess) {
+    if (showModal || showSuccess) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -669,7 +669,7 @@ export const WaterAdventureSection = () => {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [isCartOpen, showModal, showSuccess]);
+  }, [showModal, showSuccess]);
 
   // Fetch without showing spinner (for background polls)
   const fetchActivities = async (showLoader = false, dateToFetch = selectedDate) => {
