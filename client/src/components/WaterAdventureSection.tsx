@@ -1096,7 +1096,7 @@ export const WaterAdventureSection = () => {
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
-            className="fixed bottom-8 right-8 z-40"
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 md:top-20 md:right-8 md:bottom-auto md:left-auto md:translate-x-0 z-40"
           >
             <button
               onClick={() => setIsCartOpen(true)}
