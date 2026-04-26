@@ -239,7 +239,7 @@ const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCa
       className={`group relative bg-white rounded-[2.5rem] overflow-hidden border border-slate-100 shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-blue-900/5 hover:-translate-y-2 ${isFull ? 'opacity-70 grayscale-[0.5]' : ''}`}>
       
       {/* Image Header */}
-      <div className="relative h-56">
+      <div className="relative h-56 bg-slate-100 overflow-hidden rounded-t-[2.5rem]">
         <img 
           src={
             activity.name === 'Speed Boat' ? HighSpeedBoatImg : 
@@ -254,12 +254,29 @@ const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCa
             activity.image || 'https://images.unsplash.com/photo-1544551763-71a747970908?auto=format&fit=crop&q=80&w=800'
           } 
           alt={activity.name}
-          className="w-full h-full object-cover rounded-t-[2.5rem]"
+          className="w-full h-full object-contain relative z-10"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent rounded-t-[2.5rem]" />
+        {/* Blurred background to fill gaps */}
+        <img 
+          src={
+            activity.name === 'Speed Boat' ? HighSpeedBoatImg : 
+            activity.name === 'Motor Boat' ? SpeedBoatImg : 
+            activity.name === 'Jet Ski' ? JetSkiImg : 
+            activity.name === 'Bumper Ride' ? BumperRideImg : 
+            activity.name === 'Banana Ride' ? BananaRideImg : 
+            activity.name === 'Flyboarding' ? FlyBoardingImg : 
+            activity.name === 'Parasailing' ? ParaSailingImg : 
+            activity.name === 'Shikara Ride' ? ShikaraImg : 
+            activity.name === 'Helicopter Adventure' ? TehriHeliImg :
+            activity.image || 'https://images.unsplash.com/photo-1544551763-71a747970908?auto=format&fit=crop&q=80&w=800'
+          } 
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-125"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent z-20" />
         
         {/* Floating Badges */}
-        <div className="absolute top-4 left-4 flex gap-2">
+        <div className="absolute top-4 left-4 flex gap-2 z-30">
           {isFull && <div className="bg-rose-500 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg shadow-rose-500/30">FULL</div>}
           {isLow && !isFull && (
             <div className="bg-amber-500 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg shadow-amber-500/30 animate-pulse flex items-center gap-1.5">
@@ -268,12 +285,13 @@ const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCa
             </div>
           )}
         </div>
+      </div>
 
         {/* Emoji Badge */}
         <div className="absolute -bottom-4 right-6 w-12 h-12 bg-white rounded-2xl shadow-xl flex items-center justify-center text-2xl z-10 border-4 border-white">
           {activity.emoji}
         </div>
-      </div>
+      
 
       <div className="p-7 pt-8">
         <div>
@@ -1101,7 +1119,7 @@ export const WaterAdventureSection = () => {
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
-            className="fixed bottom-8 left-1/2 -translate-x-1/2 md:top-20 md:right-8 md:bottom-auto md:left-auto md:translate-x-0 z-40"
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40"
           >
             <button
               onClick={() => setIsCartOpen(true)}

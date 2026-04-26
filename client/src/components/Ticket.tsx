@@ -53,7 +53,7 @@ export const Ticket: React.FC<TicketProps> = ({
           </div>
           <div>
             <p className="text-[10px] font-black text-white/50 uppercase tracking-widest mb-1">Venue Timing</p>
-            <p className="text-sm font-bold text-amber-300 uppercase">09 AM - 06 PM</p>
+            <p className="text-sm font-bold text-amber-300 uppercase">09:00 AM - 06:00 PM</p>
           </div>
           <div>
             <p className="text-[10px] font-black text-white/50 uppercase tracking-widest mb-1">Venue</p>
@@ -62,9 +62,9 @@ export const Ticket: React.FC<TicketProps> = ({
         </div>
       </div>
 
-      <div className="p-5">
+      <div className="p-3">
         {/* Booking ID & Aadhar */}
-        <div className="mb-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col gap-3">
+        <div className="mb-2.5 p-2.5 bg-slate-50 rounded-xl border border-slate-100 flex flex-col gap-2">
           <div className="flex justify-between items-start">
             <div>
               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Booking ID</p>
@@ -134,15 +134,19 @@ export const Ticket: React.FC<TicketProps> = ({
         </div>
 
         {/* Disclaimers */}
-        <div className="space-y-2 pt-3 border-t border-slate-100">
-          <p className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em]">Disclaimers</p>
-          <ul className="space-y-1">
+        <div className="space-y-1.5 pt-3 border-t border-slate-100">
+          <p className="text-[8px] font-black text-slate-300 uppercase tracking-[0.2em]">Important Terms & Conditions</p>
+          <ul className="space-y-0.5">
             {[
-              "Heart conditions or pregnancy must not participate.",
-              "Subject to weather. Operator may reschedule.",
-              "Safety gear must be worn at all times."
+              "Participants with heart conditions, back/neck injuries, or pregnancy must not participate.",
+              "Activities subject to weather & sea conditions. Operator may reschedule without prior notice.",
+              "Life jacket and safety gear must be worn at all times.",
+              "Participants under alcohol/substance influence will be denied entry - no refund.",
+              "Company is not liable for loss of personal valuables during activity.",
+              "Physical waiver must be signed at the venue before participating.",
+              "Min. age 12 yrs; under 18 requires guardian consent at check in"
             ].map((text, i) => (
-              <li key={i} className="flex gap-2 text-[9px] leading-tight text-slate-400 font-bold">
+              <li key={i} className="flex gap-1.5 text-[8px] leading-[1.2] text-slate-400 font-bold">
                 <span className="text-slate-200 shrink-0">•</span>
                 <span>{text}</span>
               </li>
