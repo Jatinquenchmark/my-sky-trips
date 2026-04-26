@@ -513,7 +513,7 @@ const CartDrawer = ({ cart, onRemove, onClear, onPay, isOpen, onClose }: {
             className="fixed inset-y-0 right-0 w-full max-w-[400px] bg-white shadow-2xl z-[51] flex flex-col"
           >
             {/* Header */}
-            <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-white sticky top-0 z-10">
+            <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-white shrink-0">
               <div className="flex items-center gap-2">
                 <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600">
                   <ShoppingCart size={20} />
@@ -664,6 +664,7 @@ export const WaterAdventureSection = () => {
   const [successData, setSuccessData] = useState<{ items: any[]; total: number; subtotal: number; gst: number; name: string; aadhar: string; date?: string; orderId: string } | null>(null);
   const [selectedDate, setSelectedDate] = useState('');
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const dateInputRef = useRef<HTMLInputElement>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Sync cart to localStorage whenever it changes
@@ -915,16 +916,20 @@ export const WaterAdventureSection = () => {
               <label className="block text-center text-xs font-black text-slate-500 uppercase tracking-[0.2em] mb-5">
                 Step 1: Choose Your Adventure Date
               </label>
-              <div className="relative">
+              <div 
+                className="relative cursor-pointer"
+                onClick={() => dateInputRef.current?.showPicker()}
+              >
                 <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
                   <CalendarIcon size={24} className="text-blue-600" />
                 </div>
                 <input 
+                  ref={dateInputRef}
                   type="date" 
                   min={minDate}
                   value={selectedDate}
                   onChange={(e) => setSelectedDate(e.target.value)}
-                  className="w-full pl-16 pr-8 py-5 bg-slate-50 border-2 border-slate-200 rounded-3xl text-slate-900 font-bold text-xl md:text-2xl focus:outline-none focus:border-blue-600 focus:bg-white transition-all cursor-pointer hover:border-blue-300 shadow-sm min-h-[4rem] appearance-none"
+                  className="w-full pl-16 pr-8 py-5 bg-slate-50 border-2 border-slate-200 rounded-3xl text-slate-900 font-bold text-lg md:text-2xl focus:outline-none focus:border-blue-600 focus:bg-white transition-all cursor-pointer hover:border-blue-300 shadow-sm min-h-[4rem] appearance-none"
                 />
               </div>
               {!selectedDate && (
