@@ -238,8 +238,8 @@ const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCa
     <motion.div layout initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
       className={`group relative bg-white rounded-[2.5rem] overflow-hidden border border-slate-100 shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-blue-900/5 hover:-translate-y-2 ${isFull ? 'opacity-70 grayscale-[0.5]' : ''}`}>
       
-      {/* Image Header */}
-      <div className="relative h-64 overflow-hidden rounded-t-[2.5rem]">
+      {/* Image Header - Increased height and top-aligned to prevent cutting */}
+      <div className="relative h-80 overflow-hidden rounded-t-[2.5rem]">
         <img 
           src={
             activity.name === 'Speed Boat' ? HighSpeedBoatImg : 
@@ -254,7 +254,7 @@ const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCa
             activity.image || 'https://images.unsplash.com/photo-1544551763-71a747970908?auto=format&fit=crop&q=80&w=800'
           } 
           alt={activity.name}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-110"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent z-10" />
         
@@ -269,12 +269,6 @@ const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCa
           )}
         </div>
       </div>
-
-        {/* Emoji Badge - Repositioned to prevent clipping */}
-        <div className="absolute -top-6 right-8 w-12 h-12 bg-white rounded-2xl shadow-xl flex items-center justify-center text-2xl z-20 border-4 border-white transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-12">
-          {activity.emoji}
-        </div>
-      
 
       <div className="p-7 pt-10 relative">
         <div>
