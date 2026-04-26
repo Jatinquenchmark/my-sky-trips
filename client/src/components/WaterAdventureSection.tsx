@@ -236,82 +236,85 @@ const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCa
 
   return (
     <motion.div layout initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
-      className={`group relative bg-white rounded-[2.5rem] overflow-hidden border border-slate-100 shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-blue-900/5 hover:-translate-y-2 ${isFull ? 'opacity-70 grayscale-[0.5]' : ''}`}>
+      className={`group relative min-h-[580px] rounded-[3rem] overflow-hidden shadow-2xl transition-all duration-700 hover:shadow-blue-900/20 ${isFull ? 'opacity-70 grayscale-[0.5]' : ''}`}>
       
-      {/* Image Header - Increased height and top-aligned to prevent cutting */}
-      <div className="relative h-80 overflow-hidden rounded-t-[2.5rem]">
-        <img 
-          src={
-            activity.name === 'Speed Boat' ? HighSpeedBoatImg : 
-            activity.name === 'Motor Boat' ? SpeedBoatImg : 
-            activity.name === 'Jet Ski' ? JetSkiImg : 
-            activity.name === 'Bumper Ride' ? BumperRideImg : 
-            activity.name === 'Banana Ride' ? BananaRideImg : 
-            activity.name === 'Flyboarding' ? FlyBoardingImg : 
-            activity.name === 'Parasailing' ? ParaSailingImg : 
-            activity.name === 'Shikara Ride' ? ShikaraImg : 
-            activity.name === 'Helicopter Adventure' ? TehriHeliImg :
-            activity.image || 'https://images.unsplash.com/photo-1544551763-71a747970908?auto=format&fit=crop&q=80&w=800'
-          } 
-          alt={activity.name}
-          className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-110"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent z-10" />
-        
-        {/* Floating Badges */}
-        <div className="absolute top-4 left-4 flex gap-2 z-20">
-          {isFull && <div className="bg-rose-500 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg shadow-rose-500/30">FULL</div>}
-          {isLow && !isFull && (
-            <div className="bg-amber-500 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg shadow-amber-500/30 animate-pulse flex items-center gap-1.5">
-              <AlertCircle size={12} className="text-white" />
-              HURRY UP ONLY {available} SEATS LEFT
-            </div>
-          )}
-        </div>
+      {/* Full Background Image */}
+      <img 
+        src={
+          activity.name === 'Speed Boat' ? HighSpeedBoatImg : 
+          activity.name === 'Motor Boat' ? SpeedBoatImg : 
+          activity.name === 'Jet Ski' ? JetSkiImg : 
+          activity.name === 'Bumper Ride' ? BumperRideImg : 
+          activity.name === 'Banana Ride' ? BananaRideImg : 
+          activity.name === 'Flyboarding' ? FlyBoardingImg : 
+          activity.name === 'Parasailing' ? ParaSailingImg : 
+          activity.name === 'Shikara Ride' ? ShikaraImg : 
+          activity.name === 'Helicopter Adventure' ? TehriHeliImg :
+          activity.image || 'https://images.unsplash.com/photo-1544551763-71a747970908?auto=format&fit=crop&q=80&w=800'
+        } 
+        alt={activity.name}
+        className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+      />
+      
+      {/* Gradient Overlays */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90 transition-opacity duration-500 group-hover:opacity-100" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent opacity-60" />
+      
+      {/* Floating Badges */}
+      <div className="absolute top-6 left-6 flex flex-col gap-2 z-20">
+        {isFull && <div className="bg-rose-500/90 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-full shadow-lg">FULL</div>}
+        {isLow && !isFull && (
+          <div className="bg-amber-500/90 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
+            <AlertCircle size={14} className="text-white" />
+            {available} SEATS LEFT
+          </div>
+        )}
       </div>
 
-      <div className="p-7 pt-10 relative">
+      {/* Content Overlay */}
+      <div className="absolute inset-x-0 bottom-0 p-8 z-20 flex flex-col gap-4">
         <div>
-          <h3 className="text-xl font-black text-slate-900 leading-tight group-hover:text-blue-600 transition-colors uppercase tracking-tight">{activity.name}</h3>
-          <p className="text-[13px] text-slate-500 mt-3 leading-relaxed font-medium line-clamp-3 min-h-[60px]">
+          <div className="flex items-center gap-3 mb-2">
+            <span className="text-3xl drop-shadow-lg">{activity.emoji}</span>
+            <h3 className="text-2xl font-black text-white leading-tight uppercase tracking-tighter drop-shadow-lg">{activity.name}</h3>
+          </div>
+          <p className="text-sm text-white/80 leading-relaxed font-medium line-clamp-3 drop-shadow-md">
             {activity.description || "Experience the thrill of Tehri's top-rated water adventure and create unforgettable memories with your loved ones."}
           </p>
         </div>
 
-        <div className="mt-6 flex items-center justify-between">
-          <div>
-            {!isMulti ? (
-              <div className="flex items-baseline gap-1">
-                <span className="text-2xl font-serif font-black text-slate-900 tracking-tighter">₹{price.toLocaleString()}</span>
-                <span className="text-[10px] text-slate-400 font-bold uppercase">/ person</span>
-              </div>
-            ) : (
-              <span className="text-[10px] text-blue-600 font-black uppercase tracking-widest bg-blue-50 px-2 py-0.5 rounded">Multiple Options</span>
-            )}
-          </div>
+        <div className="flex items-center justify-between">
+          {!isMulti ? (
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-3xl font-serif font-black text-white tracking-tighter">₹{price.toLocaleString()}</span>
+              <span className="text-[10px] text-white/60 font-bold uppercase tracking-widest">/ person</span>
+            </div>
+          ) : (
+            <span className="text-[10px] text-white font-black uppercase tracking-[0.2em] bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10">Choice Available</span>
+          )}
         </div>
 
         {isMulti && (
-          <div className="flex gap-2 mt-4">
+          <div className="grid grid-cols-2 gap-2 mt-2">
             {activity.durations.map(d => (
               <button key={d.label} onClick={() => setSelDur(d)} disabled={isFull}
-                className={`flex-1 py-2.5 px-3 rounded-2xl text-[11px] font-black border-2 transition-all cursor-pointer ${selDur?.label === d.label ? 'border-blue-600 bg-blue-600 text-white shadow-lg shadow-blue-200' : 'border-slate-100 text-slate-500 hover:border-blue-200 bg-slate-50'}`}>
+                className={`py-2.5 px-3 rounded-2xl text-[10px] font-black border transition-all cursor-pointer ${selDur?.label === d.label ? 'bg-white text-blue-900 border-white shadow-xl' : 'bg-white/10 text-white/80 border-white/20 hover:bg-white/20 backdrop-blur-sm'}`}>
                 {d.label} — ₹{d.price}
               </button>
             ))}
           </div>
         )}
 
-        <div className="flex items-center gap-4 mt-6">
-          <div className="flex items-center gap-1.5 bg-slate-100/50 p-1.5 rounded-2xl border border-slate-200/50">
+        <div className="flex items-center gap-4 mt-2">
+          <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-xl p-1.5 rounded-2xl border border-white/20">
             <button onClick={() => setPersons(p => Math.max(1, p - 1))} disabled={isFull || persons <= 1}
-              className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-all disabled:opacity-30 cursor-pointer shadow-sm">
-              <Minus size={14} className="text-slate-600" />
+              className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all disabled:opacity-30 cursor-pointer">
+              <Minus size={16} className="text-white" />
             </button>
-            <span className="w-8 text-center font-black text-base text-slate-800">{persons}</span>
+            <span className="w-8 text-center font-black text-lg text-white">{persons}</span>
             <button onClick={() => setPersons(p => Math.min(available, 50, p + 1))} disabled={isFull || persons >= available}
-              className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-all disabled:opacity-30 cursor-pointer shadow-sm">
-              <Plus size={14} className="text-slate-600" />
+              className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all disabled:opacity-30 cursor-pointer">
+              <Plus size={16} className="text-white" />
             </button>
           </div>
           
@@ -322,8 +325,8 @@ const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCa
               handleAdd();
             }
           }} disabled={isFull}
-            className={`flex-1 h-12 rounded-2xl text-xs font-black uppercase tracking-widest transition-all cursor-pointer shadow-lg active:scale-95 ${isFull ? 'bg-slate-100 text-slate-400 cursor-not-allowed shadow-none' : 'bg-blue-600 text-white hover:bg-blue-700 shadow-blue-200'}`}>
-            {isFull ? 'Full' : (activity.name === 'Helicopter Adventure' ? 'Explore Package' : `Book Total: ₹${(price * persons).toLocaleString()}`)}
+            className={`flex-1 h-14 rounded-2xl text-xs font-black uppercase tracking-[0.2em] transition-all cursor-pointer shadow-2xl active:scale-95 ${isFull ? 'bg-white/10 text-white/40 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700 shadow-blue-900/40 border-b-4 border-blue-800'}`}>
+            {isFull ? 'Sold Out' : (activity.name === 'Helicopter Adventure' ? 'Explore' : `Add To Cart`)}
           </button>
         </div>
       </div>
