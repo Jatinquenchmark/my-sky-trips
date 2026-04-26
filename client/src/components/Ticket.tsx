@@ -35,14 +35,17 @@ export const Ticket: React.FC<TicketProps> = ({
     >
       {/* Header - Moved Info Grid here */}
       <div className="bg-[#0066FF] p-6 text-white relative">
-        <div className="flex justify-between items-start mb-6">
+        <div className="flex justify-between items-start mb-2">
           <div className="flex flex-col">
-            <img src={LogoImg} alt="MY SKY TRIPS" crossOrigin="anonymous" className="h-10 w-auto mb-2 brightness-0 invert" />
-            <span className="text-xl font-black tracking-tighter">MY SKY TRIPS</span>
+            <img src={LogoImg} alt="MY SKY TRIPS" crossOrigin="anonymous" className="h-10 w-auto brightness-0 invert" />
           </div>
           <div className="bg-white/20 px-3 py-1.5 rounded-xl font-black text-[10px] uppercase border border-white/20">
             Water Sports
           </div>
+        </div>
+
+        <div className="text-center mb-6">
+          <span className="text-sm font-black tracking-[0.3em] uppercase text-white">E-Ticket</span>
         </div>
 
         {/* Info Grid - Moved UP */}
@@ -53,7 +56,7 @@ export const Ticket: React.FC<TicketProps> = ({
           </div>
           <div>
             <p className="text-[10px] font-black text-white/50 uppercase tracking-widest mb-1">Venue Timing</p>
-            <p className="text-sm font-bold text-amber-300 uppercase">09:00 AM - 06:00 PM</p>
+            <p className="text-sm font-bold text-white uppercase whitespace-nowrap">09:00 AM - 06:00 PM</p>
           </div>
           <div>
             <p className="text-[10px] font-black text-white/50 uppercase tracking-widest mb-1">Venue</p>
@@ -69,9 +72,6 @@ export const Ticket: React.FC<TicketProps> = ({
             <div>
               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Booking ID</p>
               <p className="font-black text-slate-900 text-lg tracking-tight uppercase leading-none">{displayOrderId}</p>
-            </div>
-            <div className="bg-[#E6FFFA] text-[#00A389] px-3 py-1.5 rounded-xl font-black text-[10px] uppercase border border-[#B2F5EA] shrink-0">
-              Paid Status
             </div>
           </div>
           <div className="pt-3 border-t border-slate-200 flex justify-between items-center">

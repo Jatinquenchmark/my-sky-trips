@@ -53,7 +53,7 @@ export const WaterAdventureTeaser = () => {
                 to="/water-adventure"
                 className="group relative inline-flex items-center gap-3 px-8 py-5 bg-blue-600 text-white rounded-[2rem] font-black uppercase tracking-widest text-sm shadow-2xl shadow-blue-200 hover:bg-blue-700 transition-all active:scale-95"
               >
-                Explore All Activities
+                Book Here
                 <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" />
               </Link>
               

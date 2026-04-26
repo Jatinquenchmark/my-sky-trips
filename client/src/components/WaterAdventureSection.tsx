@@ -219,7 +219,7 @@ const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCa
       ? [...activity.durations].sort((a, b) => b.price - a.price)[0] 
       : null
   );
-  const [persons, setPersons] = useState(1);
+  const [persons, setPersons] = useState(0);
 
   const price = isMulti ? (selDur?.price || 0) : activity.price;
   const available = activity.totalSeats - activity.bookedSeats;
@@ -228,15 +228,16 @@ const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCa
 
   const handleAdd = () => {
     if (isFull) return;
+    if (persons <= 0) { toast.error(`Please select at least 1 person`); return; }
     if (persons > available) { toast.error(`Only ${available} seat(s) left for ${activity.name}`); return; }
     onAddToCart({ activityId: activity._id, name: activity.name, emoji: activity.emoji, persons, selectedDuration: selDur, pricePerPerson: price, totalPrice: price * persons });
     toast.success(`${activity.name} added to cart!`);
-    setPersons(1);
+    setPersons(0);
   };
 
   return (
     <motion.div layout initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
-      className={`group relative min-h-[580px] rounded-[3rem] overflow-hidden shadow-2xl transition-all duration-700 hover:shadow-blue-900/20 ${isFull ? 'opacity-70 grayscale-[0.5]' : ''}`}>
+      className={`group relative aspect-[3/4] rounded-[3rem] overflow-hidden shadow-2xl transition-all duration-700 hover:shadow-blue-900/20 ${isFull ? 'opacity-70 grayscale-[0.5]' : ''}`}>
       
       {/* Full Background Image */}
       <img 
@@ -307,7 +308,7 @@ const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCa
 
         <div className="flex items-center gap-4 mt-2">
           <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-xl p-1.5 rounded-2xl border border-white/20">
-            <button onClick={() => setPersons(p => Math.max(1, p - 1))} disabled={isFull || persons <= 1}
+            <button onClick={() => setPersons(p => Math.max(0, p - 1))} disabled={isFull || persons <= 0}
               className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all disabled:opacity-30 cursor-pointer">
               <Minus size={16} className="text-white" />
             </button>
