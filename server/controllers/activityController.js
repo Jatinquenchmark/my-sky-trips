@@ -1,4 +1,5 @@
 import Activity from '../models/Activity.js';
+import DailyActivityStats from '../models/DailyActivityStats.js';
 
 // @desc  Create a new activity (admin)
 // @route POST /api/activities/create
@@ -24,25 +25,71 @@ export const deleteActivity = async (req, res) => {
   }
 };
 
-// @desc  Get all active activities with seat info
+// @desc  Get all active activities with seat info for a specific date
 // @route GET /api/activities
 // @access Public
 export const getActivities = async (req, res) => {
   try {
+    const { date } = req.query; // Format: YYYY-MM-DD
+    
     const activities = await Activity.find({ isActive: true });
-    res.status(200).json({ success: true, data: activities });
+    
+    if (!date) {
+      // If no date provided, return with 0 booked seats or default behavior
+      return res.status(200).json({ success: true, data: activities });
+    }
+
+    // Enhance activities with date-specific booking data
+    const enhancedActivities = await Promise.all(activities.map(async (activity) => {
+      const stats = await DailyActivityStats.findOne({ 
+        activityId: activity._id, 
+        date: date 
+      });
+      
+      const activityObj = activity.toObject();
+      activityObj.bookedSeats = stats ? stats.bookedSeats : 0;
+      // Recalculate virtual-like values
+      activityObj.availableSeats = activityObj.totalSeats - activityObj.bookedSeats;
+      activityObj.isFull = activityObj.bookedSeats >= activityObj.totalSeats;
+      
+      return activityObj;
+    }));
+
+    res.status(200).json({ success: true, data: enhancedActivities });
   } catch (err) {
     res.status(400).json({ success: false, error: err.message });
   }
 };
 
-// @desc  Get all activities (admin - includes inactive)
+// @desc  Get all activities (admin - includes inactive) for a specific date
 // @route GET /api/activities/admin
 // @access Private/Admin
 export const getAllActivitiesAdmin = async (req, res) => {
   try {
+    const { date } = req.query; // Format: YYYY-MM-DD
     const activities = await Activity.find();
-    res.status(200).json({ success: true, data: activities });
+
+    if (!date) {
+      // If no date, return base activities (bookedSeats might be 0)
+      return res.status(200).json({ success: true, data: activities });
+    }
+
+    // Enhance activities with date-specific booking data
+    const enhancedActivities = await Promise.all(activities.map(async (activity) => {
+      const stats = await DailyActivityStats.findOne({ 
+        activityId: activity._id, 
+        date: date 
+      });
+      
+      const activityObj = activity.toObject();
+      activityObj.bookedSeats = stats ? stats.bookedSeats : 0;
+      activityObj.availableSeats = activityObj.totalSeats - activityObj.bookedSeats;
+      activityObj.isFull = activityObj.bookedSeats >= activityObj.totalSeats;
+      
+      return activityObj;
+    }));
+
+    res.status(200).json({ success: true, data: enhancedActivities });
   } catch (err) {
     res.status(400).json({ success: false, error: err.message });
   }
@@ -54,13 +101,18 @@ export const getAllActivitiesAdmin = async (req, res) => {
 export const bookActivities = async (req, res) => {
   try {
     // cartItems: [{ activityId, persons, durationLabel (optional) }]
-    const { cartItems } = req.body;
+    // bookingDate: YYYY-MM-DD
+    const { cartItems, bookingDate } = req.body;
 
     if (!cartItems || cartItems.length === 0) {
       return res.status(400).json({ success: false, error: 'No activities in cart' });
     }
 
-    // Validate all items first (atomic check before deducting)
+    if (!bookingDate) {
+      return res.status(400).json({ success: false, error: 'Booking date is required' });
+    }
+
+    // Validate all items first
     for (const item of cartItems) {
       const activity = await Activity.findById(item.activityId);
       if (!activity) {
@@ -69,20 +121,31 @@ export const bookActivities = async (req, res) => {
       if (!activity.isActive) {
         return res.status(400).json({ success: false, error: `Activity "${activity.name}" is currently unavailable` });
       }
-      const available = activity.totalSeats - activity.bookedSeats;
+
+      // Check date-specific availability
+      const stats = await DailyActivityStats.findOne({ 
+        activityId: item.activityId, 
+        date: bookingDate 
+      });
+      
+      const currentBooked = stats ? stats.bookedSeats : 0;
+      const available = activity.totalSeats - currentBooked;
+      
       if (item.persons > available) {
         return res.status(400).json({
           success: false,
-          error: `Only ${available} seat(s) left for "${activity.name}". Please reduce your count.`
+          error: `Only ${available} seat(s) left for "${activity.name}" on ${bookingDate}. Please reduce your count.`
         });
       }
     }
 
-    // All valid — deduct seats
+    // All valid — update daily stats
     for (const item of cartItems) {
-      await Activity.findByIdAndUpdate(item.activityId, {
-        $inc: { bookedSeats: item.persons }
-      });
+      await DailyActivityStats.findOneAndUpdate(
+        { activityId: item.activityId, date: bookingDate },
+        { $inc: { bookedSeats: item.persons } },
+        { upsert: true, new: true }
+      );
     }
 
     res.status(200).json({ success: true, message: 'Seats reserved successfully. Proceed to payment.' });
@@ -91,32 +154,40 @@ export const bookActivities = async (req, res) => {
   }
 };
 
-// @desc  Reset seats for ALL activities at once (admin)
+// @desc  Reset seats for ALL activities at once (admin) for a specific date
 // @route PUT /api/activities/reset-all
 // @access Private/Admin
 export const resetAllSeats = async (req, res) => {
   try {
-    await Activity.updateMany({}, { bookedSeats: 0 });
-    res.status(200).json({ success: true, message: 'All activity seats have been reset to 0.' });
+    const { date } = req.query;
+    if (date) {
+      await DailyActivityStats.deleteMany({ date });
+    } else {
+      await Activity.updateMany({}, { bookedSeats: 0 });
+    }
+    res.status(200).json({ success: true, message: `All activity seats have been reset${date ? ` for ${date}` : ''}.` });
   } catch (err) {
     res.status(400).json({ success: false, error: err.message });
   }
 };
 
-// @desc  Reset seats for an activity (admin - after ride completes)
+// @desc  Reset seats for an activity (admin - after ride completes) for a specific date
 // @route PUT /api/activities/:id/reset
 // @access Private/Admin
 export const resetActivitySeats = async (req, res) => {
   try {
-    const activity = await Activity.findByIdAndUpdate(
-      req.params.id,
-      { bookedSeats: 0 },
-      { new: true }
-    );
+    const { date } = req.query;
+    if (date) {
+      await DailyActivityStats.deleteOne({ activityId: req.params.id, date });
+    } else {
+      await Activity.findByIdAndUpdate(req.params.id, { bookedSeats: 0 });
+    }
+    
+    const activity = await Activity.findById(req.params.id);
     if (!activity) {
       return res.status(404).json({ success: false, error: 'Activity not found' });
     }
-    res.status(200).json({ success: true, data: activity, message: `Seats reset for "${activity.name}"` });
+    res.status(200).json({ success: true, data: activity, message: `Seats reset for "${activity.name}"${date ? ` on ${date}` : ''}` });
   } catch (err) {
     res.status(400).json({ success: false, error: err.message });
   }

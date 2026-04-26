@@ -23,14 +23,17 @@ import FlyBoardingImg from '../assets/Fly boarding.jpg.jpeg';
 import ParaSailingImg from '../assets/Para sailing.jpg.jpeg';
 import ShikaraImg from '../assets/Shikara.jpg.jpeg';
 import TehriHeliImg from '../assets/tehri3.png';
-import LogoImg from '../assets/logo-DFfutrEX.png';
+
 
 // ── Success Modal (Ticket Design) ─────────────────────────────────────────────
-const SuccessModal = ({ bookedItems, total, customerName, bookingDate, onClose }: {
+const SuccessModal = ({ bookedItems, total, subtotal, gst, customerName, bookingDate, orderId, onClose }: {
   bookedItems: any[];
   total: number;
+  subtotal: number;
+  gst: number;
   customerName: string;
   bookingDate?: string;
+  orderId?: string;
   onClose: () => void;
 }) => {
   const ticketRef = useRef<HTMLDivElement>(null);
@@ -53,8 +56,8 @@ const SuccessModal = ({ bookedItems, total, customerName, bookingDate, onClose }
         await Promise.all(imagePromises);
       }
 
-      // Small delay to ensure everything is settled
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Small delay to ensure everything is settled (increased for reliability)
+      await new Promise(resolve => setTimeout(resolve, 2500));
       
       if (!captureTarget) throw new Error('Capture target not found');
 
@@ -146,9 +149,12 @@ const SuccessModal = ({ bookedItems, total, customerName, bookingDate, onClose }
           <Ticket 
             ticketRef={ticketRef}
             bookedItems={bookedItems}
+            subtotal={subtotal}
+            gst={gst}
             total={total}
             customerName={customerName}
             bookingDate={bookingDate}
+            orderId={orderId}
           />
 
           <div className="flex flex-col gap-3 w-full max-w-[300px]">
@@ -172,9 +178,12 @@ const SuccessModal = ({ bookedItems, total, customerName, bookingDate, onClose }
       <div ref={ticketRef} className="absolute left-[-9999px] top-0">
         <Ticket 
           bookedItems={bookedItems}
+          subtotal={subtotal}
+          gst={gst}
           total={total}
           customerName={customerName}
           bookingDate={bookingDate}
+          orderId={orderId}
         />
       </div>
     </div>
@@ -202,7 +211,11 @@ const CONVENIENCE_CHARGE_AMOUNT = 500;
 const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCart: (item: CartItem) => void }) => {
   const navigate = useNavigate();
   const isMulti = (activity.durations?.length ?? 0) > 0;
-  const [selDur, setSelDur] = useState<Duration | null>(isMulti ? activity.durations[0] : null);
+  const [selDur, setSelDur] = useState<Duration | null>(
+    isMulti 
+      ? [...activity.durations].sort((a, b) => b.price - a.price)[0] 
+      : null
+  );
   const [persons, setPersons] = useState(1);
 
   const price = isMulti ? (selDur?.price || 0) : activity.price;
@@ -223,7 +236,7 @@ const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCa
       className={`group relative bg-white rounded-[2.5rem] overflow-hidden border border-slate-100 shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-blue-900/5 hover:-translate-y-2 ${isFull ? 'opacity-70 grayscale-[0.5]' : ''}`}>
       
       {/* Image Header */}
-      <div className="relative h-56 overflow-hidden">
+      <div className="relative h-56">
         <img 
           src={
             activity.name === 'Speed Boat' ? HighSpeedBoatImg : 
@@ -238,9 +251,9 @@ const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCa
             activity.image || 'https://images.unsplash.com/photo-1544551763-71a747970908?auto=format&fit=crop&q=80&w=800'
           } 
           alt={activity.name}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 rounded-t-[2.5rem]"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent rounded-t-[2.5rem]" />
         
         {/* Floating Badges */}
         <div className="absolute top-4 left-4 flex gap-2">
@@ -262,8 +275,8 @@ const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCa
       <div className="p-7 pt-8">
         <div>
           <h3 className="text-xl font-bold text-slate-900 leading-tight group-hover:text-blue-600 transition-colors uppercase tracking-tight">{activity.name}</h3>
-          <p className="text-xs text-slate-500 mt-2 leading-relaxed font-medium line-clamp-2 italic h-8">
-            {activity.description || "Experience the thrill of Tehri's top-rated water adventure."}
+          <p className="text-[13px] text-slate-500 mt-3 leading-relaxed font-medium line-clamp-3 h-14">
+            {activity.description || "Experience the thrill of Tehri's top-rated water adventure and create unforgettable memories with your loved ones."}
           </p>
         </div>
 
@@ -345,7 +358,7 @@ const GuestModal = ({ total, subtotal, charge, gst, onConfirm, onClose, loading,
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto py-10">
+    <div className="fixed inset-0 z-[60] flex items-start justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto py-10">
       <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
         className="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden my-auto">
         {/* Header */}
@@ -428,7 +441,14 @@ const GuestModal = ({ total, subtotal, charge, gst, onConfirm, onClose, loading,
                       customerEmail: email,
                       customerPhone: phone,
                       customerAadhar: aadhar,
-                      items: bookedItems,
+                      items: bookedItems.map(i => ({
+                        activityId: i.activityId,
+                        name: i.name,
+                        emoji: i.emoji,
+                        persons: i.persons,
+                        totalPrice: i.totalPrice,
+                        duration: i.selectedDuration?.label || null,
+                      })),
                       bookingDate: bookingDate,
                       amount: total
                     })
@@ -472,15 +492,6 @@ const CartDrawer = ({ cart, onRemove, onClear, onPay, isOpen, onClose }: {
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-            className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[50] cursor-pointer"
-          />
-
           {/* Drawer */}
           <motion.div
             initial={{ x: '-100%' }}
@@ -638,7 +649,7 @@ export const WaterAdventureSection = () => {
   const [showModal, setShowModal] = useState(false);
   const [paying, setPaying] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [successData, setSuccessData] = useState<{ items: any[]; total: number; name: string; date?: string } | null>(null);
+  const [successData, setSuccessData] = useState<{ items: any[]; total: number; subtotal: number; gst: number; name: string; date?: string; orderId: string } | null>(null);
   const [selectedDate, setSelectedDate] = useState('');
   const [isCartOpen, setIsCartOpen] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -648,8 +659,20 @@ export const WaterAdventureSection = () => {
     localStorage.setItem('sky_trip_water_cart', JSON.stringify(cart));
   }, [cart]);
 
+  // Body Scroll Lock for Modal/Drawer
+  useEffect(() => {
+    if (isCartOpen || showModal || showSuccess) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isCartOpen, showModal, showSuccess]);
+
   // Fetch without showing spinner (for background polls)
-  const fetchActivities = async (showLoader = false) => {
+  const fetchActivities = async (showLoader = false, dateToFetch = selectedDate) => {
     if (showLoader) setLoading(true);
     try {
       // Fetch Helicopter Package
@@ -660,7 +683,11 @@ export const WaterAdventureSection = () => {
         console.error('Failed to fetch helicopter package', err);
       }
 
-      const res = await fetch(`${API_BASE_URL}/water-activities`);
+      const url = dateToFetch 
+        ? `${API_BASE_URL}/water-activities?date=${dateToFetch}`
+        : `${API_BASE_URL}/water-activities`;
+        
+      const res = await fetch(url);
       const data = await res.json();
       if (data.success) setActivities(data.data);
     } catch (err) {
@@ -671,9 +698,15 @@ export const WaterAdventureSection = () => {
   };
 
   useEffect(() => {
-    // First load with spinner
+    if (selectedDate) {
+      fetchActivities(true, selectedDate);
+    }
+  }, [selectedDate]);
+
+  useEffect(() => {
+    // Initial load
     fetchActivities(true);
-    // Background poll every 60s — NO spinner, NO loading state
+    // Background poll every 60s
     intervalRef.current = setInterval(() => fetchActivities(false), 60000);
     return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
   }, []);
@@ -688,7 +721,11 @@ export const WaterAdventureSection = () => {
       if (exists >= 0) { const u = [...prev]; u[exists] = item; return u; }
       return [...prev, item];
     });
-    setIsCartOpen(true);
+    
+    // Auto-open drawer only on desktop screens
+    if (window.innerWidth > 768) {
+      setIsCartOpen(true);
+    }
   };
 
   const removeFromCart = (activityId: string) => setCart(prev => prev.filter(i => i.activityId !== activityId));
@@ -707,6 +744,7 @@ export const WaterAdventureSection = () => {
       if (cal) cal.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
+    setIsCartOpen(false);
     setShowModal(true);
   };
 
@@ -742,6 +780,7 @@ export const WaterAdventureSection = () => {
           bookingDate: date,
           notes: { package: 'Tehri Water Adventure', userId: 'Guest', bookingDate: date, aadhar },
           items: cart.map(i => ({
+            activityId: i.activityId, // Added activityId
             name: i.name,
             emoji: i.emoji,
             persons: i.persons,
@@ -780,25 +819,9 @@ export const WaterAdventureSection = () => {
             const verifyData = await verifyRes.json();
 
             if (verifyData.success) {
-              // Step 5: ONLY NOW deduct seats
-              const bookRes = await fetch(`${API_BASE_URL}/water-activities/book`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  cartItems: cart.map(i => ({
-                    activityId: i.activityId,
-                    persons: i.persons,
-                    durationLabel: i.selectedDuration?.label || null,
-                  })),
-                }),
-              });
-              const bookData = await bookRes.json();
-
-              if (bookData.success) {
-                // Show premium success popup
-                setSuccessData({ items: [...cart], total, name, date });
-                setShowSuccess(true);
-              }
+              // Show premium success popup
+              setSuccessData({ items: [...cart], total, subtotal, gst, name, date, orderId: response.razorpay_order_id });
+              setShowSuccess(true);
 
               setShowModal(false);
               clearCart();
@@ -860,10 +883,11 @@ export const WaterAdventureSection = () => {
           </motion.h2>
           <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
             className="text-slate-500 text-base leading-relaxed max-w-xl mx-auto">
-            Book your tickets in advance to avoid walk-in rush.{' '}
-            <span className="font-bold text-blue-600">Free convenience charge on orders above ₹5,000!</span>
+            Book your tickets in advance to avoid walk-in rush.
           </motion.p>
         </div>
+
+
 
         {/* Date Selector */}
         <motion.div 
@@ -905,8 +929,49 @@ export const WaterAdventureSection = () => {
           </div>
         </motion.div>
 
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
+          {/* Activity Cards */}
+          <div className="lg:col-span-3">
+            <div className="flex items-center gap-4 mb-12">
+              <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight">Available <span className="text-blue-600">Activities</span></h3>
+              <div className="h-px flex-1 bg-slate-100" />
+            </div>
+
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-20 gap-4">
+                <Loader2 size={40} className="animate-spin text-blue-500" />
+                <p className="text-slate-400 text-sm font-medium animate-pulse">Loading activities...</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                {activities
+                  .sort((a, b) => {
+                    const order = [
+                      'Flyboarding',
+                      'Parasailing',
+                      'Jet Ski',
+                      'Speed Boat',
+                      'Motor Boat',
+                      'Banana Ride',
+                      'Bumper Ride',
+                      'Shikara Ride'
+                    ];
+                    const indexA = order.indexOf(a.name);
+                    const indexB = order.indexOf(b.name);
+                    if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+                    if (indexA !== -1) return -1;
+                    if (indexB !== -1) return 1;
+                    return 0;
+                  })
+                  .map(a => <ActivityCard key={a._id} activity={a} onAddToCart={addToCart} />)}
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Unique Header-Integrated Recommendation */}
-        <div className="flex flex-col lg:flex-row items-center gap-12 mb-20">
+        <div className="flex flex-col lg:flex-row items-center gap-12 mt-24 mb-12">
           <motion.div 
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -950,70 +1015,9 @@ export const WaterAdventureSection = () => {
             <div className="absolute inset-0 bg-blue-100/50 rounded-[3rem] -rotate-3 scale-105 -z-10 group-hover:rotate-0 transition-transform duration-700" />
           </motion.div>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
-          {/* Activity Cards */}
-          <div className="lg:col-span-3">
-            <div className="flex items-center gap-4 mb-12">
-              <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight">Available <span className="text-blue-600">Activities</span></h3>
-              <div className="h-px flex-1 bg-slate-100" />
-            </div>
-
-            {loading ? (
-              <div className="flex flex-col items-center justify-center py-20 gap-4">
-                <Loader2 size={40} className="animate-spin text-blue-500" />
-                <p className="text-slate-400 text-sm font-medium animate-pulse">Loading activities...</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {activities
-                  .sort((a, b) => {
-                    const order = [
-                      'Flyboarding',
-                      'Parasailing',
-                      'Jet Ski',
-                      'Speed Boat',
-                      'Motor Boat',
-                      'Banana Ride',
-                      'Bumper Ride',
-                      'Shikara Ride'
-                    ];
-                    const indexA = order.indexOf(a.name);
-                    const indexB = order.indexOf(b.name);
-                    if (indexA !== -1 && indexB !== -1) return indexA - indexB;
-                    if (indexA !== -1) return -1;
-                    if (indexB !== -1) return 1;
-                    return 0;
-                  })
-                  .map(a => <ActivityCard key={a._id} activity={a} onAddToCart={addToCart} />)}
-              </div>
-            )}
-          </div>
-        </div>
       </div>
 
-      {/* Floating Cart Button */}
-      {cart.length > 0 && (
-        <motion.button
-          initial={{ scale: 0, y: 100 }}
-          animate={{ scale: 1, y: 0 }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => setIsCartOpen(true)}
-          className="fixed bottom-8 left-8 z-40 bg-blue-600 text-white p-5 rounded-full shadow-2xl shadow-blue-300 flex items-center gap-3 group cursor-pointer"
-        >
-          <div className="relative">
-            <ShoppingCart size={24} />
-            <span className="absolute -top-3 -right-3 w-6 h-6 bg-rose-500 text-white text-[11px] font-bold rounded-full flex items-center justify-center ring-4 ring-blue-600">
-              {cart.length}
-            </span>
-          </div>
-          <div className="pr-2 text-left">
-            <p className="text-[10px] font-bold uppercase tracking-widest opacity-70">Checkout</p>
-            <p className="text-sm font-bold">₹{cartTotal.toLocaleString()}</p>
-          </div>
-        </motion.button>
-      )}
+
 
       {/* Cart Drawer Component */}
       <CartDrawer 
@@ -1042,8 +1046,11 @@ export const WaterAdventureSection = () => {
               setSuccessData({
                 items: data.items,
                 total: data.amount / 100,
+                subtotal: Math.round((data.amount / 100) / 1.05),
+                gst: Math.round((data.amount / 100) - ((data.amount / 100) / 1.05)),
                 name: data.customerName,
-                date: data.bookingDate
+                date: data.bookingDate,
+                orderId: data.razorpayOrderId
               });
               setShowSuccess(true);
               clearCart();
@@ -1059,10 +1066,37 @@ export const WaterAdventureSection = () => {
           <SuccessModal
             bookedItems={successData.items}
             total={successData.total}
+            subtotal={successData.subtotal}
+            gst={successData.gst}
             customerName={successData.name}
             bookingDate={successData.date}
+            orderId={successData.orderId}
             onClose={() => { setShowSuccess(false); setSuccessData(null); }}
           />
+        )}
+      </AnimatePresence>
+      {/* Mobile Floating Cart Button */}
+      <AnimatePresence>
+        {cart.length > 0 && !isCartOpen && !showModal && !showSuccess && (
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40"
+          >
+            <button
+              onClick={() => setIsCartOpen(true)}
+              className="bg-blue-600 text-white px-8 py-4 rounded-full shadow-2xl flex items-center gap-3 font-black text-sm uppercase tracking-wider border-4 border-white active:scale-95 transition-transform"
+            >
+              <div className="relative">
+                <ShoppingCart size={20} />
+                <span className="absolute -top-2 -right-2 bg-rose-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">
+                  {cart.length}
+                </span>
+              </div>
+              View My Cart
+            </button>
+          </motion.div>
         )}
       </AnimatePresence>
     </section>

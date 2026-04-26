@@ -55,6 +55,11 @@ const orderSchema = new mongoose.Schema(
     },
     items: [
       {
+        activityId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Activity',
+          required: false,
+        },
         name: String,
         emoji: String,
         persons: Number,

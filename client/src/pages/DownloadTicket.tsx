@@ -23,8 +23,8 @@ const DownloadTicket = () => {
         const data = await response.json();
         if (data.success) {
           setOrder(data.data);
-          // Auto-trigger download after a short delay
-          setTimeout(() => handleDownload(data.data), 2500);
+          // Auto-trigger download after a longer delay for mobile stability
+          setTimeout(() => handleDownload(data.data), 6000);
         } else {
           setError(data.error || "Order not found");
         }
@@ -181,6 +181,8 @@ const DownloadTicket = () => {
         <Ticket 
           bookedItems={order.items}
           total={order.amount / 100}
+          subtotal={Math.round((order.amount / 100) / 1.05)}
+          gst={(order.amount / 100) - Math.round((order.amount / 100) / 1.05)}
           customerName={order.customerName}
           bookingDate={order.bookingDate}
           orderId={order.razorpayOrderId}
@@ -191,6 +193,8 @@ const DownloadTicket = () => {
         <Ticket 
           bookedItems={order.items}
           total={order.amount / 100}
+          subtotal={Math.round((order.amount / 100) / 1.05)}
+          gst={(order.amount / 100) - Math.round((order.amount / 100) / 1.05)}
           customerName={order.customerName}
           bookingDate={order.bookingDate}
           orderId={order.razorpayOrderId}

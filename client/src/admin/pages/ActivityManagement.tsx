@@ -33,12 +33,14 @@ const ActivityRow = ({
   onToggle,
   onDelete,
   resettingId,
+  selectedDate,
 }: {
   activity: Activity;
   onReset: (id: string) => void;
   onToggle: (id: string, current: boolean) => void;
   onDelete: (id: string, name: string) => void;
   resettingId: string | null;
+  selectedDate: string;
 }) => {
   const available = activity.totalSeats - activity.bookedSeats;
   const fillPercent = Math.round((activity.bookedSeats / activity.totalSeats) * 100);
@@ -133,7 +135,7 @@ const ActivityRow = ({
             ) : (
               <RotateCcw size={14} />
             )}
-            Mark Ride Complete
+            Reset Seats for {selectedDate}
           </button>
 
           {/* Delete Activity */}
@@ -175,7 +177,7 @@ const ActivityRow = ({
         <p className="text-[10px] text-text-secondary mt-1.5">
           {available > 0
             ? `${available} seat${available !== 1 ? 's' : ''} remaining`
-            : 'No seats available — click "Mark Ride Complete" to reset'}
+            : `No seats available for this date — click "Reset Seats" or pick another date`}
         </p>
       </div>
     </motion.div>
@@ -184,6 +186,7 @@ const ActivityRow = ({
 
 const ActivityManagement = () => {
   const [activities, setActivities] = useState<Activity[]>([]);
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [loading, setLoading] = useState(true);
   const [seeding, setSeeding] = useState(false);
   const [resettingId, setResettingId] = useState<string | null>(null);
@@ -195,11 +198,11 @@ const ActivityManagement = () => {
   const fetchActivities = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${API_BASE_URL}/water-activities/admin`, {
+      const res = await fetch(`${API_BASE_URL}/water-activities/admin?date=${selectedDate}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
-      if (data.success) setActivities(data.data);
+      if (data.success) setActivities(Array.isArray(data.data) ? data.data : []);
       else throw new Error(data.error || 'Failed to fetch');
     } catch (err: any) {
       setError(err.message);
@@ -209,8 +212,10 @@ const ActivityManagement = () => {
   };
 
   useEffect(() => {
-    fetchActivities();
-  }, []);
+    if (token) {
+      fetchActivities();
+    }
+  }, [selectedDate, token]);
 
   const handleSeed = async () => {
     if (!confirm('This will add the default 8 Tehri Water Adventure activities. Continue?')) return;
@@ -238,7 +243,7 @@ const ActivityManagement = () => {
     if (!confirm('Mark this ride as complete? This will reset booked seats to 0.')) return;
     setResettingId(id);
     try {
-      const res = await fetch(`${API_BASE_URL}/water-activities/${id}/reset`, {
+      const res = await fetch(`${API_BASE_URL}/water-activities/${id}/reset?date=${selectedDate}`, {
         method: 'PUT',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -286,7 +291,7 @@ const ActivityManagement = () => {
     if (!confirm('Reset ALL activity seats to 0? This will remove all booked seat counts.')) return;
     setResettingAll(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/water-activities/reset-all`, {
+      const res = await fetch(`${API_BASE_URL}/water-activities/reset-all?date=${selectedDate}`, {
         method: 'PUT',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -337,6 +342,17 @@ const ActivityManagement = () => {
           </p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
+          {/* Date Selector */}
+          <div className="flex items-center gap-2 px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl">
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Date:</span>
+            <input 
+              type="date" 
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="bg-transparent border-none text-xs font-bold text-slate-700 focus:ring-0 cursor-pointer outline-none"
+            />
+          </div>
+
           <button onClick={fetchActivities}
             className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 border border-slate-200 text-slate-600 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors cursor-pointer">
             <RefreshCw size={14} /> Refresh
@@ -418,15 +434,16 @@ const ActivityManagement = () => {
               onToggle={handleToggle}
               onDelete={handleDelete}
               resettingId={resettingId}
+              selectedDate={selectedDate}
             />
           ))}
         </div>
       )}
 
       <div className="p-4 bg-blue-50 rounded-2xl border border-blue-100">
-        <p className="text-xs text-blue-600 font-medium">
-          💡 <strong>How it works:</strong> When all 50 seats are booked for a ride, it shows as "FULL" on the website.
-          After the session is complete, click <strong>"Mark Ride Complete"</strong> to reset seats to 0 so new bookings can come in.
+        <p className="text-xs text-blue-600 font-medium leading-relaxed">
+          💡 <strong>How it works:</strong> Seats are tracked <strong>per date</strong>. Each new day automatically starts with 0 booked seats. 
+          The count above is for <strong>{selectedDate}</strong>. If you want to clear bookings for this specific date manually, use the "Reset Seats" button.
         </p>
       </div>
     </div>

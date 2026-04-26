@@ -1,12 +1,14 @@
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
 import Order from '../models/Order.js';
+import Activity from '../models/Activity.js';
+import DailyActivityStats from '../models/DailyActivityStats.js';
 import sendEmail from '../utils/sendEmail.js';
 import { generateInvoiceHTML } from '../utils/invoiceTemplate.js';
 
 // @desc    Create Razorpay Order
 // @route   POST /api/payment/create-order
-// @access  Private (or Public depending on use case)
+// @access  Public
 export const createOrder = async (req, res) => {
   try {
     const { amount, currency, notes, customerName, customerEmail, customerPhone, customerAadhar, items, bookingDate } = req.body;
@@ -70,6 +72,7 @@ export const testBooking = async (req, res) => {
   try {
     const { customerName, customerEmail, customerPhone, customerAadhar, items, bookingDate, amount } = req.body;
 
+    // Save order
     const order = await Order.create({
       razorpayOrderId: `test_${Date.now()}`,
       customerName,
@@ -82,14 +85,44 @@ export const testBooking = async (req, res) => {
       bookingDate,
     });
 
+    // Deduct seats for each item on the specific date
+    if (items && items.length > 0 && bookingDate) {
+      for (const item of items) {
+        if (item.activityId) {
+          await DailyActivityStats.findOneAndUpdate(
+            { activityId: item.activityId, date: bookingDate },
+            { $inc: { bookedSeats: item.persons || 1 } },
+            { upsert: true, new: true }
+          );
+        }
+      }
+    }
+
+    // Send Email notification (optional for test, but good for verification)
     try {
+      // To Customer
       await sendEmail({
-        email: order.customerEmail,
-        subject: `Test Booking Confirmed! Invoice for Order ${order.razorpayOrderId}`,
+        email: customerEmail,
+        subject: `[TEST] Booking Confirmed! Invoice for Order MST-TEST`,
         message: generateInvoiceHTML(order),
       });
+
+      // To Admin (booking@myskytrips.com)
+      await sendEmail({
+        email: 'booking@myskytrips.com',
+        subject: `[TEST] New Booking Alert: ${customerName}`,
+        message: `
+          <h3>New TEST Booking Received!</h3>
+          <p><strong>Customer:</strong> ${customerName}</p>
+          <p><strong>Phone:</strong> ${customerPhone}</p>
+          <p><strong>Date of Visit:</strong> ${new Date(bookingDate).toDateString()}</p>
+          <p><strong>Total Amount:</strong> ₹${amount}</p>
+          <hr/>
+          <p>This is a test booking notification.</p>
+        `,
+      });
     } catch (mailErr) {
-      console.error('Failed to send test email:', mailErr);
+      console.error('Failed to send test emails:', mailErr);
     }
 
     res.status(201).json({ success: true, data: order });
@@ -101,7 +134,7 @@ export const testBooking = async (req, res) => {
 
 // @desc    Verify Razorpay Payment
 // @route   POST /api/payment/verify-payment
-// @access  Private (or Public)
+// @access  Public
 export const verifyPayment = async (req, res) => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
@@ -134,25 +167,57 @@ export const verifyPayment = async (req, res) => {
         return res.status(404).json({ success: false, error: 'Order not found in database' });
       }
 
-      // Send Invoice Email
+      // Send Invoice Email to Customer & Notification to Admin
       try {
+        // 1. To Customer
         await sendEmail({
           email: order.customerEmail,
           subject: `Booking Confirmed! Invoice for Order ${order.razorpayOrderId}`,
           message: generateInvoiceHTML(order),
         });
+
+        // 2. To Admin (booking@myskytrips.com)
+        await sendEmail({
+          email: 'booking@myskytrips.com',
+          subject: `New Booking Alert: ${order.customerName} - ${order.items.length} Activities`,
+          message: `
+            <h3>New Booking Received!</h3>
+            <p><strong>Customer:</strong> ${order.customerName}</p>
+            <p><strong>Phone:</strong> ${order.customerPhone}</p>
+            <p><strong>Date of Visit:</strong> ${order.bookingDate ? new Date(order.bookingDate).toDateString() : 'N/A'}</p>
+            <p><strong>Total Amount Paid:</strong> ₹${order.amount / 100}</p>
+            <hr/>
+            <h4>Items Booked:</h4>
+            <ul>
+              ${order.items.map(item => `<li>${item.name} (${item.persons} Persons) - ${item.duration || 'Standard'}</li>`).join('')}
+            </ul>
+            <p>Check the admin dashboard for full details.</p>
+          `,
+        });
       } catch (mailErr) {
-        console.error('Failed to send invoice email:', mailErr);
-        // We don't fail the request if email fails, but we log it
+        console.error('Failed to send emails:', mailErr);
+      }
+
+      // Deduct seats for each item on the specific date
+      if (order.items && order.items.length > 0 && order.bookingDate) {
+        const bookingDateStr = order.bookingDate.toISOString().split('T')[0];
+        for (const item of order.items) {
+          if (item.activityId) {
+            await DailyActivityStats.findOneAndUpdate(
+              { activityId: item.activityId, date: bookingDateStr },
+              { $inc: { bookedSeats: item.persons || 1 } },
+              { upsert: true, new: true }
+            );
+          }
+        }
       }
 
       return res.status(200).json({
         success: true,
-        message: 'Payment verified successfully and invoice sent',
+        message: 'Payment verified successfully and seats reserved',
         data: order,
       });
     } else {
-      // Update order status to failed if signature doesn't match
       await Order.findOneAndUpdate(
         { razorpayOrderId: razorpay_order_id },
         { status: 'failed' }
