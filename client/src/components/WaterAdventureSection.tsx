@@ -587,19 +587,12 @@ const CartDrawer = ({ cart, onRemove, onClear, onPay, isOpen, onClose }: {
                     <span className="text-slate-500">GST (5%)</span>
                     <span className="text-slate-800">+ ₹{gst.toLocaleString()}</span>
                   </div>
-                  {convenienceCharge > 0 ? (
+                  {convenienceCharge > 0 && (
                     <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 mt-1 mb-4 flex items-start gap-2 shadow-sm">
                       <AlertCircle size={14} className="text-amber-500 shrink-0 mt-0.5" />
                       <p className="text-[10px] text-amber-800 leading-relaxed">
                         A <strong>₹500 convenience charge</strong> is applied to bookings under ₹5,000. 
                         Add <strong>₹{(CONVENIENCE_CHARGE_THRESHOLD - subtotal).toLocaleString()}</strong> more to your cart to get <strong>FREE convenience!</strong>
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 mt-1 mb-4 flex items-center gap-2 shadow-sm">
-                      <PartyPopper size={14} className="text-emerald-600" />
-                      <p className="text-[10px] text-emerald-800 font-bold">
-                        Awesome! Your order is above ₹5,000, so convenience charge is 100% FREE!
                       </p>
                     </div>
                   )}
@@ -617,17 +610,12 @@ const CartDrawer = ({ cart, onRemove, onClear, onPay, isOpen, onClose }: {
                 </div>
 
                 <div className="space-y-3">
-                  {!meetsMin ? (
+                  {!meetsMin && (
                     <div className="p-3 bg-amber-50 border border-amber-100 rounded-xl flex items-start gap-2">
                       <AlertCircle size={14} className="text-amber-500 shrink-0 mt-0.5" />
                       <p className="text-[10px] text-amber-700 leading-relaxed font-medium">
                         Booking requires minimum <strong>₹5,000</strong>. Please add more activities to proceed.
                       </p>
-                    </div>
-                  ) : (
-                    <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center gap-2">
-                      <CheckCircle2 size={14} className="text-emerald-500" />
-                      <p className="text-[10px] text-emerald-700 font-bold">Minimum amount met! You can proceed.</p>
                     </div>
                   )}
 
