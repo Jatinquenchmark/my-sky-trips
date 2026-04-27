@@ -258,3 +258,117 @@ export const getOrderById = async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 };
+
+// @desc    Razorpay Webhook for Payment Status
+// @route   POST /api/payment/webhook
+// @access  Public
+export const razorpayWebhook = async (req, res) => {
+  try {
+    // Webhook secret from your .env
+    const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
+    
+    // Razorpay signature from headers
+    const signature = req.headers['x-razorpay-signature'];
+    
+    // Webhook payload body
+    const body = req.body;
+    
+    if (!secret || !signature) {
+      return res.status(400).send('Missing secret or signature');
+    }
+
+    // Verify webhook signature
+    const expectedSignature = crypto
+      .createHmac('sha256', secret)
+      .update(JSON.stringify(body))
+      .digest('hex');
+
+    if (expectedSignature !== signature) {
+      console.error('Webhook signature verification failed');
+      return res.status(400).send('Invalid Signature');
+    }
+
+    // Process the event
+    const event = body.event;
+    
+    if (event === 'payment.captured' || event === 'order.paid') {
+      const paymentEntity = body.payload.payment.entity;
+      const orderId = paymentEntity.order_id;
+      const paymentId = paymentEntity.id;
+      
+      // Find the order
+      const order = await Order.findOne({ razorpayOrderId: orderId });
+      
+      if (!order) {
+        console.error(`Webhook: Order not found for Razorpay Order ID: ${orderId}`);
+        return res.status(404).send('Order not found');
+      }
+
+      // Check if already paid (maybe frontend already verified it)
+      if (order.status === 'paid') {
+        console.log(`Webhook: Order ${orderId} already marked as paid.`);
+        return res.status(200).send('Already processed');
+      }
+
+      // Update order to paid
+      const updatedOrder = await Order.findOneAndUpdate(
+        { razorpayOrderId: orderId },
+        {
+          razorpayPaymentId: paymentId,
+          status: 'paid',
+        },
+        { new: true }
+      );
+
+      // Send Invoice Email to Customer & Notification to Admin
+      try {
+        await sendEmail({
+          email: updatedOrder.customerEmail,
+          subject: `Booking Confirmed! Invoice for Order ${updatedOrder.razorpayOrderId}`,
+          message: generateInvoiceHTML(updatedOrder),
+        });
+
+        await sendEmail({
+          email: 'booking@myskytrips.com',
+          subject: `New Booking Alert (Webhook): ${updatedOrder.customerName} - ${updatedOrder.items.length} Activities`,
+          message: `
+            <h3>New Booking Received via Webhook!</h3>
+            <p><strong>Customer:</strong> ${updatedOrder.customerName}</p>
+            <p><strong>Phone:</strong> ${updatedOrder.customerPhone}</p>
+            <p><strong>Date of Visit:</strong> ${updatedOrder.bookingDate ? new Date(updatedOrder.bookingDate).toDateString() : 'N/A'}</p>
+            <p><strong>Total Amount Paid:</strong> ₹${updatedOrder.amount / 100}</p>
+            <hr/>
+            <h4>Items Booked:</h4>
+            <ul>
+              ${updatedOrder.items.map(item => `<li>${item.name} (${item.persons} Persons) - ${item.duration || 'Standard'}</li>`).join('')}
+            </ul>
+          `,
+        });
+      } catch (mailErr) {
+        console.error('Webhook: Failed to send emails:', mailErr);
+      }
+
+      // Deduct seats
+      if (updatedOrder.items && updatedOrder.items.length > 0 && updatedOrder.bookingDate) {
+        const bookingDateStr = updatedOrder.bookingDate.toISOString().split('T')[0];
+        for (const item of updatedOrder.items) {
+          if (item.activityId) {
+            await DailyActivityStats.findOneAndUpdate(
+              { activityId: item.activityId, date: bookingDateStr },
+              { $inc: { bookedSeats: item.persons || 1 } },
+              { upsert: true, new: true }
+            );
+          }
+        }
+      }
+
+      console.log(`Webhook: Successfully processed payment for order ${orderId}`);
+    }
+
+    // Return 200 OK so Razorpay knows we received the webhook
+    res.status(200).send('OK');
+  } catch (err) {
+    console.error('Webhook Error:', err);
+    res.status(500).send('Internal Server Error');
+  }
+};

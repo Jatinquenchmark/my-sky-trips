@@ -1,5 +1,5 @@
 import express from 'express';
-import { createOrder, verifyPayment, getOrders, getOrderById, testBooking } from '../controllers/paymentController.js';
+import { createOrder, verifyPayment, getOrders, getOrderById, testBooking, razorpayWebhook } from '../controllers/paymentController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -9,6 +9,7 @@ router.post('/create-order', createOrder);
 router.post('/verify-payment', verifyPayment);
 router.get('/order/:orderId', getOrderById);
 router.post('/test-booking', testBooking);
+router.post('/webhook', razorpayWebhook);
 
 // Admin routes
 router.get('/orders', protect, getOrders);
