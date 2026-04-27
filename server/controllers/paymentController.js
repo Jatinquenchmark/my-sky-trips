@@ -47,13 +47,22 @@ export const createOrder = async (req, res) => {
       return res.status(400).json({ success: false, error: 'Invalid total amount calculated' });
     }
 
+    const CONVENIENCE_CHARGE_THRESHOLD = 5000;
+    const CONVENIENCE_CHARGE_AMOUNT = 500;
+    
+    const subtotal = calculatedTotalAmount;
+    const isTestBooking = subtotal <= 10;
+    const convenienceCharge = (subtotal < CONVENIENCE_CHARGE_THRESHOLD && !isTestBooking) ? CONVENIENCE_CHARGE_AMOUNT : 0;
+    const gst = isTestBooking ? 0 : Math.round((subtotal + convenienceCharge) * 0.05);
+    const finalTotalAmount = subtotal + convenienceCharge + gst;
+
     const instance = new Razorpay({
       key_id: process.env.RAZORPAY_KEY_ID,
       key_secret: process.env.RAZORPAY_KEY_SECRET,
     });
 
     const options = {
-      amount: Math.round(calculatedTotalAmount * 100), // Convert to paise securely
+      amount: Math.round(finalTotalAmount * 100), // Convert to paise securely with GST & Charge
       currency: currency || 'INR',
       receipt: `receipt_${Date.now()}`,
       notes: notes || {},
@@ -123,6 +132,15 @@ export const testBooking = async (req, res) => {
       }
     }
 
+    const CONVENIENCE_CHARGE_THRESHOLD = 5000;
+    const CONVENIENCE_CHARGE_AMOUNT = 500;
+    
+    const subtotal = calculatedTotalAmount;
+    const isTestBooking = subtotal <= 10;
+    const convenienceCharge = (subtotal < CONVENIENCE_CHARGE_THRESHOLD && !isTestBooking) ? CONVENIENCE_CHARGE_AMOUNT : 0;
+    const gst = isTestBooking ? 0 : Math.round((subtotal + convenienceCharge) * 0.05);
+    const finalTotalAmount = subtotal + convenienceCharge + gst;
+
     // Save order
     const order = await Order.create({
       razorpayOrderId: `test_${Date.now()}`,
@@ -130,7 +148,7 @@ export const testBooking = async (req, res) => {
       customerEmail,
       customerPhone,
       customerAadhar,
-      amount: calculatedTotalAmount * 100, // Now secure
+      amount: finalTotalAmount * 100, // Now secure with GST
       status: 'paid',
       items,
       bookingDate,
