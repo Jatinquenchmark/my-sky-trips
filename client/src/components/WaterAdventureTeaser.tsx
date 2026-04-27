@@ -9,9 +9,11 @@ import JetSkiImg from '../assets/Jet ski.jpg.jpeg';
 import ParaSailingImg from '../assets/Para sailing.jpg.jpeg';
 import HighSpeedImg from '../assets/High speed boat.jpg.jpeg';
 
+import FlyBoardingImg from '../assets/Fly boarding.jpg.jpeg';
+
 export const WaterAdventureTeaser = () => {
   const images = [
-    { url: SpeedBoatImg, label: 'Speed Boat', icon: <Anchor size={14} /> },
+    { url: FlyBoardingImg, label: 'Flyboarding', icon: <Waves size={14} /> },
     { url: JetSkiImg, label: 'Jet Ski', icon: <Waves size={14} /> },
     { url: ParaSailingImg, label: 'Para Sailing', icon: <Compass size={14} /> },
     { url: HighSpeedImg, label: 'Water Sports', icon: <Waves size={14} /> },

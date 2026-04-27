@@ -242,7 +242,7 @@ const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCa
       {/* Full Background Image */}
       <img 
         src={
-          activity.name === 'Speed Boat' ? HighSpeedBoatImg : 
+          activity.name === 'Speed Boat' ? FlyBoardingImg : 
           activity.name === 'Motor Boat' ? SpeedBoatImg : 
           activity.name === 'Jet Ski' ? JetSkiImg : 
           activity.name === 'Bumper Ride' ? BumperRideImg : 
@@ -418,59 +418,8 @@ const GuestModal = ({ total, subtotal, charge, gst, onConfirm, onClose, loading,
           ))}
           <button type="submit" disabled={loading}
             className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all mt-2 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70">
-            {loading ? <><Loader2 size={16} className="animate-spin" /> Processing...</> : `Proceed to Pay ₹${total.toLocaleString()}`}
+            {loading ? <><Loader2 size={16} className="animate-spin" /> Processing...</> : `Confirm & Book ₹${total.toLocaleString()}`}
           </button>
-          <div className="flex items-center justify-center gap-4 text-xs text-slate-400 mt-2">
-            <span>✅ 100% Secure</span>
-            <span>🔒 Encrypted</span>
-            <span>⚡ Razorpay</span>
-          </div>
-
-          <div className="pt-6 mt-6 border-t border-slate-100">
-            <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] mb-3 text-center">Internal Testing Only</p>
-            <button 
-              type="button"
-              onClick={async () => {
-                if (!name || !email || !phone) { toast.error('Please fill Name, Email and Phone first'); return; }
-                const toastId = toast.loading('Creating test booking...');
-                try {
-                  const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/+api\/*$/, '');
-                  const response = await fetch(`${baseUrl}/api/payment/test-booking`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                      customerName: name,
-                      customerEmail: email,
-                      customerPhone: phone,
-                      customerAadhar: aadhar,
-                      items: bookedItems.map(i => ({
-                        activityId: i.activityId,
-                        name: i.name,
-                        emoji: i.emoji,
-                        persons: i.persons,
-                        totalPrice: i.totalPrice,
-                        duration: i.selectedDuration?.label || null,
-                      })),
-                      bookingDate: bookingDate,
-                      amount: total
-                    })
-                  });
-                  const data = await response.json();
-                  if (data.success) {
-                    toast.success('Test booking successful!', { id: toastId });
-                    onSuccess(data.data);
-                  } else {
-                    toast.error(data.error || 'Test booking failed', { id: toastId });
-                  }
-                } catch (err) {
-                  toast.error('Connection error', { id: toastId });
-                }
-              }}
-              className="w-full py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-black rounded-xl transition-all border border-emerald-100 uppercase tracking-widest text-[11px] cursor-pointer shadow-sm"
-            >
-              🚀 Run Test Booking (No Payment)
-            </button>
-          </div>
         </form>
       </motion.div>
     </div>
@@ -689,7 +638,16 @@ export const WaterAdventureSection = () => {
         
       const res = await fetch(url);
       const data = await res.json();
-      if (data.success) setActivities(data.data);
+      if (data.success) {
+        // Filter out Test Ride and sort Flyboarding to top
+        const filtered = data.data.filter((a: Activity) => a.name !== 'Test Ride');
+        const sorted = filtered.sort((a: Activity, b: Activity) => {
+          if (a.name === 'Flyboarding') return -1;
+          if (b.name === 'Flyboarding') return 1;
+          return 0;
+        });
+        setActivities(sorted);
+      }
     } catch (err) {
       console.error('Failed to fetch activities', err);
     } finally {
