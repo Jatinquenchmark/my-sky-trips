@@ -14,14 +14,14 @@ import { loadRazorpayScript } from '@/lib/razorpay';
 import { Ticket } from './Ticket';
 
 // Import local assets
-import SpeedBoatImg from '../assets/Speed Boat.jpg.jpeg';
-import HighSpeedBoatImg from '../assets/High speed boat.jpg.jpeg';
+import SpeedBoatImg from '../assets/Speed Boat (2).jpg.jpeg';
+import HighSpeedBoatImg from '../assets/High speed boat.jpg (1).jpeg';
 import JetSkiImg from '../assets/Jet ski.jpg.jpeg';
-import BumperRideImg from '../assets/Bumper Ride .jpg.jpeg';
+import BumperRideImg from '../assets/Bumper Ride  (2).jpg.jpeg';
 import BananaRideImg from '../assets/Banana ride.jpg.jpeg';
 import FlyBoardingImg from '../assets/Fly boarding.jpg.jpeg';
-import ParaSailingImg from '../assets/Para sailing.jpg.jpeg';
-import ShikaraImg from '../assets/Shikara.jpg.jpeg';
+import ParaSailingImg from '../ChatGPT Image Apr 27, 2026, 01_23_28 PM.png';
+import ShikaraImg from '../assets/Shikara (1).jpg.jpeg';
 import TehriHeliImg from '../assets/tehri3.png';
 
 
@@ -242,8 +242,8 @@ const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCa
       {/* Full Background Image */}
       <img 
         src={
-          activity.name === 'Speed Boat' ? FlyBoardingImg : 
-          activity.name === 'Motor Boat' ? SpeedBoatImg : 
+          activity.name === 'Speed Boat' ? SpeedBoatImg : 
+          activity.name === 'Motor Boat' ? HighSpeedBoatImg : 
           activity.name === 'Jet Ski' ? JetSkiImg : 
           activity.name === 'Bumper Ride' ? BumperRideImg : 
           activity.name === 'Banana Ride' ? BananaRideImg : 

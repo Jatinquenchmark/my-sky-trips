@@ -4,10 +4,10 @@ import { ArrowRight, Waves, Anchor, Compass } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 // Import local assets
-import SpeedBoatImg from '../assets/Speed Boat.jpg.jpeg';
+import SpeedBoatImg from '../assets/Speed Boat (2).jpg.jpeg';
 import JetSkiImg from '../assets/Jet ski.jpg.jpeg';
-import ParaSailingImg from '../assets/Para sailing.jpg.jpeg';
-import HighSpeedImg from '../assets/High speed boat.jpg.jpeg';
+import ParaSailingImg from '../ChatGPT Image Apr 27, 2026, 01_23_28 PM.png';
+import HighSpeedImg from '../assets/High speed boat.jpg (1).jpeg';
 
 import FlyBoardingImg from '../assets/Fly boarding.jpg.jpeg';
 
