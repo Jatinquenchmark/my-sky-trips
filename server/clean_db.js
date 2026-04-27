@@ -7,8 +7,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 dotenv.config({ path: join(__dirname, '.env') });
 
-const orderSchema = new mongoose.Schema({}, { strict: false });
-const Order = mongoose.model('Order', orderSchema);
+const activitySchema = new mongoose.Schema({}, { strict: false });
+const Activity = mongoose.model('Activity', activitySchema);
 
 async function cleanOrders() {
   try {
@@ -16,8 +16,9 @@ async function cleanOrders() {
     await mongoose.connect(process.env.MONGO_URI);
     console.log('Connected!');
 
-    // Delete ALL orders as requested
-    const result = await Order.deleteMany({});
+    // Delete Test Ride activity
+    const result = await Activity.deleteOne({ name: 'Test Ride' });
+    console.log(`Deleted Test Ride Activity. Count: ${result.deletedCount}`);
 
     console.log(`Deleted ${result.deletedCount} test orders.`);
   } catch (err) {
