@@ -11,10 +11,40 @@ import { generateInvoiceHTML } from '../utils/invoiceTemplate.js';
 // @access  Public
 export const createOrder = async (req, res) => {
   try {
-    const { amount, currency, notes, customerName, customerEmail, customerPhone, customerAadhar, items, bookingDate } = req.body;
+    const { currency, notes, customerName, customerEmail, customerPhone, customerAadhar, items, bookingDate } = req.body;
 
-    if (!amount) {
-      return res.status(400).json({ success: false, error: 'Amount is required' });
+    if (!items || items.length === 0) {
+      return res.status(400).json({ success: false, error: 'Items are required for booking' });
+    }
+
+    let calculatedTotalAmount = 0;
+
+    // Securely calculate total amount from DB
+    for (const item of items) {
+      const activity = await Activity.findById(item.activityId);
+      if (!activity) {
+        return res.status(404).json({ success: false, error: `Activity not found for ID: ${item.activityId}` });
+      }
+
+      let itemPrice = 0;
+      if (item.duration && activity.durations && activity.durations.length > 0) {
+        // Find specific duration price
+        const durationOption = activity.durations.find(d => d.label === item.duration);
+        if (durationOption) {
+          itemPrice = durationOption.price;
+        } else {
+          return res.status(400).json({ success: false, error: `Invalid duration '${item.duration}' for activity ${activity.name}` });
+        }
+      } else {
+        // Standard price
+        itemPrice = activity.price;
+      }
+
+      calculatedTotalAmount += itemPrice * (item.persons || 1);
+    }
+
+    if (calculatedTotalAmount <= 0) {
+      return res.status(400).json({ success: false, error: 'Invalid total amount calculated' });
     }
 
     const instance = new Razorpay({
@@ -23,7 +53,7 @@ export const createOrder = async (req, res) => {
     });
 
     const options = {
-      amount: Math.round(amount * 100), // Convert to paise
+      amount: Math.round(calculatedTotalAmount * 100), // Convert to paise securely
       currency: currency || 'INR',
       receipt: `receipt_${Date.now()}`,
       notes: notes || {},
@@ -70,7 +100,28 @@ export const createOrder = async (req, res) => {
 // @access  Public
 export const testBooking = async (req, res) => {
   try {
-    const { customerName, customerEmail, customerPhone, customerAadhar, items, bookingDate, amount } = req.body;
+    const { customerName, customerEmail, customerPhone, customerAadhar, items, bookingDate } = req.body;
+
+    if (!items || items.length === 0) {
+      return res.status(400).json({ success: false, error: 'Items are required for booking' });
+    }
+
+    let calculatedTotalAmount = 0;
+
+    // Securely calculate total amount from DB
+    for (const item of items) {
+      const activity = await Activity.findById(item.activityId);
+      if (activity) {
+        let itemPrice = 0;
+        if (item.duration && activity.durations && activity.durations.length > 0) {
+          const durationOption = activity.durations.find(d => d.label === item.duration);
+          if (durationOption) itemPrice = durationOption.price;
+        } else {
+          itemPrice = activity.price;
+        }
+        calculatedTotalAmount += itemPrice * (item.persons || 1);
+      }
+    }
 
     // Save order
     const order = await Order.create({
@@ -79,7 +130,7 @@ export const testBooking = async (req, res) => {
       customerEmail,
       customerPhone,
       customerAadhar,
-      amount: amount * 100,
+      amount: calculatedTotalAmount * 100, // Now secure
       status: 'paid',
       items,
       bookingDate,

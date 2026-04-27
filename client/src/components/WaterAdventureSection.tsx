@@ -624,14 +624,6 @@ export const WaterAdventureSection = () => {
   const fetchActivities = async (showLoader = false, dateToFetch = selectedDate) => {
     if (showLoader) setLoading(true);
     try {
-      // Fetch Helicopter Package
-      try {
-        const heliData = await fetchPackageById('69d9dac47e9892bc71afb965');
-        setHeliPackage(heliData);
-      } catch (err) {
-        console.error('Failed to fetch helicopter package', err);
-      }
-
       const url = dateToFetch 
         ? `${API_BASE_URL}/water-activities?date=${dateToFetch}`
         : `${API_BASE_URL}/water-activities`;
@@ -662,9 +654,21 @@ export const WaterAdventureSection = () => {
   }, [selectedDate]);
 
   useEffect(() => {
-    // Initial load
+    // Initial load for activities
     fetchActivities(true);
-    // Background poll every 60s
+    
+    // Fetch Helicopter Package ONLY ONCE on mount
+    const fetchHeli = async () => {
+      try {
+        const heliData = await fetchPackageById('69d9dac47e9892bc71afb965');
+        setHeliPackage(heliData);
+      } catch (err) {
+        console.error('Failed to fetch helicopter package', err);
+      }
+    };
+    fetchHeli();
+
+    // Background poll every 60s only for activities
     intervalRef.current = setInterval(() => fetchActivities(false), 60000);
     return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
   }, []);
