@@ -26,6 +26,20 @@ export const createOrder = async (req, res) => {
         return res.status(404).json({ success: false, error: `Activity not found for ID: ${item.activityId}` });
       }
 
+      // Soft Check: Ensure seats are available before allowing payment creation
+      if (bookingDate) {
+        const stats = await DailyActivityStats.findOne({ activityId: item.activityId, date: bookingDate });
+        const currentBooked = stats ? stats.bookedSeats : 0;
+        const available = activity.totalSeats - currentBooked;
+        
+        if ((item.persons || 1) > available) {
+          return res.status(400).json({ 
+            success: false, 
+            error: `Sold out! Only ${available} seat(s) left for ${activity.name} on the selected date.` 
+          });
+        }
+      }
+
       let itemPrice = 0;
       if (item.duration && activity.durations && activity.durations.length > 0) {
         // Find specific duration price
@@ -154,15 +168,34 @@ export const testBooking = async (req, res) => {
       bookingDate,
     });
 
-    // Deduct seats for each item on the specific date
+    // Deduct seats for each item on the specific date atomically
     if (items && items.length > 0 && bookingDate) {
       for (const item of items) {
         if (item.activityId) {
-          await DailyActivityStats.findOneAndUpdate(
-            { activityId: item.activityId, date: bookingDate },
-            { $inc: { bookedSeats: item.persons || 1 } },
-            { upsert: true, new: true }
-          );
+          const activity = await Activity.findById(item.activityId);
+          if (activity) {
+            await DailyActivityStats.updateOne(
+              { activityId: item.activityId, date: bookingDate },
+              { $setOnInsert: { bookedSeats: 0 } },
+              { upsert: true }
+            );
+
+            const personsToBook = item.persons || 1;
+            const updatedStats = await DailyActivityStats.findOneAndUpdate(
+              { 
+                activityId: item.activityId, 
+                date: bookingDate,
+                bookedSeats: { $lte: activity.totalSeats - personsToBook }
+              },
+              { $inc: { bookedSeats: personsToBook } },
+              { new: true }
+            );
+
+            if (!updatedStats) {
+              await Order.findByIdAndUpdate(order._id, { status: 'failed_overbooked' });
+              return res.status(400).json({ success: false, error: `Sold out during booking! Seats no longer available for ${activity.name}.` });
+            }
+          }
         }
       }
     }
@@ -236,7 +269,72 @@ export const verifyPayment = async (req, res) => {
         return res.status(404).json({ success: false, error: 'Order not found in database' });
       }
 
-      // Send Invoice Email to Customer & Notification to Admin
+      let isOverbooked = false;
+      let failedActivityName = '';
+
+      // Deduct seats for each item on the specific date atomically FIRST
+      if (order.items && order.items.length > 0 && order.bookingDate) {
+        const bookingDateStr = order.bookingDate.toISOString().split('T')[0];
+        for (const item of order.items) {
+          if (item.activityId) {
+            const activity = await Activity.findById(item.activityId);
+            if (activity) {
+              await DailyActivityStats.updateOne(
+                { activityId: item.activityId, date: bookingDateStr },
+                { $setOnInsert: { bookedSeats: 0 } },
+                { upsert: true }
+              );
+
+              const personsToBook = item.persons || 1;
+              const updatedStats = await DailyActivityStats.findOneAndUpdate(
+                { 
+                  activityId: item.activityId, 
+                  date: bookingDateStr,
+                  bookedSeats: { $lte: activity.totalSeats - personsToBook }
+                },
+                { $inc: { bookedSeats: personsToBook } },
+                { new: true }
+              );
+
+              if (!updatedStats) {
+                isOverbooked = true;
+                failedActivityName = activity.name;
+                // We break here, meaning we don't deduct further items
+                break;
+              }
+            }
+          }
+        }
+      }
+
+      if (isOverbooked) {
+        // Mark as paid but overbooked
+        await Order.findByIdAndUpdate(order._id, { status: 'paid_but_overbooked' });
+        
+        // Notify admin for manual refund
+        try {
+          await sendEmail({
+            email: 'booking@myskytrips.com',
+            subject: `URGENT: Overbooking Alert! Manual Refund Required`,
+            message: `
+              <h3 style="color: red;">Overbooking Detected!</h3>
+              <p>Customer <strong>${order.customerName}</strong> paid for order <strong>${order.razorpayOrderId}</strong>, but <strong>${failedActivityName}</strong> got sold out just before their payment completed.</p>
+              <p><strong>Action Required:</strong> Please go to the Razorpay dashboard and manually refund ₹${order.amount / 100} to this customer.</p>
+              <p>Customer Phone: ${order.customerPhone}</p>
+              <p>Customer Email: ${order.customerEmail}</p>
+            `,
+          });
+        } catch (mailErr) {
+          console.error('Failed to send overbooking alert:', mailErr);
+        }
+
+        return res.status(400).json({ 
+          success: false, 
+          error: 'Payment received, but seats sold out during processing. An admin has been notified to process your refund.' 
+        });
+      }
+
+      // Send Invoice Email to Customer & Notification to Admin ONLY if booking succeeded
       try {
         // 1. To Customer
         await sendEmail({
@@ -265,20 +363,6 @@ export const verifyPayment = async (req, res) => {
         });
       } catch (mailErr) {
         console.error('Failed to send emails:', mailErr);
-      }
-
-      // Deduct seats for each item on the specific date
-      if (order.items && order.items.length > 0 && order.bookingDate) {
-        const bookingDateStr = order.bookingDate.toISOString().split('T')[0];
-        for (const item of order.items) {
-          if (item.activityId) {
-            await DailyActivityStats.findOneAndUpdate(
-              { activityId: item.activityId, date: bookingDateStr },
-              { $inc: { bookedSeats: item.persons || 1 } },
-              { upsert: true, new: true }
-            );
-          }
-        }
       }
 
       return res.status(200).json({
@@ -389,7 +473,65 @@ export const razorpayWebhook = async (req, res) => {
         { new: true }
       );
 
-      // Send Invoice Email to Customer & Notification to Admin
+      let isOverbooked = false;
+      let failedActivityName = '';
+
+      // Deduct seats atomically FIRST
+      if (updatedOrder.items && updatedOrder.items.length > 0 && updatedOrder.bookingDate) {
+        const bookingDateStr = updatedOrder.bookingDate.toISOString().split('T')[0];
+        for (const item of updatedOrder.items) {
+          if (item.activityId) {
+            const activity = await Activity.findById(item.activityId);
+            if (activity) {
+              await DailyActivityStats.updateOne(
+                { activityId: item.activityId, date: bookingDateStr },
+                { $setOnInsert: { bookedSeats: 0 } },
+                { upsert: true }
+              );
+
+              const personsToBook = item.persons || 1;
+              const stats = await DailyActivityStats.findOneAndUpdate(
+                { 
+                  activityId: item.activityId, 
+                  date: bookingDateStr,
+                  bookedSeats: { $lte: activity.totalSeats - personsToBook }
+                },
+                { $inc: { bookedSeats: personsToBook } },
+                { new: true }
+              );
+
+              if (!stats) {
+                isOverbooked = true;
+                failedActivityName = activity.name;
+                break;
+              }
+            }
+          }
+        }
+      }
+
+      if (isOverbooked) {
+        await Order.findByIdAndUpdate(updatedOrder._id, { status: 'paid_but_overbooked' });
+        try {
+          await sendEmail({
+            email: 'booking@myskytrips.com',
+            subject: `URGENT: Webhook Overbooking Alert! Manual Refund Required`,
+            message: `
+              <h3 style="color: red;">Overbooking Detected via Webhook!</h3>
+              <p>Customer <strong>${updatedOrder.customerName}</strong> paid for order <strong>${updatedOrder.razorpayOrderId}</strong>, but <strong>${failedActivityName}</strong> sold out.</p>
+              <p><strong>Action Required:</strong> Please manually refund ₹${updatedOrder.amount / 100}.</p>
+              <p>Customer Phone: ${updatedOrder.customerPhone}</p>
+              <p>Customer Email: ${updatedOrder.customerEmail}</p>
+            `,
+          });
+        } catch (mailErr) {
+          console.error('Failed to send overbooking alert:', mailErr);
+        }
+        console.log(`Webhook: Order ${orderId} overbooked. Alert sent.`);
+        return res.status(200).send('Processed but overbooked');
+      }
+
+      // Send Invoice Email to Customer & Notification to Admin ONLY if booking succeeded
       try {
         await sendEmail({
           email: updatedOrder.customerEmail,
@@ -415,20 +557,6 @@ export const razorpayWebhook = async (req, res) => {
         });
       } catch (mailErr) {
         console.error('Webhook: Failed to send emails:', mailErr);
-      }
-
-      // Deduct seats
-      if (updatedOrder.items && updatedOrder.items.length > 0 && updatedOrder.bookingDate) {
-        const bookingDateStr = updatedOrder.bookingDate.toISOString().split('T')[0];
-        for (const item of updatedOrder.items) {
-          if (item.activityId) {
-            await DailyActivityStats.findOneAndUpdate(
-              { activityId: item.activityId, date: bookingDateStr },
-              { $inc: { bookedSeats: item.persons || 1 } },
-              { upsert: true, new: true }
-            );
-          }
-        }
       }
 
       console.log(`Webhook: Successfully processed payment for order ${orderId}`);
