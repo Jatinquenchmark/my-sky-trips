@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Clock, Users, MapPin, Star, ArrowRight, Download } from "lucide-react";
+import { Clock, MapPin, Star, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Package } from "@/lib/api";
@@ -55,11 +55,7 @@ export const PackageCard = ({ pkg }: PackageCardProps) => {
             <Clock className="w-3.5 h-3.5 text-primary" />
             {pkg.duration}
           </div>
-          <div className="px-3 py-1.5 rounded-xl bg-black/40 backdrop-blur-md border border-white/10 text-white text-xs font-semibold flex items-center gap-2">
-            <Users className="w-3.5 h-3.5 text-primary" />
-            {pkg.groupSize} People
-          </div>
-        </div>
+        
 
         {/* Rating Badge */}
         <div className="absolute bottom-5 right-5 z-10 px-2.5 py-1.5 rounded-xl bg-saffron/90 backdrop-blur-md text-mountain-dark shadow-lg scale-90 group-hover:scale-100 transition-transform duration-500">
