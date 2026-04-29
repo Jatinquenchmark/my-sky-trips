@@ -55,7 +55,7 @@ export const PackageCard = ({ pkg }: PackageCardProps) => {
             <Clock className="w-3.5 h-3.5 text-primary" />
             {pkg.duration}
           </div>
-        
+        </div>
 
         {/* Rating Badge */}
         <div className="absolute bottom-5 right-5 z-10 px-2.5 py-1.5 rounded-xl bg-saffron/90 backdrop-blur-md text-mountain-dark shadow-lg scale-90 group-hover:scale-100 transition-transform duration-500">
