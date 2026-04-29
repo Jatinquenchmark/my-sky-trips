@@ -396,6 +396,42 @@ export const getOrders = async (req, res) => {
   }
 };
 
+// @desc    Get All Orders Grouped By Booking Date (Admin Only)
+// @route   GET /api/payment/orders-by-date
+// @access  Private/Admin
+export const getOrdersByDate = async (req, res) => {
+  try {
+    const orders = await Order.find({ status: { $in: ['paid', 'paid_but_overbooked'] } }).sort({ bookingDate: 1, createdAt: -1 });
+
+    // Group orders by bookingDate (YYYY-MM-DD string)
+    const grouped = {};
+    orders.forEach(order => {
+      const dateKey = order.bookingDate
+        ? new Date(order.bookingDate).toISOString().split('T')[0]
+        : 'unspecified';
+      if (!grouped[dateKey]) {
+        grouped[dateKey] = { date: dateKey, orders: [], totalRevenue: 0, totalPersons: 0 };
+      }
+      grouped[dateKey].orders.push(order);
+      grouped[dateKey].totalRevenue += order.amount || 0;
+      grouped[dateKey].totalPersons += order.items.reduce((sum, item) => sum + (item.persons || 1), 0);
+    });
+
+    // Sort by date descending (newest first)
+    const result = Object.values(grouped).sort((a, b) => {
+      if (a.date === 'unspecified') return 1;
+      if (b.date === 'unspecified') return -1;
+      return new Date(b.date) - new Date(a.date);
+    });
+
+    res.json({ success: true, data: result });
+  } catch (err) {
+    console.error('Get Orders By Date Error:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+
 // @desc    Get Order By ID (Public for ticket download)
 // @route   GET /api/payment/order/:orderId
 // @access  Public

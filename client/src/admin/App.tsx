@@ -6,6 +6,8 @@ import Packages from './pages/Packages';
 import PackageForm from './pages/PackageForm';
 import ActivityManagement from './pages/ActivityManagement';
 import Login from './pages/Login';
+import Orders from './pages/Orders';
+import BookingsByDate from './pages/BookingsByDate';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
@@ -52,6 +54,26 @@ function App() {
               <ProtectedRoute>
                 <AdminLayout title="Water Adventure Activities">
                   <ActivityManagement />
+                </AdminLayout>
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/orders" 
+            element={
+              <ProtectedRoute>
+                <AdminLayout title="All Orders">
+                  <Orders />
+                </AdminLayout>
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/bookings-by-date" 
+            element={
+              <ProtectedRoute>
+                <AdminLayout title="Bookings by Date">
+                  <BookingsByDate />
                 </AdminLayout>
               </ProtectedRoute>
             } 

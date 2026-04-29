@@ -23,6 +23,7 @@ import AdminLogin from "./admin/pages/Login";
 import ForgotPassword from "./admin/pages/ForgotPassword";
 import ResetPassword from "./admin/pages/ResetPassword";
 import Orders from "./admin/pages/Orders";
+import BookingsByDate from "./admin/pages/BookingsByDate";
 
 const queryClient = new QueryClient();
 
@@ -103,6 +104,17 @@ const App = () => (
                 <ProtectedRoute>
                   <AdminLayout title="Bookings & Invoices">
                     <Orders />
+                  </AdminLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/admin/bookings-by-date"
+              element={
+                <ProtectedRoute>
+                  <AdminLayout title="Bookings by Date">
+                    <BookingsByDate />
                   </AdminLayout>
                 </ProtectedRoute>
               }
