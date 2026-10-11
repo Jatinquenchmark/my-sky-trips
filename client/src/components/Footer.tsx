@@ -1,25 +1,27 @@
 import { motion } from "framer-motion";
-import { Heart, Facebook, Instagram, Youtube } from "lucide-react";
+import { Heart, Facebook, Instagram, Youtube, Shield } from "lucide-react";
+import { Link } from "react-router-dom";
 import logo from '@/assets/logo-DFfutrEX.png';
 
 const footerLinks = {
   company: [
-    { name: "About Us", href: "#about" },
-    { name: "Our Team", href: "#" },
-    { name: "Careers", href: "#" },
-    { name: "Contact", href: "#contact" },
+    { name: "About Us", href: "/#about" },
+    { name: "Our Team", href: "/#about" },
+    { name: "Careers", href: "/#contact" },
+    { name: "Contact", href: "/#contact" },
   ],
   packages: [
-    { name: "Chardham Yatra", href: "#packages" },
-    { name: "Do Dham Yatra", href: "#packages" },
-    { name: "Kedarnath", href: "#packages" },
-    { name: "Badrinath", href: "#packages" },
+    { name: "Chardham Yatra", href: "/#packages" },
+    { name: "Do Dham Yatra", href: "/#packages" },
+    { name: "Kedarnath", href: "/#packages" },
+    { name: "Badrinath", href: "/#packages" },
   ],
   support: [
-    { name: "FAQ", href: "#faq" },
-    { name: "Booking Policy", href: "#" },
-    { name: "Cancellation", href: "#" },
-    { name: "Safety Guidelines", href: "#" },
+    { name: "FAQ", href: "/#faq" },
+    { name: "Privacy Policy", href: "/privacy-policy" },
+    { name: "Booking Policy", href: "/#contact" },
+    { name: "Cancellation", href: "/#contact" },
+    { name: "Safety Guidelines", href: "/#faq" },
   ],
 };
 
@@ -38,11 +40,13 @@ export const Footer = () => {
               className="mb-6"
             >
               <div className="flex items-center mb-6">
-                <img
-                  src={logo}
-                  alt="My Sky Trips"
-                  className="w-32 h-32 object-contain brightness-0 invert"
-                />
+                <Link to="/">
+                  <img
+                    src={logo}
+                    alt="My Sky Trips"
+                    className="w-32 h-32 object-contain brightness-0 invert hover:opacity-90 transition-opacity"
+                  />
+                </Link>
               </div>
               <p className="text-primary-foreground/70 leading-relaxed max-w-sm">
                 My Sky Trips is your premier partner for helicopter journeys and curated travel experiences.
@@ -87,12 +91,21 @@ export const Footer = () => {
             <ul className="space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link.name}>
-                  <a
-                    href={link.href}
-                    className="text-primary-foreground/70 hover:text-saffron transition-colors"
-                  >
-                    {link.name}
-                  </a>
+                  {link.href.startsWith("/") && !link.href.includes("#") ? (
+                    <Link
+                      to={link.href}
+                      className="text-primary-foreground/70 hover:text-saffron transition-colors"
+                    >
+                      {link.name}
+                    </Link>
+                  ) : (
+                    <a
+                      href={link.href}
+                      className="text-primary-foreground/70 hover:text-saffron transition-colors"
+                    >
+                      {link.name}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>
@@ -103,12 +116,21 @@ export const Footer = () => {
             <ul className="space-y-3">
               {footerLinks.packages.map((link) => (
                 <li key={link.name}>
-                  <a
-                    href={link.href}
-                    className="text-primary-foreground/70 hover:text-saffron transition-colors"
-                  >
-                    {link.name}
-                  </a>
+                  {link.href.startsWith("/") && !link.href.includes("#") ? (
+                    <Link
+                      to={link.href}
+                      className="text-primary-foreground/70 hover:text-saffron transition-colors"
+                    >
+                      {link.name}
+                    </Link>
+                  ) : (
+                    <a
+                      href={link.href}
+                      className="text-primary-foreground/70 hover:text-saffron transition-colors"
+                    >
+                      {link.name}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>
@@ -119,12 +141,22 @@ export const Footer = () => {
             <ul className="space-y-3">
               {footerLinks.support.map((link) => (
                 <li key={link.name}>
-                  <a
-                    href={link.href}
-                    className="text-primary-foreground/70 hover:text-saffron transition-colors"
-                  >
-                    {link.name}
-                  </a>
+                  {link.href.startsWith("/") && !link.href.includes("#") ? (
+                    <Link
+                      to={link.href}
+                      className="text-primary-foreground/70 hover:text-saffron transition-colors flex items-center gap-1.5"
+                    >
+                      {link.name === "Privacy Policy" && <Shield className="w-3.5 h-3.5 text-saffron" />}
+                      {link.name}
+                    </Link>
+                  ) : (
+                    <a
+                      href={link.href}
+                      className="text-primary-foreground/70 hover:text-saffron transition-colors"
+                    >
+                      {link.name}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>
@@ -136,9 +168,20 @@ export const Footer = () => {
       <div className="border-t border-primary-foreground/10">
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-primary-foreground/60 text-sm">
-              © 2024 My Sky Trips. All rights reserved.
-            </p>
+            <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-6 text-center sm:text-left">
+              <p className="text-primary-foreground/60 text-sm">
+                © {new Date().getFullYear()} My Sky Trips. All rights reserved.
+              </p>
+              <div className="flex items-center gap-3 text-xs text-primary-foreground/60">
+                <Link to="/privacy-policy" className="hover:text-saffron transition-colors underline-offset-4 hover:underline">
+                  Privacy Policy
+                </Link>
+                <span>•</span>
+                <a href="/#contact" className="hover:text-saffron transition-colors underline-offset-4 hover:underline">
+                  Terms & Support
+                </a>
+              </div>
+            </div>
             <p className="text-primary-foreground/60 text-sm flex items-center gap-1">
               Made with <Heart className="w-4 h-4 text-saffron fill-saffron" /> in India
             </p>
