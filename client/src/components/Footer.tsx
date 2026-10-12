@@ -6,22 +6,19 @@ import logo from '@/assets/logo-DFfutrEX.png';
 const footerLinks = {
   company: [
     { name: "About Us", href: "/#about" },
-    { name: "Our Team", href: "/#about" },
-    { name: "Careers", href: "/#contact" },
     { name: "Contact", href: "/#contact" },
   ],
   packages: [
-    { name: "Chardham Yatra", href: "/#packages" },
-    { name: "Do Dham Yatra", href: "/#packages" },
-    { name: "Kedarnath", href: "/#packages" },
-    { name: "Badrinath", href: "/#packages" },
+    { name: "All Packages", href: "/all-packages" },
+    { name: "Water Adventure", href: "/water-adventure" },
+    { name: "Helicopter Yatras", href: "/#packages" },
   ],
   support: [
     { name: "FAQ", href: "/#faq" },
+    { name: "Terms of Service", href: "/terms-of-service" },
     { name: "Privacy Policy", href: "/privacy-policy" },
-    { name: "Booking Policy", href: "/#contact" },
-    { name: "Cancellation", href: "/#contact" },
-    { name: "Safety Guidelines", href: "/#faq" },
+    { name: "Booking Policy", href: "/booking-policy" },
+    { name: "Cancellation Policy", href: "/cancellation-policy" },
   ],
 };
 
@@ -48,10 +45,22 @@ export const Footer = () => {
                   />
                 </Link>
               </div>
-              <p className="text-primary-foreground/70 leading-relaxed max-w-sm">
-                My Sky Trips is your premier partner for helicopter journeys and curated travel experiences.
-                From sacred pilgrimages to luxury escapes, we make every journey seamless and extraordinary.
+              <p className="text-primary-foreground/70 leading-relaxed max-w-sm mb-4">
+                My Sky Trips is a brand of <strong className="text-primary-foreground font-semibold">Outclass Media</strong>.
+                Your premier partner for helicopter journeys and curated travel experiences across Uttarakhand, Himachal Pradesh, and India.
               </p>
+
+              <div className="space-y-1.5 text-xs text-primary-foreground/70 mb-5">
+                <p>2nd Floor, ATS Arcade, Shop No. SF-09, Sahastradhara Road, near IT Park, Dehradun, Uttarakhand 248013</p>
+                <p>
+                  <a href="mailto:contact@myskytrips.com" className="hover:text-saffron transition-colors">contact@myskytrips.com</a>
+                  {" · "}
+                  <a href="tel:+916395678642" className="hover:text-saffron transition-colors">+91 63956 78642</a>
+                </p>
+                <p className="text-[11px] text-primary-foreground/60 pt-1">
+                  <strong>Grievance Officer:</strong> Surya Pratap (<a href="mailto:contact@myskytrips.com" className="hover:underline">contact@myskytrips.com</a>)
+                </p>
+              </div>
               
               <div className="flex items-center gap-4 mt-8">
                 <a
@@ -172,14 +181,18 @@ export const Footer = () => {
               <p className="text-primary-foreground/60 text-sm">
                 © {new Date().getFullYear()} My Sky Trips. All rights reserved.
               </p>
-              <div className="flex items-center gap-3 text-xs text-primary-foreground/60">
+              <div className="flex flex-wrap items-center gap-3 text-xs text-primary-foreground/60">
+                <Link to="/terms-of-service" className="hover:text-saffron transition-colors underline-offset-4 hover:underline">
+                  Terms of Service
+                </Link>
+                <span>·</span>
+                <Link to="/booking-policy" className="hover:text-saffron transition-colors underline-offset-4 hover:underline">
+                  Booking & Cancellation Policy
+                </Link>
+                <span>·</span>
                 <Link to="/privacy-policy" className="hover:text-saffron transition-colors underline-offset-4 hover:underline">
                   Privacy Policy
                 </Link>
-                <span>•</span>
-                <a href="/#contact" className="hover:text-saffron transition-colors underline-offset-4 hover:underline">
-                  Terms & Support
-                </a>
               </div>
             </div>
             <p className="text-primary-foreground/60 text-sm flex items-center gap-1">

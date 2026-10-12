@@ -61,7 +61,7 @@ const PackageDetail = () => {
 
             <main className="pt-20">
                 {/* Hero Section */}
-                <div className="relative h-[70vh] min-h-[600px] w-full overflow-hidden">
+                <div className="relative h-[70vh] min-h-150 w-full overflow-hidden">
                     <motion.div
                         initial={{ scale: 1.1 }}
                         animate={{ scale: 1 }}
@@ -223,9 +223,9 @@ const PackageDetail = () => {
                             <section id="gallery" className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-premium border border-slate-100">
                                 <h2 className="text-4xl font-serif font-bold mb-10 text-slate-800">Visual Journey</h2>
                                 
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-[600px]">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-150">
                                    {/* Main Image Slot */}
-                                   <div className="md:col-span-2 h-full rounded-[2rem] overflow-hidden relative group">
+                                   <div className="md:col-span-2 h-full rounded-4xl overflow-hidden relative group">
                                       {pkg.gallery?.[0] ? (
                                         <a 
                                           href={pkg.gallery[0]} 
@@ -260,7 +260,7 @@ const PackageDetail = () => {
                                               href={img} 
                                               target="_blank" 
                                               rel="noopener noreferrer" 
-                                              className="w-full rounded-2xl overflow-hidden group relative bg-slate-100 flex-shrink-0 min-h-[180px] h-[calc(33.33%-11px)]"
+                                              className="w-full rounded-2xl overflow-hidden group relative bg-slate-100 shrink-0 min-h-45 h-[calc(33.33%-11px)]"
                                             >
                                               <img 
                                                 src={img} 
@@ -322,23 +322,34 @@ const PackageDetail = () => {
 
                             {/* Pricing Structure */}
                             <section id="pricing" className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-premium border border-slate-100">
-                                <h3 className="text-2xl font-serif font-bold text-slate-800 mb-8 border-l-4 border-primary pl-4">Pricing Structure</h3>
-                                <ul className="space-y-4">
+                                <h3 className="text-2xl font-serif font-bold text-slate-800 mb-6 border-l-4 border-primary pl-4">Pricing & Booking Terms</h3>
+                                <ul className="space-y-4 mb-6">
                                    <li className="flex items-start gap-3 text-sm font-medium text-slate-600 leading-relaxed">
                                       <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" /> 
                                       Package Cost — ₹{(pkg.price).toLocaleString()} per person (+ 5% GST)
                                    </li>
                                    <li className="flex items-start gap-3 text-sm font-medium text-slate-600 leading-relaxed">
                                       <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" /> 
-                                      Booking: Pay 50% now to book; Balance 30 days before trip.
+                                      Booking Schedule: 50% advance to confirm your seats; balance due at least 10 days before travel.
                                    </li>
                                 </ul>
+
+                                {/* Official Helicopter Package Notice */}
+                                <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-slate-700 text-xs leading-relaxed flex items-start gap-3">
+                                   <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                                   <div>
+                                      Prices are per person and subject to 5% GST. Flights are operated by DGCA-permitted helicopter operators and depend on weather. Body-weight allowance 75 kg and 5 kg soft luggage per passenger. See our{" "}
+                                      <a href="/booking-policy" className="text-primary font-bold underline hover:text-primary/80">
+                                         Booking & Cancellation Policy
+                                      </a>.
+                                   </div>
+                                </div>
                             </section>
                         </div>
 
                         {/* Sticky Booking Card (Desktop only) */}
                         <div className="lg:col-span-1 hidden lg:block sticky top-24">
-                           <div className="bg-white rounded-[2rem] p-8 shadow-strong border border-slate-100 text-center">
+                           <div className="bg-white rounded-4xl p-8 shadow-strong border border-slate-100 text-center">
                               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">
                                 {selectedTier?.tier ? `${selectedTier.tier} Package` : 'STARTING FROM'}
                               </p>
@@ -376,10 +387,12 @@ const PackageDetail = () => {
                                    <p className="text-[11px] text-amber-600 leading-relaxed">To book this package, please reach out to us directly.</p>
                                  </div>
                                )}
-                              <p className="text-[10px] text-slate-400 mt-6 italic">*PRICES VARY BASED ON SEASON AND AVAILABILITY</p>
+                              <p className="text-[11px] text-slate-500 mt-4 leading-relaxed text-left bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                Prices are per person & subject to 5% GST. DGCA-permitted flights, 75 kg weight allowance & 5 kg soft luggage.
+                              </p>
                            </div>
 
-                           <div className="mt-6 p-6 bg-slate-900 rounded-[2rem] text-white overflow-hidden relative group">
+                           <div className="mt-6 p-6 bg-slate-900 rounded-4xl text-white overflow-hidden relative group">
                               <h4 className="font-bold relative z-10">Need Help?</h4>
                               <p className="text-xs text-white/60 mb-4 relative z-10">Chat with our travel experts on WhatsApp.</p>
                               <a href="https://wa.me/91XXXXXXXXXX" className="px-4 py-2 bg-emerald-500 rounded-lg text-xs font-bold relative z-10 flex items-center justify-center gap-2">
@@ -409,7 +422,7 @@ const PackageDetail = () => {
                     </div>
 
                     {/* Pay Button */}
-                    <div className="flex-1 max-w-[200px]">
+                    <div className="flex-1 max-w-50">
                         {pkg.showPrice === true ? (
                           <PaymentButton
                               amount={selectedTier?.price || pkg.price}

@@ -103,7 +103,7 @@ const SuccessModal = ({ bookedItems, total, subtotal, gst, customerName, custome
                 </style>
               </head>
               <body>
-                <div class="max-w-[500px] mx-auto bg-white shadow-xl rounded-[2.5rem] overflow-hidden border border-slate-200 text-slate-900">
+                <div class="max-w-125 mx-auto bg-white shadow-xl rounded-[2.5rem] overflow-hidden border border-slate-200 text-slate-900">
                   <div class="bg-white p-8 border-b border-slate-100">
                     <h1 class="text-2xl font-black">MYSKYTRIPS</h1>
                     <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Official Ticket</p>
@@ -139,7 +139,7 @@ const SuccessModal = ({ bookedItems, total, subtotal, gst, customerName, custome
   };
 
   return (
-    <div className="fixed inset-0 z-[60] flex justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto pt-10 pb-20">
+    <div className="fixed inset-0 z-60 flex justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto pt-10 pb-20">
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -159,7 +159,7 @@ const SuccessModal = ({ bookedItems, total, subtotal, gst, customerName, custome
             orderId={orderId}
           />
 
-          <div className="flex flex-col gap-3 w-full max-w-[300px]">
+          <div className="flex flex-col gap-3 w-full max-w-75">
             <button 
               onClick={handleDownload}
               className="w-full h-14 bg-[#004D56] hover:bg-[#003A41] text-white rounded-2xl font-black text-sm uppercase tracking-wider shadow-xl flex items-center justify-center gap-2 transition-all cursor-pointer"
@@ -177,7 +177,7 @@ const SuccessModal = ({ bookedItems, total, subtotal, gst, customerName, custome
       </motion.div>
       
       {/* Off-screen capture area */}
-      <div ref={ticketRef} className="absolute left-[-9999px] top-0">
+      <div ref={ticketRef} className="absolute left-2499.75 top-0">
         <Ticket 
           bookedItems={bookedItems}
           subtotal={subtotal}
@@ -237,7 +237,7 @@ const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCa
 
   return (
     <motion.div layout initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
-      className={`group relative aspect-[3/4] rounded-[3rem] overflow-hidden shadow-2xl transition-all duration-700 hover:shadow-blue-900/20 ${isFull ? 'opacity-70 grayscale-[0.5]' : ''}`}>
+      className={`group relative aspect-3/4 rounded-[3rem] overflow-hidden shadow-2xl transition-all duration-700 hover:shadow-blue-900/20 ${isFull ? 'opacity-70 grayscale-[0.5]' : ''}`}>
       
       {/* Full Background Image */}
       <img 
@@ -258,8 +258,8 @@ const ActivityCard = ({ activity, onAddToCart }: { activity: Activity; onAddToCa
       />
       
       {/* Gradient Overlays */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90 transition-opacity duration-500 group-hover:opacity-100" />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent opacity-60" />
+      <div className="absolute inset-0 bg-linear-to-t from-black via-black/40 to-transparent opacity-90 transition-opacity duration-500 group-hover:opacity-100" />
+      <div className="absolute inset-0 bg-linear-to-b from-black/40 via-transparent to-transparent opacity-60" />
       
       {/* Floating Badges */}
       <div className="absolute top-6 left-6 flex flex-col gap-2 z-20">
@@ -360,7 +360,7 @@ const GuestModal = ({ total, subtotal, charge, gst, onConfirm, onClose, loading,
   };
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-start justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto py-10">
+    <div className="fixed inset-0 z-60 flex items-start justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto py-10">
       <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
         className="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden my-auto">
         {/* Header */}
@@ -411,11 +411,37 @@ const GuestModal = ({ total, subtotal, charge, gst, onConfirm, onClose, loading,
                 }} 
                 placeholder={f.placeholder} 
                 required
-                className="w-full px-4 py-3 border-2 border-slate-100 rounded-xl text-sm focus:outline-none focus:border-blue-400 bg-slate-50 transition-colors" 
+                className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-blue-500 bg-white shadow-xs transition-colors" 
               />
-              {f.id === 'wa-aadhar' && <p className="text-[9px] text-slate-400 mt-1 font-bold uppercase tracking-tight">Required for insurance and safety clearance</p>}
+              {f.id === 'wa-aadhar' && <p className="text-[9px] text-slate-500 mt-1 font-bold uppercase tracking-tight">Required for insurance and safety clearance</p>}
             </div>
           ))}
+          {/* Consent Checkboxes (Section 1) */}
+          <div className="space-y-2.5 p-3.5 bg-slate-50 rounded-xl text-left border border-slate-200">
+            <label className="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer select-none">
+              <input type="checkbox" required className="mt-0.5 w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer shrink-0" />
+              <span className="leading-tight">
+                I agree to My Sky Trips contacting me by WhatsApp, phone and email about my enquiry, and I have read the{" "}
+                <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline font-semibold hover:text-blue-700">Privacy Policy</a>
+                {" "}and{" "}
+                <a href="/terms-of-service" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline font-semibold hover:text-blue-700">Terms of Service</a>.
+                <span className="text-red-500 ml-1 font-bold">*</span>
+              </span>
+            </label>
+
+            <label className="flex items-start gap-2.5 text-xs text-slate-600 cursor-pointer select-none">
+              <input type="checkbox" className="mt-0.5 w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer shrink-0" />
+              <span className="leading-tight">
+                Send me occasional offers and new trip updates on WhatsApp. I can stop anytime by replying STOP.
+              </span>
+            </label>
+          </div>
+
+          {/* Payment Notice (Section 4) */}
+          <div className="p-3 bg-amber-50/90 border border-amber-200/80 rounded-xl text-[11px] text-amber-900 leading-relaxed text-left">
+            ⚠️ <strong>Payment Notice:</strong> Please make payments only to the official My Sky Trips (Outclass Media) bank account, UPI ID or payment link shared by our team. We will never ask you to pay into a personal account.
+          </div>
+
           <button type="submit" disabled={loading}
             className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all mt-2 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70">
             {loading ? <><Loader2 size={16} className="animate-spin" /> Processing...</> : `Confirm & Book ₹${total.toLocaleString()}`}
@@ -458,7 +484,7 @@ const CartDrawer = ({ cart, onRemove, onClear, onPay, isOpen, onClose }: {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-y-0 right-0 w-full max-w-[400px] bg-white shadow-2xl z-[51] flex flex-col"
+            className="fixed inset-y-0 right-0 w-full max-w-100 bg-white shadow-2xl z-51 flex flex-col"
           >
             {/* Header */}
             <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-white shrink-0">
@@ -829,8 +855,8 @@ export const WaterAdventureSection = () => {
   const cartTotal = cartSubtotal + cartCharge + cartGst;
 
   return (
-    <section className="py-20 bg-gradient-to-b from-blue-50/50 to-white relative overflow-hidden">
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-600" />
+    <section className="py-20 bg-linear-to-b from-blue-50/50 to-white relative overflow-hidden">
+      <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-blue-400 via-cyan-400 to-blue-600" />
 
       <div className="container mx-auto px-4">
         {/* Section Header */}
@@ -878,7 +904,7 @@ export const WaterAdventureSection = () => {
                   min={minDate}
                   value={selectedDate}
                   onChange={(e) => setSelectedDate(e.target.value)}
-                  className="w-full pl-16 pr-8 py-5 bg-slate-50 border-2 border-slate-200 rounded-3xl text-slate-900 font-bold text-lg md:text-2xl focus:outline-none focus:border-blue-600 focus:bg-white transition-all cursor-pointer hover:border-blue-300 shadow-sm min-h-[4rem] appearance-none"
+                  className="w-full pl-16 pr-8 py-5 bg-slate-50 border-2 border-slate-200 rounded-3xl text-slate-900 font-bold text-lg md:text-2xl focus:outline-none focus:border-blue-600 focus:bg-white transition-all cursor-pointer hover:border-blue-300 shadow-sm min-h-16 appearance-none"
                 />
               </div>
               {!selectedDate && (
@@ -963,7 +989,7 @@ export const WaterAdventureSection = () => {
             className="lg:w-1/2 relative group"
           >
             {/* Suggestion Bubble */}
-            <div className="absolute -top-6 -left-6 z-20 bg-blue-600 text-white p-4 rounded-[1.5rem] shadow-xl shadow-blue-200 animate-bounce cursor-default max-w-[150px]">
+            <div className="absolute -top-6 -left-6 z-20 bg-blue-600 text-white p-4 rounded-3xl shadow-xl shadow-blue-200 animate-bounce cursor-default max-w-37.5">
               <div className="flex items-center gap-2 mb-1">
                 <Star size={12} className="fill-white" />
                 <span className="text-[10px] font-black uppercase tracking-tighter">Smart Suggestion</span>

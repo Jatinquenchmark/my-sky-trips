@@ -324,26 +324,67 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({ amount, packageName, onSu
                             </div>
                         </div>
 
-                        {/* Pay Button */}
-                        <button
-                            type="submit"
-                            style={{
-                                marginTop:24, width:'100%', padding:'14px',
-                                background:'linear-gradient(135deg, #1a56db, #0e3fa8)',
-                                color:'white', border:'none', borderRadius:12,
-                                fontSize:16, fontWeight:700, cursor:'pointer',
-                                display:'flex', alignItems:'center', justifyContent:'center', gap:10,
-                                boxShadow:'0 4px 15px rgba(26,86,219,0.4)',
-                                transition:'transform 0.15s, box-shadow 0.15s'
-                            }}
-                            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform='translateY(-1px)'; (e.currentTarget as HTMLButtonElement).style.boxShadow='0 6px 20px rgba(26,86,219,0.5)'; }}
-                            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform='translateY(0)'; (e.currentTarget as HTMLButtonElement).style.boxShadow='0 4px 15px rgba(26,86,219,0.4)'; }}
-                        >
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
-                                <path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
-                            </svg>
-                            Proceed to Pay ₹{formatAmount(amount)}
-                        </button>
+                            {/* Consent Checkboxes (Section 1) */}
+                            <div style={{ display:'flex', flexDirection:'column', gap:10, marginTop:4, padding:'12px', background:'#f9fafb', borderRadius:12, border:'1px solid #e5e7eb' }}>
+                                <label style={{ display:'flex', alignItems:'flex-start', gap:8, fontSize:12, color:'#374151', cursor:'pointer', lineHeight:1.4 }}>
+                                    <input
+                                        type="checkbox"
+                                        required
+                                        style={{ marginTop:2, cursor:'pointer' }}
+                                    />
+                                    <span>
+                                        I agree to My Sky Trips contacting me by WhatsApp, phone and email about my enquiry, and I have read the{" "}
+                                        <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" style={{ color:'#1a56db', textDecoration:'underline', fontWeight:600 }}>Privacy Policy</a>
+                                        {" "}and{" "}
+                                        <a href="/terms-of-service" target="_blank" rel="noopener noreferrer" style={{ color:'#1a56db', textDecoration:'underline', fontWeight:600 }}>Terms of Service</a>.
+                                        <span style={{ color:'#ef4444', marginLeft:3 }}>*</span>
+                                    </span>
+                                </label>
+
+                                <label style={{ display:'flex', alignItems:'flex-start', gap:8, fontSize:12, color:'#6b7280', cursor:'pointer', lineHeight:1.4 }}>
+                                    <input
+                                        type="checkbox"
+                                        style={{ marginTop:2, cursor:'pointer' }}
+                                    />
+                                    <span>
+                                        Send me occasional offers and new trip updates on WhatsApp. I can stop anytime by replying STOP.
+                                    </span>
+                                </label>
+                            </div>
+
+                            {/* Payment Notice (Section 4) */}
+                            <div style={{
+                                padding:'10px 12px',
+                                background:'#fffbeb',
+                                border:'1px solid #fef3c7',
+                                borderRadius:10,
+                                fontSize:11,
+                                color:'#92400e',
+                                lineHeight:1.4
+                            }}>
+                                ⚠️ <strong>Payment Notice:</strong> Please make payments only to the official My Sky Trips (Outclass Media) bank account, UPI ID or payment link shared by our team. We will never ask you to pay into a personal account.
+                            </div>
+
+                            {/* Pay Button */}
+                            <button
+                                type="submit"
+                                style={{
+                                    marginTop:8, width:'100%', padding:'14px',
+                                    background:'linear-gradient(135deg, #1a56db, #0e3fa8)',
+                                    color:'white', border:'none', borderRadius:12,
+                                    fontSize:16, fontWeight:700, cursor:'pointer',
+                                    display:'flex', alignItems:'center', justifyContent:'center', gap:10,
+                                    boxShadow:'0 4px 15px rgba(26,86,219,0.4)',
+                                    transition:'transform 0.15s, box-shadow 0.15s'
+                                }}
+                                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform='translateY(-1px)'; (e.currentTarget as HTMLButtonElement).style.boxShadow='0 6px 20px rgba(26,86,219,0.5)'; }}
+                                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform='translateY(0)'; (e.currentTarget as HTMLButtonElement).style.boxShadow='0 4px 15px rgba(26,86,219,0.4)'; }}
+                            >
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+                                    <path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+                                </svg>
+                                Proceed to Pay ₹{formatAmount(amount)}
+                            </button>
 
                         {/* Trust badges */}
                         <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:16, marginTop:16 }}>

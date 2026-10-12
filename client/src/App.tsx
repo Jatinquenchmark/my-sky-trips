@@ -9,8 +9,11 @@ import PackageDetail from "./pages/PackageDetail";
 import AllPackages from "./pages/AllPackages";
 import WaterAdventurePage from "./pages/WaterAdventurePage";
 import WhatsAppButton from "./components/WhatsAppButton";
+import CookieBanner from "./components/CookieBanner";
 import DownloadTicket from "./pages/DownloadTicket";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import BookingPolicy from "./pages/BookingPolicy";
+import TermsOfService from "./pages/TermsOfService";
 
 // Admin Imports
 import { AuthProvider } from "./admin/context/AuthContext";
@@ -43,6 +46,10 @@ const App = () => (
             <Route path="/package/:id" element={<PackageDetail />} />
             <Route path="/ticket/:orderId" element={<DownloadTicket />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/booking-policy" element={<BookingPolicy />} />
+            <Route path="/cancellation-policy" element={<BookingPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
 
             {/* Admin Routes */}
             <Route path="/admin/login" element={<AdminLogin />} />
@@ -126,6 +133,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
           <WhatsAppButton />
+          <CookieBanner />
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
